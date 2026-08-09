@@ -2,7 +2,7 @@
 
 @theme inline {
   --color-ink: #2b1b4d;
-  --color-ink-deep: #1a1030;
+  --color-ink-deep: #150c2b;
   --color-ink-soft: #3d2a66;
   --color-mint: #b9f5e0;
   --color-mint-bright: #8df0cf;
@@ -15,7 +15,7 @@
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 html {
@@ -23,13 +23,13 @@ html {
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-paper);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Subtle starfield used on dark hero/sections */
+/* Subtle starfield used on dark sections */
 .starfield {
   pointer-events: none;
   background-image:
@@ -38,4 +38,13 @@ body {
     radial-gradient(1.5px 1.5px at 40% 70%, rgba(233, 200, 160, 0.6) 0, transparent 100%),
     radial-gradient(1px 1px at 85% 60%, rgba(185, 245, 224, 0.5) 0, transparent 100%),
     radial-gradient(1px 1px at 10% 80%, rgba(255, 255, 255, 0.6) 0, transparent 100%);
+}
+
+/* Faint cosmic grid for dark sections */
+.grid-pattern {
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
 }

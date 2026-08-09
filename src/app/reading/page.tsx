@@ -23,7 +23,7 @@ export default function ReadingPage() {
             <p className="text-xs font-medium uppercase tracking-[0.3em] text-mint">
               Your Free First Reading
             </p>
-            <h1 className="mt-4 font-serif text-4xl font-bold md:text-5xl">
+            <h1 className="mt-4 font-serif text-4xl font-bold text-paper md:text-5xl">
               Meet your diary.
             </h1>
             <p className="mt-4 text-paper/80">
@@ -34,15 +34,15 @@ export default function ReadingPage() {
           </div>
         </section>
 
-        <section className="bg-mist py-16">
+        <section className="bg-ink-deep py-16">
           <div className="mx-auto max-w-2xl px-5">
             <form
               action="/api/reading"
               method="post"
-              className="rounded-3xl border border-ink/10 bg-paper p-8 shadow-sm"
+              className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur"
             >
               <div className="grid gap-5 sm:grid-cols-2">
-                <label className="text-sm font-medium text-ink">
+                <label className="text-sm font-medium text-paper">
                   Birth date
                   <input
                     type="date"
@@ -50,53 +50,53 @@ export default function ReadingPage() {
                     required
                     max={maxDate}
                     min={`${currentYear - 120}-01-01`}
-                    className="mt-1 w-full rounded-xl border border-ink/15 bg-paper px-4 py-3 text-ink outline-none focus:border-ink-soft"
+                    className="mt-1 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none focus:border-mint/50"
                   />
                 </label>
-                <label className="text-sm font-medium text-ink">
+                <label className="text-sm font-medium text-paper">
                   Birth time
                   <input
                     type="time"
                     name="birthTime"
-                    className="mt-1 w-full rounded-xl border border-ink/15 bg-paper px-4 py-3 text-ink outline-none focus:border-ink-soft"
+                    className="mt-1 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none focus:border-mint/50"
                   />
-                  <span className="mt-1 block text-xs font-normal text-ink/50">
+                  <span className="mt-1 block font-normal text-paper/50">
                     Unknown? Leave blank — your Rising sign will be approximate.
                   </span>
                 </label>
               </div>
 
-              <label className="mt-5 block text-sm font-medium text-ink">
+              <label className="mt-5 block text-sm font-medium text-paper">
                 Birth city / place
                 <input
                   type="text"
                   name="birthPlace"
                   required
                   placeholder="e.g. Austin, Texas"
-                  className="mt-1 w-full rounded-xl border border-ink/15 bg-paper px-4 py-3 text-ink outline-none focus:border-ink-soft"
+                  className="mt-1 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
                 />
               </label>
 
-              <label className="mt-5 block text-sm font-medium text-ink">
+              <label className="mt-5 block text-sm font-medium text-paper">
                 Name (optional)
                 <input
                   type="text"
                   name="name"
                   placeholder="What should we call you?"
-                  className="mt-1 w-full rounded-xl border border-ink/15 bg-paper px-4 py-3 text-ink outline-none focus:border-ink-soft"
+                  className="mt-1 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
                 />
               </label>
 
               <button
                 type="submit"
-                className="mt-7 w-full rounded-full bg-ink px-7 py-3 text-sm font-semibold text-paper transition hover:bg-ink-soft"
+                className="mt-7 w-full rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
               >
                 Receive my reading
               </button>
-              <p className="mt-4 text-center text-xs text-ink/50">
+              <p className="mt-4 text-center text-xs text-paper/50">
                 Reflection and support, not therapy. By continuing you agree to
                 our{" "}
-                <Link href="/terms" className="text-ink-soft underline">
+                <Link href="/terms" className="text-mint underline">
                   Terms
                 </Link>
                 .

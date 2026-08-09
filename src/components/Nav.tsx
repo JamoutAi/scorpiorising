@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "./Logo";
 
 export function Nav() {
   const links = [
@@ -8,16 +9,12 @@ export function Nav() {
     { href: "/story", label: "Our story" },
   ];
   return (
-    <header className="sticky top-0 z-50 border-b border-ink/5 bg-paper/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink/80 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="font-serif text-xl font-bold tracking-tight text-ink">
-            Scorpio <span className="text-ink-soft">Rising</span>
-          </span>
-        </Link>
-        <div className="hidden items-center gap-7 text-sm text-ink/70 md:flex">
+        <Logo />
+        <div className="hidden items-center gap-8 text-xs font-semibold uppercase tracking-[0.15em] text-paper/70 md:flex">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="transition hover:text-ink">
+            <Link key={l.href} href={l.href} className="transition hover:text-paper">
               {l.label}
             </Link>
           ))}
@@ -25,13 +22,13 @@ export function Nav() {
         <div className="flex items-center gap-3">
           <Link
             href="/reading"
-            className="hidden text-sm font-medium text-ink-soft transition hover:text-ink sm:block"
+            className="hidden rounded-full border border-white/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-paper/80 transition hover:border-white/60 hover:text-paper sm:block"
           >
-            Get your reading
+            Sign in
           </Link>
           <Link
             href="/reading"
-            className="rounded-full bg-ink px-5 py-2 text-sm font-medium text-paper transition hover:bg-ink-soft"
+            className="rounded-full bg-mint px-5 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
           >
             Open your journal
           </Link>

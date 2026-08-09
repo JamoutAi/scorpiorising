@@ -9,13 +9,13 @@ export default function StoryPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="relative bg-ink py-24 text-paper">
+        <section className="relative bg-ink-deep py-24 text-paper">
           <div className="starfield absolute inset-0 opacity-40" />
           <div className="relative mx-auto max-w-3xl px-5">
             <p className="text-xs font-medium uppercase tracking-[0.3em] text-mint">
               Our Story
             </p>
-            <h1 className="mt-4 font-serif text-4xl font-bold md:text-5xl">
+            <h1 className="mt-4 font-serif text-4xl font-bold text-paper md:text-5xl">
               I built the thing that got me through my divorce.
             </h1>
             <div className="mt-8 space-y-5 text-lg text-paper/80">
@@ -57,7 +57,7 @@ export default function StoryPage() {
             </p>
             <Link
               href="/reading"
-              className="mt-10 inline-block rounded-full bg-mint px-7 py-3 text-sm font-semibold text-ink transition hover:bg-mint-bright"
+              className="mt-10 inline-block rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
             >
               Get your free first reading
             </Link>

@@ -9,19 +9,19 @@ export default function SupportPage() {
       <Nav />
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-5 py-20">
-          <h1 className="font-serif text-4xl font-bold text-ink">Support</h1>
+          <h1 className="font-serif text-4xl font-bold text-paper">Support</h1>
 
-          <div className="mt-10 space-y-6 text-ink/80">
+          <div className="mt-10 space-y-6 text-paper/80">
             <p>
               We&rsquo;re a small, founder-led team and we read every message.
               Reach us at{" "}
-              <a href="mailto:support@scorpiorising.ai" className="text-ink-soft underline">
+              <a href="mailto:support@scorpiorising.ai" className="text-mint underline">
                 support@scorpiorising.ai
               </a>
               .
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               In crisis?
             </h2>
             <p>
@@ -32,7 +32,7 @@ export default function SupportPage() {
               <li>
                 <strong>988 Suicide &amp; Crisis Lifeline</strong> (US) — call or
                 text <strong>988</strong>, or visit{" "}
-                <a href="https://988lifeline.org" className="text-ink-soft underline">
+                <a href="https://988lifeline.org" className="text-mint underline">
                   988lifeline.org
                 </a>
                 .
@@ -44,7 +44,7 @@ export default function SupportPage() {
               <li>Outside the US, contact your local emergency number.</li>
             </ul>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               Common questions
             </h2>
             <ul className="list-disc space-y-2 pl-6">
@@ -56,7 +56,7 @@ export default function SupportPage() {
               <li>
                 <strong>Is my journal private?</strong> Yes — entries are
                 encrypted at rest and isolated to your account. See our{" "}
-                <a href="/privacy" className="text-ink-soft underline">
+                <a href="/privacy" className="text-mint underline">
                   Privacy
                 </a>{" "}
                 page.

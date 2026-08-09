@@ -34,17 +34,17 @@ export function WaitlistCTA() {
   }
 
   return (
-    <section className="bg-mist py-24">
+    <section className="bg-ink-deep py-24">
       <div className="mx-auto max-w-xl px-5 text-center">
-        <h2 className="font-serif text-3xl font-bold text-ink">
+        <h2 className="font-serif text-3xl font-bold text-paper">
           Your rising sign is your story. This is where you write it.
         </h2>
-        <p className="mt-4 text-ink/70">
+        <p className="mt-4 text-paper/70">
           Join the waitlist for early access — or skip the line and get your
           free first reading now.
         </p>
         {status === "done" ? (
-          <p className="mt-8 rounded-full bg-ink px-6 py-4 font-medium text-mint">
+          <p className="mt-8 rounded-full border border-mint/30 bg-mint/15 px-6 py-4 font-medium text-mint">
             {msg}
           </p>
         ) : (
@@ -55,21 +55,21 @@ export function WaitlistCTA() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@stars.com"
-              className="flex-1 rounded-full border border-ink/15 bg-paper px-5 py-3 text-ink outline-none focus:border-ink-soft"
+              className="flex-1 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
             />
             <button
               type="submit"
               disabled={status === "loading"}
-              className="rounded-full bg-ink px-7 py-3 text-sm font-semibold text-paper transition hover:bg-ink-soft disabled:opacity-60"
+              className="rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright disabled:opacity-60"
             >
               {status === "loading" ? "Joining…" : "Join the waitlist"}
             </button>
           </form>
         )}
         {status === "error" && (
-          <p className="mt-3 text-sm text-red-600">{msg}</p>
+          <p className="mt-3 text-sm text-red-400">{msg}</p>
         )}
-        <p className="mt-4 text-xs text-ink/50">
+        <p className="mt-4 text-xs text-paper/50">
           Free to start · No spam, only the stars.
         </p>
       </div>

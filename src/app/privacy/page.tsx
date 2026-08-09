@@ -9,17 +9,17 @@ export default function PrivacyPage() {
       <Nav />
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-5 py-20">
-          <h1 className="font-serif text-4xl font-bold text-ink">Privacy</h1>
-          <p className="mt-3 text-sm text-ink/50">Last updated: August 2026</p>
+          <h1 className="font-serif text-4xl font-bold text-paper">Privacy</h1>
+          <p className="mt-3 text-sm text-paper/50">Last updated: August 2026</p>
 
-          <div className="mt-10 space-y-6 text-ink/80">
+          <div className="mt-10 space-y-6 text-paper/80">
             <p>
               Scorpio Rising is a journal. That means the words you write here are
               among the most vulnerable you will ever put down. Privacy is not
               fine print for us — it is a feature and a promise.
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               What we collect
             </h2>
             <ul className="list-disc space-y-2 pl-6">
@@ -28,7 +28,7 @@ export default function PrivacyPage() {
               <li>Your email, if you join the waitlist or create an account.</li>
             </ul>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               How we protect it
             </h2>
             <ul className="list-disc space-y-2 pl-6">
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
               </li>
             </ul>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               Not a substitute for care
             </h2>
             <p>
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
               any condition. If you are in crisis, please reach out: the{" "}
               <a
                 href="https://988lifeline.org"
-                className="text-ink-soft underline"
+                className="text-mint underline"
               >
                 988 Suicide &amp; Crisis Lifeline
               </a>{" "}
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
               HOME to 741741 for the Crisis Text Line.
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               Your controls
             </h2>
             <p>
@@ -70,9 +70,9 @@ export default function PrivacyPage() {
               systems.
             </p>
 
-            <p className="text-sm text-ink/50">
+            <p className="text-sm text-paper/50">
               Questions about your data? Email{" "}
-              <a href="mailto:privacy@scorpiorising.ai" className="text-ink-soft underline">
+              <a href="mailto:privacy@scorpiorising.ai" className="text-mint underline">
                 privacy@scorpiorising.ai
               </a>
               .

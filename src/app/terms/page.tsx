@@ -9,17 +9,17 @@ export default function TermsPage() {
       <Nav />
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-5 py-20">
-          <h1 className="font-serif text-4xl font-bold text-ink">Terms of Service</h1>
-          <p className="mt-3 text-sm text-ink/50">Last updated: August 2026</p>
+          <h1 className="font-serif text-4xl font-bold text-paper">Terms of Service</h1>
+          <p className="mt-3 text-sm text-paper/50">Last updated: August 2026</p>
 
-          <div className="mt-10 space-y-6 text-ink/80">
+          <div className="mt-10 space-y-6 text-paper/80">
             <p>
               Welcome to Scorpio Rising. By using the app or website, you agree
               to these terms. If you do not agree, please don&rsquo;t use the
               service.
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               What Scorpio Rising is
             </h2>
             <p>
@@ -29,7 +29,7 @@ export default function TermsPage() {
               or emergency service.
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               No clinical claims
             </h2>
             <p>
@@ -39,7 +39,7 @@ export default function TermsPage() {
               services or a crisis line (988 in the US, or text HOME to 741741).
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               Accounts &amp; subscriptions
             </h2>
             <p>
@@ -48,7 +48,7 @@ export default function TermsPage() {
               any price change affecting your plan.
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               Your content
             </h2>
             <p>
@@ -58,7 +58,7 @@ export default function TermsPage() {
               models for others.
             </p>
 
-            <h2 className="font-serif text-2xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-paper">
               Changes
             </h2>
             <p>
@@ -67,9 +67,9 @@ export default function TermsPage() {
               the updated terms.
             </p>
 
-            <p className="text-sm text-ink/50">
+            <p className="text-sm text-paper/50">
               Questions? Email{" "}
-              <a href="mailto:support@scorpiorising.ai" className="text-ink-soft underline">
+              <a href="mailto:support@scorpiorising.ai" className="text-mint underline">
                 support@scorpiorising.ai
               </a>
               .
