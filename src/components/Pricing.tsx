@@ -6,7 +6,7 @@ import Link from "next/link";
 const tiers = [
   {
     name: "Mirror",
-    price: "$—", // ← your Mirror monthly price (e.g. "$9.99")
+    price: "$9.99",
     cadence: "/month",
     blurb: "Your daily reflection, chart-aware.",
     features: [
@@ -21,7 +21,7 @@ const tiers = [
   },
   {
     name: "Mirror+",
-    price: "$—", // ← your Mirror+ monthly price (e.g. "$19.99")
+    price: "$17.99",
     cadence: "/month",
     blurb: "Unlimited depth, memory, and continuity.",
     features: [
