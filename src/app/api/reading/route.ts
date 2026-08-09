@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.redirect(new URL("/reading?err=chart", req.url), 303);
   }
 
-  const reading = await generateReading(chart, name);
+  const reading = await generateReading({ chart, name, entry: "" });
   const placeName = geo.country ? `${geo.name}, ${geo.country}` : geo.name;
 
   const html = renderResults({ name, risingApprox, chart, reading, placeName });

@@ -125,6 +125,14 @@ export async function POST(req: NextRequest) {
       .maybeSingle();
     const chart = profile?.chart as ChartSummary | null;
 
+    // Pull recent entries for personalization context (exclude the one being written).
+    const { data: recentRows } = await client
+      .from("entries")
+      .select("body")
+      .order("created_at", { ascending: false })
+      .limit(6);
+    const recentEntries = (recentRows ?? []).map((r: any) => r.body);
+
     const { data: entry, error: entryErr } = await client
       .from("entries")
       .insert({ user_id: userId, body: text })
@@ -139,7 +147,12 @@ export async function POST(req: NextRequest) {
 
     const reflection =
       chart?.sun && chart?.rising
-        ? await generateReading(chart, profile?.name || undefined)
+        ? await generateReading({
+            chart,
+            name: profile?.name || undefined,
+            entry: text,
+            recentEntries,
+          })
         : "Your entry is held. Add your birth chart to receive reflections written in the voice of your stars.";
 
     const { data: reading, error: readErr } = await client
@@ -148,7 +161,7 @@ export async function POST(req: NextRequest) {
         entry_id: entry.id,
         user_id: userId,
         content: reflection,
-        model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
       })
       .select()
       .single();
