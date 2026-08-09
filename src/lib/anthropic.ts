@@ -42,7 +42,8 @@ export async function generateReading(
   chart: ChartSummary,
   name?: string,
 ): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey =
+    process.env.ANTHROPIC_API_KEY || process.env.anthropic;
   if (!apiKey) return fallbackReading(chart);
 
   try {
