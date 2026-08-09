@@ -35,10 +35,10 @@ export function Story() {
           <span className="text-paper/50">· FOUNDER · SCORPIO RISING</span>
         </div>
         <Link
-          href="/reading"
+          href="/#pricing"
           className="mt-10 inline-block rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
         >
-          Get your free first reading
+          Start your free trial
         </Link>
       </div>
     </section>

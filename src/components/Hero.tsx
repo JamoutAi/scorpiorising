@@ -24,10 +24,10 @@ export function Hero() {
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link
-              href="/reading"
+              href="/#pricing"
               className="rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
             >
-              Begin your first entry
+              Start your free trial
             </Link>
             <Link
               href="/#how"
@@ -41,7 +41,7 @@ export function Hero() {
             <span aria-hidden="true" className="text-mint">✦</span>
             <span aria-hidden="true" className="text-mint">✧</span>
             <span aria-hidden="true">🪐</span>
-            <span>Join the waitlist · Free to start</span>
+            <span>7-day free trial · No credit card noise, just the stars.</span>
           </p>
         </div>
         <div className="relative">

@@ -61,10 +61,10 @@ export function Nav() {
                 Sign in
               </Link>
               <Link
-                href="/signup"
+                href="/#pricing"
                 className="rounded-full bg-mint px-5 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
               >
-                Open your journal
+                Start free trial
               </Link>
             </>
           )}
