@@ -9,7 +9,7 @@ export default function StoryPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="bg-ink py-24 text-paper">
+        <section className="relative bg-ink py-24 text-paper">
           <div className="starfield absolute inset-0 opacity-40" />
           <div className="relative mx-auto max-w-3xl px-5">
             <p className="text-xs font-medium uppercase tracking-[0.3em] text-mint">

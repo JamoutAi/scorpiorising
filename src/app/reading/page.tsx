@@ -17,7 +17,7 @@ export default function ReadingPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="bg-ink py-20 text-paper">
+        <section className="relative bg-ink py-20 text-paper">
           <div className="starfield absolute inset-0 opacity-40" />
           <div className="relative mx-auto max-w-2xl px-5 text-center">
             <p className="text-xs font-medium uppercase tracking-[0.3em] text-mint">
