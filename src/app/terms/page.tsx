@@ -1,0 +1,83 @@
+import { Nav } from "@/components/Nav";
+import { Footer } from "@/components/Footer";
+
+export const metadata = { title: "Terms" };
+
+export default function TermsPage() {
+  return (
+    <>
+      <Nav />
+      <main className="flex-1">
+        <article className="mx-auto max-w-3xl px-5 py-20">
+          <h1 className="font-serif text-4xl font-bold text-ink">Terms of Service</h1>
+          <p className="mt-3 text-sm text-ink/50">Last updated: August 2026</p>
+
+          <div className="mt-10 space-y-6 text-ink/80">
+            <p>
+              Welcome to Scorpio Rising. By using the app or website, you agree
+              to these terms. If you do not agree, please don&rsquo;t use the
+              service.
+            </p>
+
+            <h2 className="font-serif text-2xl font-semibold text-ink">
+              What Scorpio Rising is
+            </h2>
+            <p>
+              Scorpio Rising is a journaling companion that uses astrology and AI
+              to reflect your writing back to you. It is a tool for reflection
+              and self-understanding. It is not a healthcare provider, therapist,
+              or emergency service.
+            </p>
+
+            <h2 className="font-serif text-2xl font-semibold text-ink">
+              No clinical claims
+            </h2>
+            <p>
+              We do not diagnose, treat, or cure any medical or mental-health
+              condition. Nothing in Scorpio Rising should be taken as medical or
+              psychological advice. If you are in crisis, contact emergency
+              services or a crisis line (988 in the US, or text HOME to 741741).
+            </p>
+
+            <h2 className="font-serif text-2xl font-semibold text-ink">
+              Accounts &amp; subscriptions
+            </h2>
+            <p>
+              You are responsible for the accuracy of the birth information you
+              provide. Paid plans renew until cancelled. We will notify you before
+              any price change affecting your plan.
+            </p>
+
+            <h2 className="font-serif text-2xl font-semibold text-ink">
+              Your content
+            </h2>
+            <p>
+              You retain ownership of your journal entries. By using the service,
+              you grant us a limited license to process your entries solely to
+              provide reflections to you. We do not use your entries to train
+              models for others.
+            </p>
+
+            <h2 className="font-serif text-2xl font-semibold text-ink">
+              Changes
+            </h2>
+            <p>
+              We may update these terms. Material changes will be communicated in
+              the app or by email. Continued use after changes means you accept
+              the updated terms.
+            </p>
+
+            <p className="text-sm text-ink/50">
+              Questions? Email{" "}
+              <a href="mailto:support@scorpiorising.ai" className="text-ink-soft underline">
+                support@scorpiorising.ai
+              </a>
+              .
+            </p>
+          </div>
+        </article>
+      </main>
+      <Footer />
+    </>
+  );
+}
