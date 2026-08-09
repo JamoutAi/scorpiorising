@@ -49,7 +49,7 @@ export async function generateReading(
   try {
     const client = new Anthropic({ apiKey });
     const msg = await client.messages.create({
-      model: process.env.ANTHROPIC_MODEL || "claude-3-5-haiku-20241022",
+      model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 700,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: buildPrompt(chart, name) }],
