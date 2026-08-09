@@ -3,42 +3,36 @@ import Anthropic from "@anthropic-ai/sdk";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: NextRequest) {
-  const keySet =
-    !!process.env.ANTHROPIC_API_KEY || !!process.env.anthropic;
-  const keyName = process.env.ANTHROPIC_API_KEY
-    ? "ANTHROPIC_API_KEY"
-    : process.env.anthropic
-      ? "anthropic"
-      : "none";
-  const keyPrefix = (
-    (process.env.ANTHROPIC_API_KEY || process.env.anthropic || "")
-  ).slice(0, 7);
+const CANDIDATES = [
+  "claude-3-5-haiku-latest",
+  "claude-3-5-haiku-20241022",
+  "claude-3-haiku-20240307",
+  "claude-3-5-sonnet-latest",
+  "claude-3-5-sonnet-20241022",
+  "claude-3-7-sonnet-latest",
+  "claude-3-7-sonnet-20250219",
+];
 
-  let callResult = "not attempted";
-  if (keySet) {
+export async function GET(_req: NextRequest) {
+  const key = process.env.ANTHROPIC_API_KEY || process.env.anthropic;
+  if (!key) return NextResponse.json({ error: "no key" });
+
+  const client = new Anthropic({ apiKey: key });
+  const results: Record<string, string> = {};
+
+  for (const model of CANDIDATES) {
     try {
-      const client = new Anthropic({
-        apiKey: process.env.ANTHROPIC_API_KEY || process.env.anthropic!,
-      });
       const msg = await client.messages.create({
-        model: process.env.ANTHROPIC_MODEL || "claude-3-5-haiku-20241022",
-        max_tokens: 50,
+        model,
+        max_tokens: 20,
         messages: [{ role: "user", content: "Say hi in 3 words." }],
       });
-      callResult =
-        "OK: " +
-        (msg.content.find((b: any) => b.type === "text") as any)?.text;
+      const t = (msg.content.find((b: any) => b.type === "text") as any)?.text;
+      results[model] = "OK: " + t;
     } catch (e: any) {
-      callResult = "ERROR: " + (e?.message || String(e));
+      results[model] = "ERR: " + (e?.message || String(e));
     }
   }
 
-  return NextResponse.json({
-    keySet,
-    keyName,
-    keyPrefix,
-    model: process.env.ANTHROPIC_MODEL || "claude-3-5-haiku-20241022",
-    callResult,
-  });
+  return NextResponse.json({ results });
 }
