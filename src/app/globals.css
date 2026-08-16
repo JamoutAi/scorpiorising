@@ -1,5 +1,49 @@
 @import "tailwindcss";
 
+/* Self-hosted fonts (no external dependency) */
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant-300.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   /* Celestial Ink — Scorpio Rising design system */
   --color-background: oklch(0.14 0.05 285);
@@ -34,6 +78,13 @@
 
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
+
+  /* Backward-compat aliases (older components still reference these) */
+  --color-paper: oklch(0.93 0.015 85);
+  --color-ink: oklch(0.14 0.05 285);
+  --color-ink-deep: oklch(0.11 0.065 278);
+  --color-mint: oklch(0.78 0.14 145);
+  --color-mint-bright: oklch(0.84 0.16 145);
 }
 
 :root {
@@ -65,6 +116,9 @@ h1, h2, h3, h4, h5, h6 {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .font-serif {
+    font-family: var(--font-display), Georgia, serif;
   }
 }
 

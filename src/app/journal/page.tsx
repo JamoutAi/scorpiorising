@@ -15,6 +15,7 @@ interface Profile {
   birth_time?: string;
   birth_place?: string;
   chart?: any;
+  plan_status?: string;
 }
 interface Entry {
   id: string;
@@ -31,6 +32,7 @@ export default function JournalPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [gated, setGated] = useState(false);
 
   // chart-setup form
   const [birthDate, setBirthDate] = useState("");
@@ -57,6 +59,11 @@ export default function JournalPage() {
       const data = await res.json();
       setProfile(data.profile);
       setEntries(data.entries || []);
+      const status = data.profile?.plan_status;
+      // Block access unless the user has an active or trialing subscription.
+      if (status !== "active" && status !== "trialing") {
+        setGated(true);
+      }
       if (data.profile) {
         setName(data.profile.name || "");
         setBirthDate(data.profile.birth_date || "");
@@ -119,7 +126,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 bg-ink-deep px-5 py-24 text-center text-paper/80">
+        <main className="flex-1 px-5 py-24 text-center" style={{ background: "oklch(0.11 0.065 278)", color: "oklch(0.65 0.03 285)" }}>
           Sign-in isn&rsquo;t configured yet. Add the Supabase keys in Vercel and run the schema SQL.
         </main>
         <Footer />
@@ -130,20 +137,81 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 bg-ink-deep px-5 py-24 text-center text-paper/60">Opening your journal…</main>
+        <main className="flex-1 px-5 py-24 text-center" style={{ background: "oklch(0.11 0.065 278)", color: "oklch(0.55 0.03 285)" }}>Opening your journal…</main>
       </>
     );
   }
   if (!user) return null;
 
+  if (gated) {
+    return (
+      <>
+        <Nav />
+        <main className="flex-1 flex items-center justify-center px-5 py-32" style={{ background: "oklch(0.11 0.065 278)" }}>
+          <div className="card-vellum max-w-md p-10 text-center">
+            <div className="mx-auto mb-6 w-40 opacity-30">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/logo.png" alt="" className="mx-auto h-20 w-20 object-contain" />
+            </div>
+            <h1
+              style={{
+                fontFamily: "var(--font-display), serif",
+                fontSize: "2rem",
+                fontWeight: 300,
+                color: "oklch(0.94 0.02 85)",
+                marginBottom: "0.75rem",
+              }}
+            >
+              Your journal is behind a plan.
+            </h1>
+            <p
+              style={{
+                fontFamily: "var(--font-display), serif",
+                fontSize: "1.05rem",
+                fontWeight: 300,
+                color: "oklch(0.58 0.04 285)",
+                marginBottom: "2rem",
+              }}
+            >
+              Start your 7-day free trial to open your diary and receive chart-aware reflections.
+            </p>
+            <Link href="/#pricing" className="btn-phosphor">
+              Choose a plan
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <Nav />
-      <main className="flex-1 bg-ink-deep">
+      <main className="flex-1" style={{ background: "oklch(0.11 0.065 278)" }}>
         <div className="mx-auto max-w-3xl px-5 py-12">
           <div className="flex items-center justify-between">
-            <h1 className="font-serif text-3xl font-bold text-paper">Your Journal</h1>
-            <button onClick={signOut} className="text-sm text-paper/60 underline">
+            <h1
+              style={{
+                fontFamily: "var(--font-display), serif",
+                fontSize: "2.4rem",
+                fontWeight: 300,
+                color: "oklch(0.94 0.02 85)",
+              }}
+            >
+              Your Journal
+            </h1>
+            <button
+              onClick={signOut}
+              style={{
+                fontFamily: "var(--font-sans), sans-serif",
+                fontSize: "0.75rem",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "oklch(0.55 0.03 285)",
+              }}
+              className="underline"
+            >
               Sign out
             </button>
           </div>
