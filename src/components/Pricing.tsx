@@ -78,7 +78,7 @@ export function Pricing() {
     <section
       id="pricing"
       className="relative overflow-hidden py-28"
-      style={{ background: "oklch(0.11 0.065 278)" }}
+      style={{ background: "#15102b" }}
     >
       <StarField count={32} />
       <div className="absolute bottom-16 right-8 hidden w-48 lg:block">
@@ -87,7 +87,7 @@ export function Pricing() {
       <div className="container-x relative z-10">
         <div className="mx-auto mb-16 max-w-2xl text-center">
           <div className="reveal mb-5 flex items-center justify-center gap-3">
-            <span className="bar" style={{ background: "oklch(0.82 0.15 145)", height: "1px", width: "2rem" }} />
+            <span className="bar" style={{ background: "#2ed79f", height: "1px", width: "2rem" }} />
             <span
               style={{
                 fontFamily: "var(--font-sans), sans-serif",
@@ -95,12 +95,12 @@ export function Pricing() {
                 fontWeight: 500,
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                color: "oklch(0.82 0.15 145)",
+                color: "#2ed79f",
               }}
             >
               Simple Pricing
             </span>
-            <span className="bar" style={{ background: "oklch(0.82 0.15 145)", height: "1px", width: "2rem" }} />
+            <span className="bar" style={{ background: "#2ed79f", height: "1px", width: "2rem" }} />
           </div>
           <h2
             className="reveal"
@@ -109,11 +109,11 @@ export function Pricing() {
               fontSize: "clamp(2.2rem, 4.5vw, 3.4rem)",
               fontWeight: 300,
               lineHeight: 1.1,
-              color: "oklch(0.94 0.02 85)",
+              color: "#f0ebe2",
             }}
           >
             Start free for 7 days. Go deeper{" "}
-            <em style={{ fontStyle: "italic", color: "oklch(0.82 0.15 145)" }}>when you're ready.</em>
+            <em style={{ fontStyle: "italic", color: "#2ed79f" }}>when you're ready.</em>
           </h2>
         </div>
 
@@ -125,8 +125,8 @@ export function Pricing() {
                 style={
                   t.highlight
                     ? {
-                        borderColor: "oklch(0.82 0.15 145 / 0.28)",
-                        boxShadow: "0 0 40px oklch(0.78 0.14 145 / 0.07), inset 0 0 0 1px oklch(0.82 0.15 145 / 0.12)",
+                        borderColor: "rgba(46, 215, 159, 0.28)",
+                        boxShadow: "0 0 40px rgba(31, 200, 150, 0.07), inset 0 0 0 1px rgba(46, 215, 159, 0.12)",
                       }
                     : undefined
                 }
@@ -142,14 +142,14 @@ export function Pricing() {
                   <div
                     className="absolute left-4 top-4 rounded-full px-3 py-1"
                     style={{
-                      background: "oklch(0.82 0.15 145 / 0.12)",
-                      border: "1px solid oklch(0.82 0.15 145 / 0.35)",
+                      background: "rgba(46, 215, 159, 0.12)",
+                      border: "1px solid rgba(46, 215, 159, 0.35)",
                       fontFamily: "var(--font-sans), sans-serif",
                       fontSize: "0.62rem",
                       fontWeight: 500,
                       letterSpacing: "0.12em",
                       textTransform: "uppercase",
-                      color: "oklch(0.82 0.15 145)",
+                      color: "#2ed79f",
                     }}
                   >
                     Most Popular
@@ -162,7 +162,7 @@ export function Pricing() {
                     fontWeight: 500,
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
-                    color: t.highlight ? "oklch(0.82 0.15 145)" : "oklch(0.55 0.04 285)",
+                    color: t.highlight ? "#2ed79f" : "#766a83",
                     marginTop: t.highlight ? "2rem" : 0,
                     marginBottom: "1rem",
                   }}
@@ -174,7 +174,7 @@ export function Pricing() {
                     fontFamily: "var(--font-display), serif",
                     fontSize: "3rem",
                     fontWeight: 300,
-                    color: "oklch(0.94 0.02 85)",
+                    color: "#f0ebe2",
                     lineHeight: 1,
                     marginBottom: "0.5rem",
                   }}
@@ -184,7 +184,7 @@ export function Pricing() {
                     style={{
                       fontFamily: "var(--font-sans), sans-serif",
                       fontSize: "0.75rem",
-                      color: "oklch(0.50 0.04 285)",
+                      color: "#6c5a79",
                       paddingBottom: "0.4rem",
                       marginLeft: "0.5rem",
                     }}
@@ -196,7 +196,7 @@ export function Pricing() {
                   style={{
                     fontFamily: "var(--font-display), serif",
                     fontSize: "0.95rem",
-                    color: "oklch(0.50 0.04 285)",
+                    color: "#6c5a79",
                     marginBottom: "2rem",
                   }}
                 >
@@ -205,14 +205,14 @@ export function Pricing() {
                 <ul className="mb-8 flex flex-col gap-3">
                   {t.features.map((item) => (
                     <li key={item} className="flex items-start gap-3">
-                      <span style={{ color: "oklch(0.82 0.15 145)", marginTop: "2px" }}>◎</span>
-                      <span style={{ fontFamily: "var(--font-display), serif", fontSize: "1rem", fontWeight: 300, color: "oklch(0.65 0.04 285)" }}>
+                      <span style={{ color: "#2ed79f", marginTop: "2px" }}>◎</span>
+                      <span style={{ fontFamily: "var(--font-display), serif", fontSize: "1rem", fontWeight: 300, color: "#8c8295" }}>
                         {item}
                       </span>
                     </li>
                   ))}
                 </ul>
-                <span className="mb-8 block text-xs uppercase tracking-[0.15em]" style={{ color: "oklch(0.82 0.15 145)" }}>
+                <span className="mb-8 block text-xs uppercase tracking-[0.15em]" style={{ color: "#2ed79f" }}>
                   7-day free trial
                 </span>
                 <PlanButton
@@ -231,7 +231,7 @@ export function Pricing() {
             fontFamily: "var(--font-sans), sans-serif",
             fontSize: "0.68rem",
             letterSpacing: "0.05em",
-            color: "oklch(0.40 0.03 285)",
+            color: "#574463",
           }}
         >
           Not a substitute for professional care. Crisis support always available. Privacy is a feature, not fine print.

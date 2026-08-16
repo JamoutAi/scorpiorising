@@ -6,7 +6,7 @@ export function WaitlistCTA() {
     <section
       className="relative overflow-hidden py-32 text-center"
       style={{
-        background: "oklch(0.10 0.07 278)",
+        background: "#120b26",
         backgroundImage: "url(/assets/hero-bg.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center bottom",
@@ -15,7 +15,7 @@ export function WaitlistCTA() {
     >
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(to bottom, oklch(0.10 0.07 278 / 0.75), oklch(0.08 0.07 280 / 0.88))" }}
+        style={{ background: "linear-gradient(to bottom, rgba(18, 11, 38, 0.75), rgba(46, 215, 159, 0.88))" }}
       />
       <div className="absolute inset-0 ridge-texture" />
       <StarField count={45} />
@@ -34,11 +34,11 @@ export function WaitlistCTA() {
             fontSize: "clamp(2.4rem, 5vw, 4rem)",
             fontWeight: 300,
             lineHeight: 1.1,
-            color: "oklch(0.94 0.02 85)",
+            color: "#f0ebe2",
           }}
         >
           Your rising sign is your story.{" "}
-          <em style={{ fontStyle: "italic", color: "oklch(0.82 0.15 145)" }}>This is where you write it.</em>
+          <em style={{ fontStyle: "italic", color: "#2ed79f" }}>This is where you write it.</em>
         </h2>
         <p
           className="reveal"
@@ -46,7 +46,7 @@ export function WaitlistCTA() {
             fontFamily: "var(--font-display), serif",
             fontSize: "1.2rem",
             fontWeight: 300,
-            color: "oklch(0.58 0.04 285)",
+            color: "#7d7189",
             maxWidth: "480px",
             margin: "0 auto 2.5rem",
           }}

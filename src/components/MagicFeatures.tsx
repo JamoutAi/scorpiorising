@@ -25,7 +25,7 @@ export function MagicFeatures() {
       id="features"
       className="relative overflow-hidden py-28"
       style={{
-        background: "oklch(0.11 0.065 278)",
+        background: "#15102b",
         backgroundImage: "url(/assets/constellation-texture.jpg)",
         backgroundSize: "cover",
         backgroundBlendMode: "overlay",
@@ -35,7 +35,7 @@ export function MagicFeatures() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, oklch(0.11 0.065 278 / 0.93), oklch(0.11 0.065 278 / 0.90))",
+            "linear-gradient(to bottom, rgba(21, 16, 43, 0.93), rgba(21, 16, 43, 0.90))",
         }}
       />
       <div className="absolute bottom-16 left-8 hidden w-48 lg:block" style={{ transform: "scaleX(-1)" }}>
@@ -48,14 +48,14 @@ export function MagicFeatures() {
             <div className="relative">
               <div
                 className="absolute inset-0 rounded-2xl blur-3xl"
-                style={{ background: "radial-gradient(circle, oklch(0.78 0.14 145 / 0.14) 0%, transparent 70%)", transform: "scale(1.25)" }}
+                style={{ background: "radial-gradient(circle, rgba(31, 200, 150, 0.14) 0%, transparent 70%)", transform: "scale(1.25)" }}
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/assets/journal-mockup.jpg"
                 alt="Scorpio Rising app interface"
                 className="relative z-10 w-full rounded-sm shadow-2xl"
-                style={{ maxWidth: "320px", border: "1px solid oklch(1 0 0 / 10%)" }}
+                style={{ maxWidth: "320px", border: "1px solid rgba(255, 255, 255, 0.100)" }}
               />
             </div>
           </div>
@@ -72,12 +72,12 @@ export function MagicFeatures() {
                 fontSize: "clamp(2.2rem, 4.5vw, 3.4rem)",
                 fontWeight: 300,
                 lineHeight: 1.1,
-                color: "oklch(0.94 0.02 85)",
+                color: "#f0ebe2",
                 marginBottom: "2.5rem",
               }}
             >
               A diary that knows{" "}
-              <em style={{ fontStyle: "italic", color: "oklch(0.78 0.12 75)" }}>your chart.</em>
+              <em style={{ fontStyle: "italic", color: "#d9b264" }}>your chart.</em>
             </h2>
             <div className="flex flex-col gap-6">
               {features.map((feature, i) => (
@@ -85,9 +85,9 @@ export function MagicFeatures() {
                   <div className="flex gap-4">
                     <div
                       className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-                      style={{ background: "oklch(0.82 0.15 145 / 0.12)", border: "1px solid oklch(0.82 0.15 145 / 0.4)" }}
+                      style={{ background: "rgba(46, 215, 159, 0.12)", border: "1px solid rgba(46, 215, 159, 0.4)" }}
                     >
-                      <div className="h-1.5 w-1.5 rounded-full" style={{ background: "oklch(0.82 0.15 145)" }} />
+                      <div className="h-1.5 w-1.5 rounded-full" style={{ background: "#2ed79f" }} />
                     </div>
                     <div>
                       <h4
@@ -95,7 +95,7 @@ export function MagicFeatures() {
                           fontFamily: "var(--font-display), serif",
                           fontSize: "1.15rem",
                           fontWeight: 500,
-                          color: "oklch(0.94 0.02 85)",
+                          color: "#f0ebe2",
                           marginBottom: "0.3rem",
                         }}
                       >
@@ -107,7 +107,7 @@ export function MagicFeatures() {
                           fontSize: "1rem",
                           fontWeight: 300,
                           lineHeight: 1.65,
-                          color: "oklch(0.58 0.04 285)",
+                          color: "#7d7189",
                         }}
                       >
                         {feature.body}

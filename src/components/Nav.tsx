@@ -35,9 +35,9 @@ export function Nav() {
     <header
       className="fixed left-0 right-0 top-0 z-50 transition-all duration-500"
       style={{
-        background: scrolled ? "oklch(0.14 0.05 285 / 0.92)" : "transparent",
+        background: scrolled ? "rgba(27, 17, 51, 0.92)" : "transparent",
         backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid oklch(1 0 0 / 8%)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(255, 255, 255, 0.080)" : "none",
       }}
     >
       <div className="container-x flex items-center justify-between py-4">
@@ -56,7 +56,7 @@ export function Nav() {
                 fontWeight: 300,
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
-                color: "oklch(0.68 0.09 288)",
+                color: "#8f6f9c",
               }}
             >
               Scorpio
@@ -68,7 +68,7 @@ export function Nav() {
                 fontStyle: "italic",
                 fontWeight: 500,
                 letterSpacing: "0.05em",
-                color: "oklch(0.93 0.015 85)",
+                color: "#ede8e0",
                 marginTop: "-2px",
               }}
             >
@@ -88,10 +88,10 @@ export function Nav() {
                 fontWeight: 400,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: "oklch(0.70 0.03 285)",
+                color: "#94899c",
                 transition: "color 200ms ease",
               }}
-              className="hover:text-[oklch(0.93_0.015_85)]"
+              className="hover:text-[#ede8e0]"
             >
               {l.label}
             </Link>
@@ -128,9 +128,9 @@ export function Nav() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          <span className="block h-px w-6 bg-[oklch(0.93_0.015_85)]" />
-          <span className="block h-px w-6 bg-[oklch(0.93_0.015_85)]" />
-          <span className="block h-px w-6 bg-[oklch(0.93_0.015_85)]" />
+          <span className="block h-px w-6 bg-[#ede8e0]" />
+          <span className="block h-px w-6 bg-[#ede8e0]" />
+          <span className="block h-px w-6 bg-[#ede8e0]" />
         </button>
       </div>
 
@@ -138,8 +138,8 @@ export function Nav() {
         <div
           className="flex flex-col gap-5 px-6 py-6 md:hidden"
           style={{
-            background: "oklch(0.14 0.05 285 / 0.97)",
-            borderTop: "1px solid oklch(1 0 0 / 8%)",
+            background: "rgba(27, 17, 51, 0.97)",
+            borderTop: "1px solid rgba(255, 255, 255, 0.080)",
           }}
         >
           {links.map((l) => (
@@ -152,7 +152,7 @@ export function Nav() {
                 fontSize: "0.85rem",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: "oklch(0.80 0.02 85)",
+                color: "#d0c9bc",
               }}
             >
               {l.label}

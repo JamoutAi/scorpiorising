@@ -126,7 +126,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 px-5 py-24 text-center" style={{ background: "oklch(0.11 0.065 278)", color: "oklch(0.65 0.03 285)" }}>
+        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#15102b", color: "#8c8295" }}>
           Sign-in isn&rsquo;t configured yet. Add the Supabase keys in Vercel and run the schema SQL.
         </main>
         <Footer />
@@ -137,7 +137,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 px-5 py-24 text-center" style={{ background: "oklch(0.11 0.065 278)", color: "oklch(0.55 0.03 285)" }}>Opening your journal…</main>
+        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#15102b", color: "#766a83" }}>Opening your journal…</main>
       </>
     );
   }
@@ -147,7 +147,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 flex items-center justify-center px-5 py-32" style={{ background: "oklch(0.11 0.065 278)" }}>
+        <main className="flex-1 flex items-center justify-center px-5 py-32" style={{ background: "#15102b" }}>
           <div className="card-vellum max-w-md p-10 text-center">
             <div className="mx-auto mb-6 w-40 opacity-30">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -158,7 +158,7 @@ export default function JournalPage() {
                 fontFamily: "var(--font-display), serif",
                 fontSize: "2rem",
                 fontWeight: 300,
-                color: "oklch(0.94 0.02 85)",
+                color: "#f0ebe2",
                 marginBottom: "0.75rem",
               }}
             >
@@ -169,7 +169,7 @@ export default function JournalPage() {
                 fontFamily: "var(--font-display), serif",
                 fontSize: "1.05rem",
                 fontWeight: 300,
-                color: "oklch(0.58 0.04 285)",
+                color: "#7d7189",
                 marginBottom: "2rem",
               }}
             >
@@ -188,7 +188,7 @@ export default function JournalPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1" style={{ background: "oklch(0.11 0.065 278)" }}>
+      <main className="flex-1" style={{ background: "#15102b" }}>
         <div className="mx-auto max-w-3xl px-5 py-12">
           <div className="flex items-center justify-between">
             <h1
@@ -196,7 +196,7 @@ export default function JournalPage() {
                 fontFamily: "var(--font-display), serif",
                 fontSize: "2.4rem",
                 fontWeight: 300,
-                color: "oklch(0.94 0.02 85)",
+                color: "#f0ebe2",
               }}
             >
               Your Journal
@@ -208,7 +208,7 @@ export default function JournalPage() {
                 fontSize: "0.75rem",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "oklch(0.55 0.03 285)",
+                color: "#766a83",
               }}
               className="underline"
             >

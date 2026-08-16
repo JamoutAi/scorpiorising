@@ -5,7 +5,7 @@ export function Hero() {
   return (
     <section
       className="relative flex min-h-screen items-center overflow-hidden"
-      style={{ background: "oklch(0.10 0.06 285)" }}
+      style={{ background: "#120a26" }}
     >
       <div
         className="absolute inset-0"
@@ -20,7 +20,7 @@ export function Hero() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(135deg, oklch(0.08 0.07 285 / 0.9) 0%, oklch(0.12 0.06 278 / 0.55) 50%, oklch(0.10 0.07 275 / 0.75) 100%)",
+            "linear-gradient(135deg, rgba(14, 10, 32, 0.9) 0%, rgba(46, 215, 159, 0.55) 50%, rgba(46, 215, 159, 0.75) 100%)",
         }}
       />
       <div className="absolute inset-0 ridge-texture" style={{ zIndex: 1 }} />
@@ -30,7 +30,7 @@ export function Hero() {
         <div className="grid items-center gap-16 lg:grid-cols-2">
           <div>
             <div className="reveal mb-8 flex items-center gap-3">
-              <div className="h-px w-10" style={{ background: "oklch(0.82 0.15 145)" }} />
+              <div className="h-px w-10" style={{ background: "#2ed79f" }} />
               <span
                 style={{
                   fontFamily: "var(--font-sans), sans-serif",
@@ -38,7 +38,7 @@ export function Hero() {
                   fontWeight: 500,
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
-                  color: "oklch(0.82 0.15 145)",
+                  color: "#2ed79f",
                 }}
               >
                 AI Journaling · Astrological Intelligence
@@ -52,13 +52,13 @@ export function Hero() {
                 fontWeight: 300,
                 lineHeight: 1.04,
                 letterSpacing: "-0.02em",
-                color: "oklch(0.94 0.02 85)",
+                color: "#f0ebe2",
                 marginBottom: "1.5rem",
                 transitionDelay: "80ms",
               }}
             >
               You&rsquo;ve been writing{" "}
-              <em style={{ fontStyle: "italic", color: "oklch(0.82 0.15 145)" }}>
+              <em style={{ fontStyle: "italic", color: "#2ed79f" }}>
                 in the dark.
               </em>
               <br />
@@ -71,7 +71,7 @@ export function Hero() {
                 fontSize: "1.25rem",
                 fontWeight: 300,
                 lineHeight: 1.7,
-                color: "oklch(0.68 0.04 285)",
+                color: "#958a9d",
                 maxWidth: "480px",
                 marginBottom: "2.5rem",
                 transitionDelay: "160ms",
@@ -95,7 +95,7 @@ export function Hero() {
                   <div
                     key={i}
                     className="flex h-8 w-8 items-center justify-center rounded-full border text-sm"
-                    style={{ background: "oklch(0.20 0.065 278)", borderColor: "oklch(0.10 0.06 285)" }}
+                    style={{ background: "#2b1c40", borderColor: "#120a26" }}
                   >
                     {emoji}
                   </div>
@@ -105,7 +105,7 @@ export function Hero() {
                 style={{
                   fontFamily: "var(--font-sans), sans-serif",
                   fontSize: "0.75rem",
-                  color: "oklch(0.55 0.03 285)",
+                  color: "#766a83",
                   letterSpacing: "0.04em",
                 }}
               >
@@ -119,7 +119,7 @@ export function Hero() {
               <div
                 className="absolute inset-0 rounded-full blur-3xl"
                 style={{
-                  background: "radial-gradient(circle, oklch(0.78 0.14 145 / 0.18) 0%, transparent 70%)",
+                  background: "radial-gradient(circle, rgba(31, 200, 150, 0.18) 0%, transparent 70%)",
                   transform: "scale(1.5)",
                 }}
               />
@@ -136,7 +136,7 @@ export function Hero() {
       </div>
       <div
         className="pointer-events-none absolute bottom-0 left-0 right-0 h-40"
-        style={{ background: "linear-gradient(to bottom, transparent, oklch(14% 0.05 285))" }}
+        style={{ background: "linear-gradient(to bottom, transparent, #211435)" }}
       />
     </section>
   );

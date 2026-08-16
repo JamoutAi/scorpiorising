@@ -5,8 +5,8 @@ import { useEffect, useRef } from "react";
 /* Ink-wash SVG divider — organic, fingerprint-ridge-like */
 export function InkDivider({
   flip = false,
-  fromColor = "oklch(0.14 0.05 285)",
-  toColor = "oklch(0.11 0.065 278)",
+  fromColor = "#1b1133",
+  toColor = "#15102b",
 }: {
   flip?: boolean;
   fromColor?: string;
@@ -43,15 +43,15 @@ export function ConstellationThread({ className = "" }: { className?: string }) 
       className={className}
       style={{ opacity: 0.35 }}
     >
-      <line x1="20" y1="60" x2="60" y2="30" stroke="oklch(0.82 0.15 145)" strokeWidth="0.5" />
-      <line x1="60" y1="30" x2="110" y2="50" stroke="oklch(0.82 0.15 145)" strokeWidth="0.5" />
-      <line x1="110" y1="50" x2="150" y2="20" stroke="oklch(0.82 0.15 145)" strokeWidth="0.5" />
-      <line x1="150" y1="20" x2="185" y2="40" stroke="oklch(0.82 0.15 145)" strokeWidth="0.5" />
-      <circle cx="20" cy="60" r="2.5" fill="oklch(0.82 0.15 145)" />
-      <circle cx="60" cy="30" r="2" fill="oklch(0.82 0.15 145)" />
-      <circle cx="110" cy="50" r="3" fill="oklch(0.82 0.15 145)" />
-      <circle cx="150" cy="20" r="2" fill="oklch(0.82 0.15 145)" />
-      <circle cx="185" cy="40" r="2.5" fill="oklch(0.82 0.15 145)" />
+      <line x1="20" y1="60" x2="60" y2="30" stroke="#2ed79f" strokeWidth="0.5" />
+      <line x1="60" y1="30" x2="110" y2="50" stroke="#2ed79f" strokeWidth="0.5" />
+      <line x1="110" y1="50" x2="150" y2="20" stroke="#2ed79f" strokeWidth="0.5" />
+      <line x1="150" y1="20" x2="185" y2="40" stroke="#2ed79f" strokeWidth="0.5" />
+      <circle cx="20" cy="60" r="2.5" fill="#2ed79f" />
+      <circle cx="60" cy="30" r="2" fill="#2ed79f" />
+      <circle cx="110" cy="50" r="3" fill="#2ed79f" />
+      <circle cx="150" cy="20" r="2" fill="#2ed79f" />
+      <circle cx="185" cy="40" r="2.5" fill="#2ed79f" />
     </svg>
   );
 }
@@ -77,7 +77,7 @@ export function StarField({ count = 40 }: { count?: number }) {
             top: `${s.y}%`,
             width: `${s.size}px`,
             height: `${s.size}px`,
-            background: "oklch(0.93 0.015 85)",
+            background: "#ede8e0",
             opacity: 0.25 + (s.id % 3) * 0.15,
             animation: `twinkle ${s.duration}s ease-in-out infinite`,
             animationDelay: `${s.delay}s`,
@@ -130,9 +130,9 @@ export function Marquee({ items }: { items: string[] }) {
   return (
     <section
       style={{
-        background: "oklch(0.16 0.065 280)",
-        borderTop: "1px solid oklch(1 0 0 / 7%)",
-        borderBottom: "1px solid oklch(1 0 0 / 7%)",
+        background: "#211435",
+        borderTop: "1px solid rgba(255, 255, 255, 0.070)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.070)",
         padding: "1.1rem 0",
         overflow: "hidden",
       }}
@@ -147,7 +147,7 @@ export function Marquee({ items }: { items: string[] }) {
               fontWeight: 400,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "oklch(0.55 0.05 285)",
+              color: "#776b84",
               whiteSpace: "nowrap",
             }}
           >

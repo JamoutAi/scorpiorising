@@ -46,7 +46,7 @@ export default function Home() {
         <MagicFeatures />
         <Story />
         <Pricing />
-        <section className="relative overflow-hidden py-24" style={{ background: "oklch(0.14 0.05 285)" }}>
+        <section className="relative overflow-hidden py-24" style={{ background: "#1b1133" }}>
           <div className="absolute left-8 top-8 hidden w-40 lg:block" style={{ transform: "rotate(15deg)" }}>
             <ConstellationThread />
           </div>
@@ -56,13 +56,13 @@ export default function Home() {
                 <Reveal key={i} delay={i * 100}>
                   <div className="card-vellum h-full p-7">
                     <div className="mb-4 flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full" style={{ background: "oklch(0.82 0.15 145)" }} />
-                      <div className="h-px flex-1" style={{ background: "linear-gradient(to right, oklch(0.82 0.15 145 / 0.4), transparent)" }} />
+                      <div className="h-2 w-2 rounded-full" style={{ background: "#2ed79f" }} />
+                      <div className="h-px flex-1" style={{ background: "linear-gradient(to right, rgba(46, 215, 159, 0.4), transparent)" }} />
                     </div>
                     <div
                       style={{
                         fontSize: "1.8rem",
-                        color: "oklch(0.78 0.12 75 / 0.45)",
+                        color: "rgba(217, 178, 100, 0.45)",
                         fontFamily: "var(--font-display), serif",
                         lineHeight: 1,
                         marginBottom: "1rem",
@@ -77,7 +77,7 @@ export default function Home() {
                         fontStyle: "italic",
                         fontWeight: 300,
                         lineHeight: 1.7,
-                        color: "oklch(0.72 0.03 285)",
+                        color: "#988da0",
                         marginBottom: "1.25rem",
                       }}
                     >
@@ -90,7 +90,7 @@ export default function Home() {
                         fontWeight: 500,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "oklch(0.82 0.15 145)",
+                        color: "#2ed79f",
                       }}
                     >
                       — {t.sign}

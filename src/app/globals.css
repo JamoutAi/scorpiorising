@@ -46,45 +46,45 @@
 
 @theme inline {
   /* Celestial Ink — Scorpio Rising design system */
-  --color-background: oklch(0.14 0.05 285);
-  --color-foreground: oklch(0.93 0.015 85);
+  --color-background: #1b1133;
+  --color-foreground: #ede8e0;
 
-  --color-card: oklch(0.18 0.055 282);
-  --color-card-foreground: oklch(0.93 0.015 85);
+  --color-card: #251636;
+  --color-card-foreground: #ede8e0;
 
-  --color-primary: oklch(0.78 0.14 145);
-  --color-primary-foreground: oklch(0.12 0.04 285);
+  --color-primary: #1fc896;
+  --color-primary-foreground: #160d2b;
 
-  --color-secondary: oklch(0.22 0.065 278);
-  --color-secondary-foreground: oklch(0.80 0.02 85);
+  --color-secondary: #2f1e46;
+  --color-secondary-foreground: #d0c9bc;
 
-  --color-muted: oklch(0.20 0.05 282);
-  --color-muted-foreground: oklch(0.60 0.03 285);
+  --color-muted: #2a1b3f;
+  --color-muted-foreground: #81768b;
 
-  --color-accent: oklch(0.28 0.07 288);
-  --color-accent-foreground: oklch(0.90 0.02 85);
+  --color-accent: #3b2448;
+  --color-accent-foreground: #e7e1d2;
 
-  --color-border: oklch(1 0 0 / 10%);
-  --color-input: oklch(1 0 0 / 12%);
-  --color-ring: oklch(0.78 0.14 145);
+  --color-border: rgba(255, 255, 255, 0.100);
+  --color-input: rgba(255, 255, 255, 0.120);
+  --color-ring: #1fc896;
 
   /* Brand palette */
-  --color-phosphor: oklch(0.82 0.15 145);
-  --color-gold: oklch(0.78 0.12 75);
-  --color-lavender: oklch(0.68 0.09 288);
-  --color-parchment: oklch(0.94 0.02 85);
-  --color-plum: oklch(0.14 0.05 285);
-  --color-indigo: oklch(0.19 0.07 275);
+  --color-phosphor: #2ed79f;
+  --color-gold: #d9b264;
+  --color-lavender: #8f6f9c;
+  --color-parchment: #f0ebe2;
+  --color-plum: #1b1133;
+  --color-indigo: #281b3e;
 
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
 
   /* Backward-compat aliases (older components still reference these) */
-  --color-paper: oklch(0.93 0.015 85);
-  --color-ink: oklch(0.14 0.05 285);
-  --color-ink-deep: oklch(0.11 0.065 278);
-  --color-mint: oklch(0.78 0.14 145);
-  --color-mint-bright: oklch(0.84 0.16 145);
+  --color-paper: #ede8e0;
+  --color-ink: #1b1133;
+  --color-ink-deep: #15102b;
+  --color-mint: #1fc896;
+  --color-mint-bright: #43e1ad;
 }
 
 :root {
@@ -140,8 +140,8 @@ h1, h2, h3, h4, h5, h6 {
 
   /* Phosphor green glow button */
   .btn-phosphor {
-    background: oklch(0.78 0.14 145);
-    color: oklch(0.12 0.04 285);
+    background: #1fc896;
+    color: #160d2b;
     font-family: var(--font-sans), sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
@@ -151,13 +151,13 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 2px;
     border: none;
     transition: all 160ms cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow: 0 0 20px oklch(0.78 0.14 145 / 0.25);
+    box-shadow: 0 0 20px rgba(31, 200, 150, 0.25);
     display: inline-block;
     text-align: center;
   }
   .btn-phosphor:hover {
-    background: oklch(0.84 0.16 145);
-    box-shadow: 0 0 32px oklch(0.78 0.14 145 / 0.45);
+    background: #43e1ad;
+    box-shadow: 0 0 32px rgba(31, 200, 150, 0.45);
     transform: translateY(-1px);
   }
   .btn-phosphor:active { transform: scale(0.97); }
@@ -165,7 +165,7 @@ h1, h2, h3, h4, h5, h6 {
   /* Ghost outline button */
   .btn-ghost {
     background: transparent;
-    color: oklch(0.93 0.015 85);
+    color: #ede8e0;
     font-family: var(--font-sans), sans-serif;
     font-size: 0.875rem;
     font-weight: 400;
@@ -173,21 +173,21 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     padding: 0.875rem 2.25rem;
     border-radius: 2px;
-    border: 1px solid oklch(1 0 0 / 20%);
+    border: 1px solid rgba(255, 255, 255, 0.200);
     transition: all 160ms cubic-bezier(0.23, 1, 0.32, 1);
     display: inline-block;
     text-align: center;
   }
   .btn-ghost:hover {
-    border-color: oklch(1 0 0 / 40%);
-    background: oklch(1 0 0 / 5%);
+    border-color: rgba(255, 255, 255, 0.400);
+    background: rgba(255, 255, 255, 0.050);
   }
   .btn-ghost:active { transform: scale(0.97); }
 
   /* Vellum card surface */
   .card-vellum {
-    background: oklch(0.17 0.055 283);
-    border: 1px solid oklch(1 0 0 / 6%);
+    background: #231431;
+    border: 1px solid rgba(255, 255, 255, 0.060);
     border-radius: 1px;
     position: relative;
     overflow: hidden;
@@ -196,7 +196,7 @@ h1, h2, h3, h4, h5, h6 {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, oklch(1 0 0 / 2%) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.020) 0%, transparent 60%);
     pointer-events: none;
   }
   .card-vellum::after {
@@ -204,7 +204,7 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(to right, transparent, oklch(0.82 0.15 145 / 0.25), transparent);
+    background: linear-gradient(to right, transparent, rgba(46, 215, 159, 0.25), transparent);
     pointer-events: none;
   }
 
@@ -215,8 +215,8 @@ h1, h2, h3, h4, h5, h6 {
     inset: 0;
     background-image: repeating-linear-gradient(
       -45deg,
-      oklch(1 0 0 / 0.012) 0px,
-      oklch(1 0 0 / 0.012) 1px,
+      rgba(46, 215, 159, 0.012) 0px,
+      rgba(46, 215, 159, 0.012) 1px,
       transparent 1px,
       transparent 8px
     );
@@ -230,14 +230,14 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     gap: 0.75rem;
   }
-  .section-label .bar { height: 1px; width: 2rem; background: oklch(0.82 0.15 145); }
+  .section-label .bar { height: 1px; width: 2rem; background: #2ed79f; }
   .section-label span {
     font-family: var(--font-sans), sans-serif;
     font-size: 0.68rem;
     font-weight: 500;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: oklch(0.82 0.15 145);
+    color: #2ed79f;
   }
 }
 
@@ -251,7 +251,7 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
 .float { animation: float 6s ease-in-out infinite; }
 
-@keyframes constellation-pulse { 0%,100% { opacity: 0.7; filter: drop-shadow(0 0 4px oklch(0.82 0.15 145 / 0.4)); } 50% { opacity: 1; filter: drop-shadow(0 0 10px oklch(0.82 0.15 145 / 0.8)); } }
+@keyframes constellation-pulse { 0%,100% { opacity: 0.7; filter: drop-shadow(0 0 4px rgba(46, 215, 159, 0.4)); } 50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(46, 215, 159, 0.8)); } }
 .constellation-glow { animation: constellation-pulse 4s ease-in-out infinite; }
 
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -269,8 +269,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: oklch(0.14 0.05 285); }
-::-webkit-scrollbar-thumb { background: oklch(0.30 0.07 285); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: oklch(0.78 0.14 145 / 0.5); }
+::-webkit-scrollbar-track { background: #1b1133; }
+::-webkit-scrollbar-thumb { background: #372452; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(31, 200, 150, 0.5); }
 
-::selection { background: oklch(0.78 0.14 145 / 0.3); color: oklch(0.94 0.02 85); }
+::selection { background: rgba(31, 200, 150, 0.3); color: #f0ebe2; }

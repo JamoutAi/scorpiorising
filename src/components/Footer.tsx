@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer
       className="py-12"
-      style={{ background: "oklch(0.09 0.05 285)", borderTop: "1px solid oklch(1 0 0 / 7%)" }}
+      style={{ background: "#100a22", borderTop: "1px solid rgba(255, 255, 255, 0.070)" }}
     >
       <div className="container-x">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
@@ -19,7 +19,7 @@ export function Footer() {
                 fontSize: "1rem",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "oklch(0.55 0.04 285)",
+                color: "#766a83",
               }}
             >
               Scorpio Rising
@@ -39,16 +39,16 @@ export function Footer() {
                   fontFamily: "var(--font-sans), sans-serif",
                   fontSize: "0.68rem",
                   letterSpacing: "0.08em",
-                  color: "oklch(0.38 0.03 285)",
+                  color: "#52425f",
                   transition: "color 200ms ease",
                 }}
-                className="hover:text-[oklch(0.65_0.03_285)]"
+                className="hover:text-[#8c8295]"
               >
                 {item.label}
               </Link>
             ))}
           </div>
-          <p style={{ fontFamily: "var(--font-sans), sans-serif", fontSize: "0.65rem", color: "oklch(0.34 0.03 285)", letterSpacing: "0.05em" }}>
+          <p style={{ fontFamily: "var(--font-sans), sans-serif", fontSize: "0.65rem", color: "#4b3a5e", letterSpacing: "0.05em" }}>
             © {year} Scorpio Rising
           </p>
         </div>
