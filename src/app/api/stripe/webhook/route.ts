@@ -34,9 +34,7 @@ export async function POST(req: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2025-08-11.basil" as Stripe.LatestApiVersion,
-  });
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {});
   const sig = req.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!sig || !webhookSecret) {
