@@ -2,74 +2,167 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Logo } from "./Logo";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 
+const links = [
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#features", label: "Features" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/story", label: "Our Story" },
+];
+
 export function Nav() {
-  const links = [
-    { href: "/#how", label: "How it works" },
-    { href: "/#features", label: "Features" },
-    { href: "/#pricing", label: "Pricing" },
-    { href: "/story", label: "Our story" },
-  ];
   const [signedIn, setSignedIn] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
-    supabase!.auth.getSession().then(({ data }) =>
-      setSignedIn(!!data.session),
-    );
+    supabase!.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
     const { data: sub } = supabase!.auth.onAuthStateChange((_e, session) =>
       setSignedIn(!!session),
     );
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink/80 backdrop-blur">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <Logo />
-        <div className="hidden items-center gap-8 text-xs font-semibold uppercase tracking-[0.15em] text-paper/70 md:flex">
+    <header
+      className="fixed left-0 right-0 top-0 z-50 transition-all duration-500"
+      style={{
+        background: scrolled ? "oklch(0.14 0.05 285 / 0.92)" : "transparent",
+        backdropFilter: scrolled ? "blur(16px)" : "none",
+        borderBottom: scrolled ? "1px solid oklch(1 0 0 / 8%)" : "none",
+      }}
+    >
+      <div className="container-x flex items-center justify-between py-4">
+        <Link href="/" className="group flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo.png"
+            alt="Scorpio Rising"
+            className="h-10 w-10 object-contain transition-all duration-300 group-hover:scale-105 constellation-glow"
+          />
+          <div className="flex flex-col leading-none">
+            <span
+              style={{
+                fontFamily: "var(--font-display), serif",
+                fontSize: "0.75rem",
+                fontWeight: 300,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "oklch(0.68 0.09 288)",
+              }}
+            >
+              Scorpio
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-display), serif",
+                fontSize: "1.1rem",
+                fontStyle: "italic",
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+                color: "oklch(0.93 0.015 85)",
+                marginTop: "-2px",
+              }}
+            >
+              Rising
+            </span>
+          </div>
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="transition hover:text-paper">
+            <Link
+              key={l.href}
+              href={l.href}
+              style={{
+                fontFamily: "var(--font-sans), sans-serif",
+                fontSize: "0.78rem",
+                fontWeight: 400,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: "oklch(0.70 0.03 285)",
+                transition: "color 200ms ease",
+              }}
+              className="hover:text-[oklch(0.93_0.015_85)]"
+            >
               {l.label}
             </Link>
           ))}
-        </div>
-        <div className="flex items-center gap-3">
+        </nav>
+
+        <div className="hidden items-center gap-4 md:flex">
           {signedIn ? (
             <>
-              <Link
-                href="/journal"
-                className="rounded-full bg-mint px-5 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
-              >
-                Open your journal
+              <Link href="/journal" className="btn-ghost py-2 px-5 text-sm">
+                Open Your Journal
               </Link>
               <button
                 onClick={() => supabase!.auth.signOut()}
-                className="hidden text-xs font-semibold uppercase tracking-[0.15em] text-paper/60 transition hover:text-paper sm:block"
+                className="text-xs font-semibold uppercase tracking-[0.15em] text-paper/60 transition hover:text-paper"
               >
                 Sign out
               </button>
             </>
           ) : (
             <>
-              <Link
-                href="/login"
-                className="hidden rounded-full border border-white/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-paper/80 transition hover:border-white/60 hover:text-paper sm:block"
-              >
-                Sign in
+              <Link href="/login" className="btn-ghost py-2 px-5 text-sm">
+                Sign In
               </Link>
-              <Link
-                href="/#pricing"
-                className="rounded-full bg-mint px-5 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright"
-              >
-                Start free trial
+              <Link href="/#pricing" className="btn-phosphor py-2 px-5 text-sm">
+                Open Your Journal
               </Link>
             </>
           )}
         </div>
-      </nav>
+
+        <button
+          className="flex flex-col gap-1.5 p-2 md:hidden"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className="block h-px w-6 bg-[oklch(0.93_0.015_85)]" />
+          <span className="block h-px w-6 bg-[oklch(0.93_0.015_85)]" />
+          <span className="block h-px w-6 bg-[oklch(0.93_0.015_85)]" />
+        </button>
+      </div>
+
+      {menuOpen && (
+        <div
+          className="flex flex-col gap-5 px-6 py-6 md:hidden"
+          style={{
+            background: "oklch(0.14 0.05 285 / 0.97)",
+            borderTop: "1px solid oklch(1 0 0 / 8%)",
+          }}
+        >
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                fontFamily: "var(--font-sans), sans-serif",
+                fontSize: "0.85rem",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: "oklch(0.80 0.02 85)",
+              }}
+            >
+              {l.label}
+            </Link>
+          ))}
+          <Link href="/#pricing" className="btn-phosphor mt-2 text-center">
+            Open Your Journal
+          </Link>
+        </div>
+      )}
     </header>
   );
 }

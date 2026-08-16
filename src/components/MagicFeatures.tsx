@@ -1,3 +1,5 @@
+import { Reveal, ConstellationThread, StarField } from "./Design";
+
 const features = [
   {
     title: "Chart-aware voice",
@@ -19,23 +21,103 @@ const features = [
 
 export function MagicFeatures() {
   return (
-    <section id="features" className="bg-ink py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <p className="text-center text-xs font-medium uppercase tracking-[0.3em] text-mint">
-          What makes it magic
-        </p>
-        <h2 className="mt-4 text-center font-serif text-4xl font-bold text-paper">
-          A diary that knows your chart.
-        </h2>
-        <div className="mt-14 grid gap-8 md:grid-cols-2">
-          {features.map((f) => (
-            <div key={f.title} className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur">
-              <h3 className="font-serif text-2xl font-semibold text-paper">
-                {f.title}
-              </h3>
-              <p className="mt-3 text-paper/70">{f.body}</p>
+    <section
+      id="features"
+      className="relative overflow-hidden py-28"
+      style={{
+        background: "oklch(0.11 0.065 278)",
+        backgroundImage: "url(/assets/constellation-texture.jpg)",
+        backgroundSize: "cover",
+        backgroundBlendMode: "overlay",
+      }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, oklch(0.11 0.065 278 / 0.93), oklch(0.11 0.065 278 / 0.90))",
+        }}
+      />
+      <div className="absolute bottom-16 left-8 hidden w-48 lg:block" style={{ transform: "scaleX(-1)" }}>
+        <ConstellationThread />
+      </div>
+      <StarField count={20} />
+      <div className="container-x relative z-10">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
+          <div className="reveal flex justify-center">
+            <div className="relative">
+              <div
+                className="absolute inset-0 rounded-2xl blur-3xl"
+                style={{ background: "radial-gradient(circle, oklch(0.78 0.14 145 / 0.14) 0%, transparent 70%)", transform: "scale(1.25)" }}
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/assets/journal-mockup.jpg"
+                alt="Scorpio Rising app interface"
+                className="relative z-10 w-full rounded-sm shadow-2xl"
+                style={{ maxWidth: "320px", border: "1px solid oklch(1 0 0 / 10%)" }}
+              />
             </div>
-          ))}
+          </div>
+
+          <div>
+            <div className="section-label mb-5">
+              <span className="bar" />
+              <span>What Makes It Magic</span>
+            </div>
+            <h2
+              className="reveal"
+              style={{
+                fontFamily: "var(--font-display), serif",
+                fontSize: "clamp(2.2rem, 4.5vw, 3.4rem)",
+                fontWeight: 300,
+                lineHeight: 1.1,
+                color: "oklch(0.94 0.02 85)",
+                marginBottom: "2.5rem",
+              }}
+            >
+              A diary that knows{" "}
+              <em style={{ fontStyle: "italic", color: "oklch(0.78 0.12 75)" }}>your chart.</em>
+            </h2>
+            <div className="flex flex-col gap-6">
+              {features.map((feature, i) => (
+                <Reveal key={feature.title} delay={160 + i * 80}>
+                  <div className="flex gap-4">
+                    <div
+                      className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+                      style={{ background: "oklch(0.82 0.15 145 / 0.12)", border: "1px solid oklch(0.82 0.15 145 / 0.4)" }}
+                    >
+                      <div className="h-1.5 w-1.5 rounded-full" style={{ background: "oklch(0.82 0.15 145)" }} />
+                    </div>
+                    <div>
+                      <h4
+                        style={{
+                          fontFamily: "var(--font-display), serif",
+                          fontSize: "1.15rem",
+                          fontWeight: 500,
+                          color: "oklch(0.94 0.02 85)",
+                          marginBottom: "0.3rem",
+                        }}
+                      >
+                        {feature.title}
+                      </h4>
+                      <p
+                        style={{
+                          fontFamily: "var(--font-display), serif",
+                          fontSize: "1rem",
+                          fontWeight: 300,
+                          lineHeight: 1.65,
+                          color: "oklch(0.58 0.04 285)",
+                        }}
+                      >
+                        {feature.body}
+                      </p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

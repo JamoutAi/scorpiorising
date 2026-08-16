@@ -10,6 +10,9 @@ create table if not exists public.profiles (
   birth_time text,            -- HH:MM or null
   birth_place text,           -- raw string the user typed
   chart jsonb,               -- full ChartSummary from calculateChart()
+  plan text default 'none',  -- 'none' | 'mirror' | 'mirror_plus'
+  plan_status text default 'free', -- 'free' | 'active' | 'canceled' | 'trialing'
+  trial_ends_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
