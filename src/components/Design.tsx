@@ -102,16 +102,29 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Safety net: always reveal after 1.5s even if observer misbehaves.
+    const safety = setTimeout(() => el.classList.add("visible"), 1500);
+    if (typeof IntersectionObserver === "undefined") {
+      el.classList.add("visible");
+      clearTimeout(safety);
+      return;
+    }
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+            obs.unobserve(e.target);
+          }
         });
       },
-      { threshold: 0.08 }
+      { threshold: 0.08, rootMargin: "0px 0px -5% 0px" },
     );
     obs.observe(el);
-    return () => obs.disconnect();
+    return () => {
+      clearTimeout(safety);
+      obs.disconnect();
+    };
   }, []);
   return (
     <div
