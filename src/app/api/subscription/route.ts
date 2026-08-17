@@ -46,26 +46,41 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(out);
     }
     const custId = customers.data[0].id;
+    // 1) Live subscription (active/trialing)?
     const subs = await stripe.subscriptions.list({ customer: custId, limit: 10 });
-    if (subs.data.length === 0) {
-      out.reason = `stripe customer exists but has 0 subscriptions (${email})`;
-      return NextResponse.json(out);
-    }
     const live = subs.data.filter((s) => s.status === "active" || s.status === "trialing");
-    if (live.length === 0) {
-      out.reason = `subs exist but status=${subs.data.map((s) => s.status).join(",")} (${email})`;
+    if (live.length > 0) {
+      const sub = live[0];
+      const priceId = sub.items.data[0]?.price.id;
+      out.plan = PRICE_TO_PLAN[priceId || ""] || "mirror";
+      out.status = sub.status;
+      out.hasPlan = true;
+      out.reason = "ok (subscription)";
+      await sb
+        .from("profiles")
+        .update({ plan: out.plan, plan_status: sub.status === "trialing" ? "active" : sub.status })
+        .eq("id", user.id);
       return NextResponse.json(out);
     }
-    const sub = live[0];
-    const priceId = sub.items.data[0]?.price.id;
-    out.plan = PRICE_TO_PLAN[priceId || ""] || "mirror";
-    out.status = sub.status;
-    out.hasPlan = true;
-    out.reason = "ok";
-    await sb
-      .from("profiles")
-      .update({ plan: out.plan, plan_status: sub.status === "trialing" ? "active" : sub.status })
-      .eq("id", user.id);
+    // 2) Completed checkout session but subscription still propagating? Grant access.
+    const sessions = await stripe.checkout.sessions.list({
+      customer: custId,
+      limit: 5,
+      expand: ["data.line_items.data"],
+    });
+    const completed = sessions.data.find(
+      (s) => s.status === "complete" || s.payment_status === "paid" || s.payment_status === "no_payment_required",
+    );
+    if (completed) {
+      const priceId = (completed.line_items?.data?.[0]?.price?.id as string) || "";
+      out.plan = PRICE_TO_PLAN[priceId] || "mirror";
+      out.status = "active";
+      out.hasPlan = true;
+      out.reason = "ok (completed checkout session)";
+      await sb.from("profiles").update({ plan: out.plan, plan_status: "active" }).eq("id", user.id);
+      return NextResponse.json(out);
+    }
+    out.reason = `customer exists, but no subscription and no completed checkout (sessions: ${sessions.data.map((s) => s.status).join(",")})`;
   } catch (e: any) {
     out.reason = `stripe error: ${e?.message || "unknown"}`;
   }
