@@ -12,8 +12,11 @@ export async function GET(req: NextRequest) {
   if (!auth?.startsWith("Bearer ")) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const out = { hasPlan: false, plan: null as string | null, status: null as string | null, reason: "init" };
+
   if (!process.env.STRIPE_SECRET_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return NextResponse.json({ error: "not configured" }, { status: 500 });
+    out.reason = "missing env (stripe/supabase)";
+    return NextResponse.json(out);
   }
 
   const sb = createClient(
@@ -22,61 +25,50 @@ export async function GET(req: NextRequest) {
     { auth: { persistSession: false } },
   );
 
-  // Resolve the calling user from the JWT.
   const jwt = auth.slice(7);
   const {
     data: { user },
     error: userErr,
   } = await sb.auth.getUser(jwt);
   if (userErr || !user) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    out.reason = "auth: no user for token";
+    return NextResponse.json(out);
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {});
   const email = user.email || "";
+  out.reason = `looking up stripe customer for ${email}`;
 
-  // Find the customer by email, then any active/trialing subscription.
-  let plan: string | null = null;
-  let status: string | null = null;
   try {
     const customers = await stripe.customers.list({ email, limit: 1 });
-    const custId = customers.data[0]?.id;
-    if (custId) {
-      const subs = await stripe.subscriptions.list({
-        customer: custId,
-        status: "active",
-        limit: 5,
-      });
-      if (subs.data.length === 0) {
-        const trialing = await stripe.subscriptions.list({
-          customer: custId,
-          status: "trialing",
-          limit: 5,
-        });
-        if (trialing.data.length > 0) {
-          subs.data.push(...trialing.data);
-        }
-      }
-      for (const sub of subs.data) {
-        if (sub.status === "active" || sub.status === "trialing") {
-          const priceId = sub.items.data[0]?.price.id;
-          plan = PRICE_TO_PLAN[priceId || ""] || "mirror";
-          status = sub.status;
-          break;
-        }
-      }
+    if (customers.data.length === 0) {
+      out.reason = `no stripe customer for ${email}`;
+      return NextResponse.json(out);
     }
-  } catch {
-    // If Stripe lookup fails, fall through to DB-only.
-  }
-
-  // Sync to the profile so the rest of the app is consistent.
-  if (plan && status) {
+    const custId = customers.data[0].id;
+    const subs = await stripe.subscriptions.list({ customer: custId, limit: 10 });
+    if (subs.data.length === 0) {
+      out.reason = `stripe customer exists but has 0 subscriptions (${email})`;
+      return NextResponse.json(out);
+    }
+    const live = subs.data.filter((s) => s.status === "active" || s.status === "trialing");
+    if (live.length === 0) {
+      out.reason = `subs exist but status=${subs.data.map((s) => s.status).join(",")} (${email})`;
+      return NextResponse.json(out);
+    }
+    const sub = live[0];
+    const priceId = sub.items.data[0]?.price.id;
+    out.plan = PRICE_TO_PLAN[priceId || ""] || "mirror";
+    out.status = sub.status;
+    out.hasPlan = true;
+    out.reason = "ok";
     await sb
       .from("profiles")
-      .update({ plan, plan_status: status === "trialing" ? "active" : status })
+      .update({ plan: out.plan, plan_status: sub.status === "trialing" ? "active" : sub.status })
       .eq("id", user.id);
+  } catch (e: any) {
+    out.reason = `stripe error: ${e?.message || "unknown"}`;
   }
 
-  return NextResponse.json({ hasPlan: !!plan, plan, status });
+  return NextResponse.json(out);
 }
