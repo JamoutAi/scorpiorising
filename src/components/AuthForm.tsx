@@ -34,13 +34,16 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     if (magic) {
       const { error } = await supabase!.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: `${location.origin}/journal` },
+        options: { emailRedirectTo: "https://www.scorpiorising.ai/journal" },
       });
       if (error) {
         setStatus("error");
         setMsg(error.message);
       } else {
         setStatus("sent");
+        setMsg(
+          "If the link doesn't arrive within a minute, wait ~60 seconds and try again — email providers rate-limit magic links.",
+        );
       }
       return;
     }
@@ -49,7 +52,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       const { data, error } = await supabase!.auth.signUp({
         email,
         password,
-        options: { data: { name }, emailRedirectTo: `${location.origin}/journal` },
+        options: { data: { name }, emailRedirectTo: "https://www.scorpiorising.ai/journal" },
       });
       if (error) {
         setStatus("error");
@@ -135,13 +138,14 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       <button
         type="button"
         onClick={() => setMagic((m) => !m)}
-        className="w-full rounded-xl py-3 text-center"
+        className="w-full rounded-xl py-3 font-semibold"
         style={{
           fontFamily: "var(--font-sans), sans-serif",
-          fontSize: "0.8rem",
-          letterSpacing: "0.04em",
-          color: "#8c8295",
-          border: "1px solid rgba(255,255,255,0.12)",
+          fontSize: "0.95rem",
+          letterSpacing: "0.02em",
+          color: "#2ed79f",
+          border: "1px solid #2ed79f",
+          background: "rgba(46,215,159,0.08)",
         }}
       >
         {magic ? "Use password instead" : "Email me a magic link instead"}

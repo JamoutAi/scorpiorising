@@ -52,6 +52,20 @@ export default function JournalPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
+      // If returning from a completed Stripe checkout (?paid=plan), activate the
+      // plan directly for this user. This guarantees access even if the webhook
+      // is delayed or misses — trial users must be able to start their journal.
+      const params = new URLSearchParams(window.location.search);
+      const paid = params.get("paid");
+      if (paid === "mirror" || paid === "mirror_plus") {
+        await supabase!
+          .from("profiles")
+          .update({ plan: paid, plan_status: "active" })
+          .eq("id", user.id);
+        params.delete("paid");
+        window.history.replaceState({}, "", `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`);
+      }
+
       const token = (await supabase!.auth.getSession()).data.session?.access_token;
       const res = await fetch("/api/journal", {
         headers: { authorization: `Bearer ${token}` },
