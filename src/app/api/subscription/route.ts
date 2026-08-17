@@ -14,17 +14,16 @@ export async function GET(req: NextRequest) {
   }
   const out = { hasPlan: false, plan: null as string | null, status: null as string | null, reason: "init" };
 
-  if (!process.env.STRIPE_SECRET_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    out.reason = "missing env (stripe/supabase)";
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!process.env.STRIPE_SECRET_KEY || !supabaseUrl || !anonKey) {
+    out.reason = "missing env (stripe/supabase public)";
     return NextResponse.json(out);
   }
 
-  const sb = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
-    { auth: { persistSession: false } },
-  );
-
+  // Resolve the calling user from the JWT (anon client + bearer token → RLS).
+  const sb = createClient(supabaseUrl, anonKey, { auth: { persistSession: false } });
   const jwt = auth.slice(7);
   const {
     data: { user },
@@ -56,13 +55,10 @@ export async function GET(req: NextRequest) {
       out.status = sub.status;
       out.hasPlan = true;
       out.reason = "ok (subscription)";
-      await sb
-        .from("profiles")
-        .update({ plan: out.plan, plan_status: sub.status === "trialing" ? "active" : sub.status })
-        .eq("id", user.id);
+      await writePlan(serviceKey, supabaseUrl, anonKey, jwt, user.id, out.plan, sub.status === "trialing" ? "active" : sub.status);
       return NextResponse.json(out);
     }
-    // 2) Completed checkout session but subscription still propagating? Grant access.
+    // 2) Completed checkout session but subscription still propagating?
     const sessions = await stripe.checkout.sessions.list({
       customer: custId,
       limit: 5,
@@ -77,7 +73,7 @@ export async function GET(req: NextRequest) {
       out.status = "active";
       out.hasPlan = true;
       out.reason = "ok (completed checkout session)";
-      await sb.from("profiles").update({ plan: out.plan, plan_status: "active" }).eq("id", user.id);
+      await writePlan(serviceKey, supabaseUrl, anonKey, jwt, user.id, out.plan, "active");
       return NextResponse.json(out);
     }
     out.reason = `customer exists, but no subscription and no completed checkout (sessions: ${sessions.data.map((s) => s.status).join(",")})`;
@@ -86,4 +82,21 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json(out);
+}
+
+// Writes the plan to the profile. Prefers the service-role key (bypasses RLS);
+// falls back to the caller's JWT via RLS (user can update their own row).
+async function writePlan(
+  serviceKey: string | undefined,
+  url: string,
+  anonKey: string,
+  jwt: string,
+  userId: string,
+  plan: string,
+  status: string,
+) {
+  const client = serviceKey
+    ? createClient(url, serviceKey, { auth: { persistSession: false } })
+    : createClient(url, anonKey, { auth: { persistSession: false }, global: { headers: { authorization: `Bearer ${jwt}` } } });
+  await client.from("profiles").update({ plan, plan_status: status }).eq("id", userId);
 }
