@@ -79,9 +79,20 @@ export async function POST(req: NextRequest) {
   }
 
   if (event.type === "customer.subscription.deleted" || event.type === "customer.subscription.updated") {
-    const sub = event.data.object as Stripe.Subscription;
-    const userEmail = (sub as any).customer_email || "";
-    const status = (sub as any).status;
+    const sub = event.data.object as any;
+    const status = sub.status;
+    // Resolve the email from the customer (sub.customer may be an id or object).
+    let userEmail = "";
+    if (sub.customer && typeof sub.customer === "object" && sub.customer.email) {
+      userEmail = sub.customer.email;
+    } else if (sub.customer) {
+      try {
+        const cust = await stripe.customers.retrieve(sub.customer as string);
+        userEmail = (cust as any).email || "";
+      } catch {
+        /* ignore */
+      }
+    }
     if (userEmail) {
       const sb = supabaseAdmin();
       const { data } = await sb.from("profiles").select("id").eq("email", userEmail).maybeSingle();

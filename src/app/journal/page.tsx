@@ -52,21 +52,26 @@ export default function JournalPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      // If returning from a completed Stripe checkout (?paid=plan), activate the
-      // plan directly for this user. This guarantees access even if the webhook
-      // is delayed or misses — trial users must be able to start their journal.
-      const params = new URLSearchParams(window.location.search);
-      const paid = params.get("paid");
-      if (paid === "mirror" || paid === "mirror_plus") {
-        await supabase!
-          .from("profiles")
-          .update({ plan: paid, plan_status: "active" })
-          .eq("id", user.id);
-        params.delete("paid");
-        window.history.replaceState({}, "", `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`);
+      const session = (await supabase!.auth.getSession()).data.session;
+      const token = session?.access_token;
+
+      // Authoritative check: does this user have a live/trialing Stripe subscription?
+      // We verify against Stripe directly so a missed webhook can never block access.
+      let hasLivePlan = false;
+      if (token) {
+        try {
+          const subRes = await fetch("/api/subscription", {
+            headers: { authorization: `Bearer ${token}` },
+          });
+          if (subRes.ok) {
+            const sub = await subRes.json();
+            hasLivePlan = !!sub.hasPlan;
+          }
+        } catch {
+          /* ignore — fall back to DB profile below */
+        }
       }
 
-      const token = (await supabase!.auth.getSession()).data.session?.access_token;
       const res = await fetch("/api/journal", {
         headers: { authorization: `Bearer ${token}` },
       });
@@ -74,9 +79,11 @@ export default function JournalPage() {
       setProfile(data.profile);
       setEntries(data.entries || []);
       const status = data.profile?.plan_status;
-      // Block access unless the user has an active or trialing subscription.
-      if (status !== "active" && status !== "trialing") {
+      // Allow access if DB says active/trialing OR Stripe confirms a live plan.
+      if (status !== "active" && status !== "trialing" && !hasLivePlan) {
         setGated(true);
+      } else {
+        setGated(false);
       }
       if (data.profile) {
         setName(data.profile.name || "");
