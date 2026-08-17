@@ -16,6 +16,11 @@ function PlanButton({ plan, stripe, className }: { plan: string; stripe: string;
         userId = data.session?.user.id ?? null;
         email = data.session?.user.email ?? null;
       }
+      // Must be signed in so the webhook can match the plan to this account.
+      if (!userId) {
+        window.location.href = `/signup?redir=/pricing`;
+        return;
+      }
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -24,7 +29,6 @@ function PlanButton({ plan, stripe, className }: { plan: string; stripe: string;
       const json = await res.json();
       if (json.url) window.location.href = json.url;
       else {
-        // Fallback to the pre-built share link if checkout route fails
         window.location.href = stripe;
       }
     } catch {

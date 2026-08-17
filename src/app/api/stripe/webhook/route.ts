@@ -30,6 +30,19 @@ async function applyPlan(email: string, plan: string, trialEnd?: number | null) 
     .eq("id", data.id);
 }
 
+async function applyPlanById(userId: string, plan: string, trialEnd?: number | null) {
+  if (!userId) return;
+  const sb = supabaseAdmin();
+  await sb
+    .from("profiles")
+    .update({
+      plan,
+      plan_status: "active",
+      trial_ends_at: trialEnd ? new Date(trialEnd * 1000).toISOString() : null,
+    })
+    .eq("id", userId);
+}
+
 export async function POST(req: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
@@ -50,12 +63,19 @@ export async function POST(req: NextRequest) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
+    const userId = (session.client_reference_id as string) || "";
     const userEmail =
       (session.customer_email as string) ||
       ((session as any).customer_details?.email as string) ||
       "";
     const plan = (session.metadata?.plan as string) || PLAN_BY_LINK[session.url || ""] || "mirror";
-    await applyPlan(userEmail, plan, (session as any).trial_end);
+    const trialEnd = (session as any).trial_end;
+    // Prefer user-id match (set when signed in at checkout); fall back to email.
+    if (userId) {
+      await applyPlanById(userId, plan, trialEnd);
+    } else if (userEmail) {
+      await applyPlan(userEmail, plan, trialEnd);
+    }
   }
 
   if (event.type === "customer.subscription.deleted" || event.type === "customer.subscription.updated") {

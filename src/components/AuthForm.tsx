@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
-import { Logo } from "@/components/Logo";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
@@ -120,7 +119,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright disabled:opacity-60"
+        className="btn-phosphor w-full"
       >
         {status === "loading"
           ? "…"
@@ -136,7 +135,14 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       <button
         type="button"
         onClick={() => setMagic((m) => !m)}
-        className="w-full text-center text-sm text-paper/60 underline"
+        className="w-full rounded-xl py-3 text-center"
+        style={{
+          fontFamily: "var(--font-sans), sans-serif",
+          fontSize: "0.8rem",
+          letterSpacing: "0.04em",
+          color: "#8c8295",
+          border: "1px solid rgba(255,255,255,0.12)",
+        }}
       >
         {magic ? "Use password instead" : "Email me a magic link instead"}
       </button>
@@ -164,16 +170,28 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
 export function AuthShell({ children, title }: { children: React.ReactNode; title: string }) {
   return (
-    <section className="relative flex min-h-[70vh] items-center justify-center bg-ink-deep px-5 py-16">
-      <div className="starfield absolute inset-0 opacity-40" />
+    <section
+      className="relative flex min-h-[80vh] items-center justify-center px-5 py-16"
+      style={{ background: "#15102b", backgroundImage: "url(/assets/constellation-texture.jpg)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}
+    >
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(21,16,43,0.92), rgba(15,10,37,0.92))" }} />
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
-          <Logo />
-          <h1 className="mt-6 font-serif text-3xl font-bold text-paper">{title}</h1>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/logo.png" alt="Scorpio Rising" className="mx-auto h-20 w-20 object-contain constellation-glow" />
+          <h1
+            style={{
+              fontFamily: "var(--font-display), serif",
+              fontSize: "2.2rem",
+              fontWeight: 300,
+              color: "#f0ebe2",
+              marginTop: "1.25rem",
+            }}
+          >
+            {title}
+          </h1>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur">
-          {children}
-        </div>
+        <div className="card-vellum p-8">{children}</div>
       </div>
     </section>
   );

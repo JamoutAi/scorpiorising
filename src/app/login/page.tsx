@@ -5,7 +5,7 @@ export const metadata = { title: "Sign in" };
 
 export default function LoginPage() {
   return (
-    <AuthShell title="Welcome back.">
+    <AuthShell title="Enter your rising sign.">
       <Suspense>
         <AuthForm mode="login" />
       </Suspense>
