@@ -60,7 +60,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         return;
       }
       if (data.session) {
-        router.push("/journal");
+        // Logged in immediately (confirm-email off): continue to the purchase
+        // flow the user came from (e.g. /pricing) instead of skipping the plan.
+        router.push(redirectTo);
       } else {
         setStatus("sent");
         setMsg("Check your email to confirm your account, then sign in.");
@@ -78,10 +80,13 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
   if (status === "sent") {
     return (
-      <div className="rounded-2xl border border-mint/30 bg-mint/10 p-6 text-paper">
-        <p className="font-medium text-mint">Check your inbox.</p>
-        <p className="mt-2 text-sm text-paper/80">{msg}</p>
-        <Link href="/login" className="mt-4 inline-block text-sm text-mint underline">
+      <div className="rounded-2xl border p-6" style={{ borderColor: "rgba(46,215,159,0.3)", background: "rgba(46,215,159,0.1)" }}>
+        <p className="font-medium" style={{ color: "#2ed79f" }}>Check your inbox.</p>
+        <p className="mt-2 text-sm" style={{ color: "#cdc5b1" }}>{msg}</p>
+        <p className="mt-3 text-xs" style={{ color: "#8c8295" }}>
+          Email slow or not arriving? Wait ~60s and try the magic-link option below, or sign in with a password.
+        </p>
+        <Link href="/login" className="mt-4 inline-block text-sm underline" style={{ color: "#2ed79f" }}>
           Back to sign in
         </Link>
       </div>
