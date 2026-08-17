@@ -53,36 +53,13 @@ export default function JournalPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const session = (await supabase!.auth.getSession()).data.session;
-      const token = session?.access_token;
+      try {
+        const session = (await supabase!.auth.getSession()).data.session;
+        const token = session?.access_token;
 
-      // Authoritative check: does this user have a live/trialing Stripe subscription?
-      // We verify against Stripe directly so a missed webhook can never block access.
-      let hasLivePlan = false;
-      if (token) {
-        try {
-          const subRes = await fetch("/api/subscription", {
-            headers: { authorization: `Bearer ${token}` },
-          });
-          if (subRes.ok) {
-            const sub = await subRes.json();
-            hasLivePlan = !!sub.hasPlan;
-          }
-        } catch {
-          /* ignore — fall back to DB profile below */
-        }
-      }
-
-      const res = await fetch("/api/journal", {
-        headers: { authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setProfile(data.profile);
-      setEntries(data.entries || []);
-      const status = data.profile?.plan_status;
-      let subReason = "";
-      // Allow access if DB says active/trialing OR Stripe confirms a live plan.
-      if (status !== "active" && status !== "trialing") {
+        // Authoritative check: does this user have a live/trialing Stripe subscription?
+        let hasLivePlan = false;
+        let subReason = "";
         if (token) {
           try {
             const subRes = await fetch("/api/subscription", {
@@ -94,23 +71,33 @@ export default function JournalPage() {
               subReason = sub.reason || "";
             }
           } catch {
-            /* ignore */
+            /* ignore — fall back to DB profile below */
           }
         }
-        if (!hasLivePlan) {
+
+        const res = await fetch("/api/journal", {
+          headers: { authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setProfile(data.profile);
+        setEntries(data.entries || []);
+        const status = data.profile?.plan_status;
+        // Allow access if DB says active/trialing OR Stripe confirms a live plan.
+        if (status !== "active" && status !== "trialing" && !hasLivePlan) {
           setGated(true);
           setSubReason(subReason);
           return;
         }
+        setGated(false);
+        if (data.profile) {
+          setName(data.profile.name || "");
+          setBirthDate(data.profile.birth_date || "");
+          setBirthTime(data.profile.birth_time || "");
+          setBirthPlace(data.profile.birth_place || "");
+        }
+      } finally {
+        setLoaded(true);
       }
-      setGated(false);
-      if (data.profile) {
-        setName(data.profile.name || "");
-        setBirthDate(data.profile.birth_date || "");
-        setBirthTime(data.profile.birth_time || "");
-        setBirthPlace(data.profile.birth_place || "");
-      }
-      setLoaded(true);
     })();
   }, [user]);
 
