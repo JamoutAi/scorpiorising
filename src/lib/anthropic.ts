@@ -105,7 +105,8 @@ export async function generateReading(args: {
     );
     // With web search enabled, content is [text(preamble), tool_use, tool_result, text(full reading)].
     // Take the LAST text block — that's the real reading, not the preamble.
-    const textBlocks = msg.content.filter((b: any) => b.type === "text");
+    const blocks: any[] = msg.content as any[];
+    const textBlocks = blocks.filter((b) => b.type === "text");
     const text = textBlocks[textBlocks.length - 1]?.text?.trim();
     return text && text.length > 40 ? text : fallbackReading(args.chart, args.entry, args.name);
   } catch (e: any) {
