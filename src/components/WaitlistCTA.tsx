@@ -54,7 +54,7 @@ export function WaitlistCTA() {
           Begin your first entry on a 7-day free trial. No card noise — just the stars.
         </p>
         <div className="reveal flex flex-wrap justify-center gap-4">
-          <Link href="/#pricing" className="btn-phosphor">
+          <Link href="/signup?redir=/journal" className="btn-phosphor">
             Begin Your First Entry
           </Link>
           <Link href="/login" className="btn-ghost">
