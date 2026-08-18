@@ -352,21 +352,21 @@ export default function JournalPage() {
                       .filter((p: any) => !["sun", "moon", "rising", "ascendant"].includes(p.key?.toLowerCase()))
                       .map((p: any, i: number) => (
                         <div key={i} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                          <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "#2ed79f" }}>
+                          <p className="text-sm uppercase tracking-[0.18em]" style={{ color: "#2ed79f" }}>
                             {p.label} in {p.sign}
                             {p.retrograde ? " (retrograde)" : ""}
                           </p>
-                          <p className="mt-2 text-sm leading-relaxed" style={{ color: "#cdc5b1" }}>
+                          <p className="mt-2 text-base leading-relaxed" style={{ color: "#f6f4f1" }}>
                             {planetMeaning(p.label, p.sign) || `Your ${p.label.toLowerCase()} in ${p.sign} colors how this planet expresses through you.`}
                           </p>
                         </div>
                       ))}
                   </div>
                   <a
-                    href="https://www.etsy.com/listing/4507354459/personalized-astrology-birth-chart?ref=shop_home_feat_2&sr_prefetch=1&pf_from=shop_home&dd=1&logging_key=2a944cfa3166e012f68d1db075862f4f0e9904d5%3A4507354459"
+                    href="https://www.etsy.com/shop/WitchyBitchyAndWise"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-block text-sm transition hover:text-[#2ed79f]"
+                    className="mt-4 inline-block text-sm font-medium transition hover:text-[#2ed79f]"
                     style={{ color: "#2ed79f" }}
                   >
                     Get a custom reading from our favorite astrologer →
@@ -474,14 +474,14 @@ function MeaningBlock({ type, sign }: { type: PlacementType; sign: string }) {
   const meaning = placementMeaning(type, sign);
   if (!meaning) return null;
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-      <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "#2ed79f" }}>
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+      <p className="text-sm uppercase tracking-[0.18em]" style={{ color: "#2ed79f" }}>
         {PLACEMENT_LABEL[type]} in {sign}
       </p>
-      <p className="mt-1 text-xs" style={{ color: "#8c8295" }}>
+      <p className="mt-2 text-sm" style={{ color: "#b7adbf" }}>
         {PLACEMENT_INTRO[type]}
       </p>
-      <p className="mt-2 text-sm leading-relaxed" style={{ color: "#cdc5b1" }}>
+      <p className="mt-3 text-base leading-relaxed" style={{ color: "#f6f4f1" }}>
         {meaning}
       </p>
     </div>
