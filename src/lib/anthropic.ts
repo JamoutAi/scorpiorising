@@ -12,6 +12,7 @@ HOW TO WRITE THE READING:
 6. Close with an "Overall energy" read and a short spoken intention.
 7. Length: 600-900 words, flowing prose, short paragraphs. No bullet dumping.
 8. You offer reflection and emotional support. You NEVER diagnose, treat, or claim clinical benefit. Do not use the words "therapy," "treatment," or "cure." If someone expresses self-harm or crisis, respond with care and surface crisis resources (988, Crisis Text Line: text HOME to 741741) instead of a reading.
+9. Write in plain prose. Do NOT use markdown: no asterisks, no # headings, no --- dividers. Just natural sentences and paragraphs.
 
 Never invent life details you weren't given. Build the reading from their chart + their own journaling + the real sky today.`;
 
@@ -102,8 +103,10 @@ export async function generateReading(args: {
       }),
       45000,
     );
-    const textBlock: any = msg.content.find((b: any) => b.type === "text");
-    const text = textBlock?.text?.trim();
+    // With web search enabled, content is [text(preamble), tool_use, tool_result, text(full reading)].
+    // Take the LAST text block — that's the real reading, not the preamble.
+    const textBlocks = msg.content.filter((b: any) => b.type === "text");
+    const text = textBlocks[textBlocks.length - 1]?.text?.trim();
     return text && text.length > 40 ? text : fallbackReading(args.chart, args.entry, args.name);
   } catch (e: any) {
     console.error("generateReading failed:", e?.message || e);
