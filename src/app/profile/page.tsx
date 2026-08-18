@@ -73,6 +73,17 @@ export default function ProfilePage() {
     else router.push(data.url || "/pricing");
   }
 
+  async function deleteEntry(id: string) {
+    if (!confirm("Delete this entry and its reflection? This can't be undone.")) return;
+    const token = (await supabase!.auth.getSession()).data.session?.access_token;
+    const res = await fetch("/api/journal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ action: "deleteEntry", entryId: id }),
+    });
+    if (res.ok) setEntries((prev) => prev.filter((e) => e.id !== id));
+  }
+
   if (!user) return null;
 
   return (
@@ -149,7 +160,16 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 {entries.map((e) => (
                   <article key={e.id} className="rounded-2xl border p-5" style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}>
-                    <p className="text-xs" style={{ color: "#8c8295" }}>{new Date(e.created_at).toLocaleString()}</p>
+                    <div className="flex items-start justify-between gap-4">
+                      <p className="text-xs" style={{ color: "#8c8295" }}>{new Date(e.created_at).toLocaleString()}</p>
+                      <button
+                        onClick={() => deleteEntry(e.id)}
+                        className="text-xs uppercase tracking-[0.1em] transition hover:text-red-300"
+                        style={{ color: "#8c8295" }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                     <p className="mt-2 whitespace-pre-wrap" style={{ color: "#cdc5b1" }}>{e.body}</p>
                     {e.reading && (
                       <p className="mt-3 border-t pt-3 text-sm" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#a99fb8" }}>

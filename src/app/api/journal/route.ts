@@ -185,5 +185,22 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // 3) Delete a journal entry (and its reflection, via FK cascade).
+  if (action === "deleteEntry") {
+    const entryId = body.entryId;
+    if (!entryId) {
+      return NextResponse.json({ error: "missing_entry_id" }, { status: 400 });
+    }
+    const { error } = await client
+      .from("entries")
+      .delete()
+      .eq("id", entryId)
+      .eq("user_id", userId);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true });
+  }
+
   return NextResponse.json({ error: "unknown_action" }, { status: 400 });
 }

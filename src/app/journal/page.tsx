@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { placementMeaning, PLACEMENT_LABEL, PLACEMENT_INTRO, type PlacementType } from "@/lib/chartMeanings";
+import { placementMeaning, PLACEMENT_LABEL, PLACEMENT_INTRO, type PlacementType, planetMeaning } from "@/lib/chartMeanings";
 
 interface Profile {
   id: string;
@@ -166,6 +166,17 @@ export default function JournalPage() {
     }
   }
 
+  async function deleteEntry(id: string) {
+    if (!confirm("Delete this entry and its reflection? This can't be undone.")) return;
+    const token = (await supabase!.auth.getSession()).data.session?.access_token;
+    const res = await fetch("/api/journal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ action: "deleteEntry", entryId: id }),
+    });
+    if (res.ok) setEntries((prev) => prev.filter((e) => e.id !== id));
+  }
+
   async function signOut() {
     await supabase!.auth.signOut();
     router.replace("/");
@@ -305,7 +316,7 @@ export default function JournalPage() {
               </form>
             </section>
           ) : (
-            <section className="mt-8 flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+            <section className="mt-8 flex flex-col gap-5 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs uppercase tracking-[0.2em] text-mint">Your chart</span>
                 <Chip label="Sun" value={profile.chart.sun} />
@@ -315,11 +326,37 @@ export default function JournalPage() {
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-paper/60">Rising approximate</span>
                 )}
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
+
+              {/* Core three */}
+              <div className="grid gap-3 sm:grid-cols-3">
                 <MeaningBlock type="sun" sign={profile.chart.sun} />
                 <MeaningBlock type="moon" sign={profile.chart.moon} />
                 <MeaningBlock type="rising" sign={profile.chart.rising} />
               </div>
+
+              {/* Full planetary readout */}
+              {profile.chart.placements?.length > 0 && (
+                <div className="border-t border-white/10 pt-4">
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em]" style={{ color: "#8c8295" }}>
+                    The rest of your sky
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {profile.chart.placements
+                      .filter((p: any) => !["sun", "moon", "rising", "ascendant"].includes(p.key?.toLowerCase()))
+                      .map((p: any, i: number) => (
+                        <div key={i} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                          <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "#2ed79f" }}>
+                            {p.label} in {p.sign}
+                            {p.retrograde ? " (retrograde)" : ""}
+                          </p>
+                          <p className="mt-2 text-sm leading-relaxed" style={{ color: "#cdc5b1" }}>
+                            {planetMeaning(p.label, p.sign) || `Your ${p.label.toLowerCase()} in ${p.sign} colors how this planet expresses through you.`}
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
             </section>
           )}
 
@@ -337,8 +374,13 @@ export default function JournalPage() {
               disabled={busy || !entry.trim()}
               className="mt-3 rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright disabled:opacity-60"
             >
-              {busy ? "Reflecting…" : "Receive your reflection"}
+              {busy ? "Manifesting…" : "Receive your reflection"}
             </button>
+            {busy && (
+              <p className="mt-2 text-xs" style={{ color: "#8c8295" }}>
+                Reading your stars — this can take up to a minute.
+              </p>
+            )}
           </form>
 
           {reflection && (
@@ -355,7 +397,15 @@ export default function JournalPage() {
               <h2 className="font-serif text-xl font-semibold text-paper">Past entries</h2>
               {entries.map((e) => (
                 <article key={e.id} className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-                  <p className="text-xs text-paper/50">{new Date(e.created_at).toLocaleString()}</p>
+                  <div className="flex items-start justify-between gap-4">
+                    <p className="text-xs text-paper/50">{new Date(e.created_at).toLocaleString()}</p>
+                    <button
+                      onClick={() => deleteEntry(e.id)}
+                      className="text-xs uppercase tracking-[0.1em] text-paper/40 transition hover:text-red-300"
+                    >
+                      Delete
+                    </button>
+                  </div>
                   <p className="mt-2 whitespace-pre-wrap text-paper/90">{e.body}</p>
                   {e.reading && (
                     <p className="mt-4 border-t border-white/10 pt-4 text-paper/80">{e.reading}</p>
