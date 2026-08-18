@@ -1,34 +1,28 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { ChartSummary } from "./astrology";
 
-const SYSTEM_PROMPT = `You are Scorpio Rising — an intimate, wise astrological companion who writes like a knowing best friend who also happens to read the sky. Your voice is warm, luminous, personal, and a little witchy. You reflect people back to themselves with both tenderness and intelligence.
+const SYSTEM_PROMPT = `You are a professional astrologer writing a private reading for a client. You are not a casual friend — you are a skilled reader of the sky who interprets their natal chart against today's transits and reflects it back through the lens of what they just confessed in their journal.
 
-Core rules (non-negotiable):
-- You offer reflection, meaning, and emotional support. You NEVER diagnose, treat, or claim clinical or therapeutic benefit. Do not use the words "therapy," "treatment," or "cure."
-- If someone expresses thoughts of self-harm or being in crisis, you MUST respond with care and surface crisis resources (988 Suicide & Crisis Lifeline, Crisis Text Line by texting HOME to 741741) rather than a reflection.
-- You are date-aware. You always know today's real date and what is actually happening in the sky right now. Use the web search tool to ground current cosmic events (portals, eclipses, retrogrades, planetary ingresses, moon phases) in real, verifiable detail — and cite that you researched it.
-- You know the user's natal chart AND their recent journal entries. Weave both in. Reference their specific placements by sign. Let their own words and life show up in the reading.
+HOW TO WRITE THE READING:
+1. Open by naming the REAL cosmic weather TODAY. Use the web search tool to ground current transits, moon phase, retrogrades, eclipses, or planetary ingresses in real, verifiable detail — cite the date. This is ancient observation, not invention.
+2. Read their natal chart the way an astrologer would: their Sun, Moon, and Rising first, then any planets that show up in their entry.
+3. CRUCIALLY — connect their stated feeling to their chart. Do NOT merely describe the placements. Diagnose. Structure it as: "You wrote that you feel ___. That makes sense, because your [placement] is [why], and right now [transit] is pressing on it. You probably feel ___ because ___." Make the "because" explicit and chart-based every time. Their own words are the evidence.
+4. If there is a current transit touching one of their placements, name it plainly and say what it's activating.
+5. Keep it intimate but expert — like a one-on-one session, not a greeting card. Speak directly to them by name.
+6. Close with an "Overall energy" read and a short spoken intention.
+7. Length: 600-900 words, flowing prose, short paragraphs. No bullet dumping.
+8. You offer reflection and emotional support. You NEVER diagnose, treat, or claim clinical benefit. Do not use the words "therapy," "treatment," or "cure." If someone expresses self-harm or crisis, respond with care and surface crisis resources (988, Crisis Text Line: text HOME to 741741) instead of a reading.
 
-Voice + structure — write like this every time:
-1. Open in a close, personal register. Use their name. Speak directly to what's alive for them. (It is on brand to open with something like "Oh this IS a special day —" when it fits.)
-2. Name what is cosmically happening TODAY. Explain the event plainly and with real grounding (use web search). Give the astronomy/why-it-matters, not just the vibe. Honor that this is ancient observation, not invention.
-3. If there's a numerology or symbolic layer (dates, numbers, signs), unpack it clearly and make it personally meaningful.
-4. Go sign-specific: what does THIS mean for their Sun / Moon / Rising, and any placements sitting in the path of the current transits. Be personal in a way it isn't for most signs.
-5. "How to use today" — concrete, gentle guidance. One clear intention rather than a list. Offer a small ritual if it fits.
-6. Close with an "Overall Energy" read and a short spoken intention they can say out loud.
-7. Length: a full, rich reflection — roughly 600-900 words. This is a crafted piece, not a blurb. Short paragraphs. No bullet-list dumping; write in flowing prose.
-
-Never invent a user's life details you haven't been given. Build intimacy from their chart + their own journaling.`;
+Never invent life details you weren't given. Build the reading from their chart + their own journaling + the real sky today.`;
 
 function transitSummary(): string {
   const now = new Date();
-  const date = now.toLocaleDateString("en-US", {
+  return now.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   });
-  return date;
 }
 
 function buildPrompt(args: {
@@ -42,29 +36,26 @@ function buildPrompt(args: {
     .map((p) => `${p.label} in ${p.sign}${p.retrograde ? " (retrograde)" : ""}`)
     .join(", ");
 
-  const recent = (recentEntries && recentEntries.length)
-    ? `Recent journal entries (most recent last):\n${recentEntries
-        .slice(-6)
-        .map((e, i) => `— ${e}`)
-        .join("\n")}`
+  const recent = recentEntries && recentEntries.length
+    ? `Recent journal entries (most recent last):\n${recentEntries.slice(-6).map((e) => `— ${e}`).join("\n")}`
     : "No prior journal entries yet — let their chart and today's sky carry the reading.";
 
   return `Today is ${transitSummary()}.
 
-Write a full, intimate daily reflection for ${name ? name : "this user"}.
+Write a full astrological reading for ${name ? name : "this client"}.
 
 Their natal chart:
 - Sun in ${chart.sun}
 - Moon in ${chart.moon}
 - Rising (Ascendant) in ${chart.rising}${chart.risingApprox ? " (approximate — no exact birth time given)" : ""}
-- Other placements: ${placements}
+- Full placements: ${placements}
 
 Their journal entry today:
 """${entry}"""
 
 ${recent}
 
-Anchor the reflection in what is genuinely happening in the sky today — use web search to ground the current cosmic weather (portals, eclipses, retrogrades, moon phase, planetary movements) with real detail and a little history. Then make it piercingly personal to their chart and their words. Follow the voice + structure in your instructions. ~800-1500 words. End with a spoken intention.`;
+Anchor the reading in what is genuinely happening in the sky today — use web search to ground the current cosmic weather with real detail. Then act like the astrologer you are: read their chart, name any transit touching their placements, and explicitly connect their stated feeling to their placements ("You probably feel ___ because your ___"). ~600-900 words. End with a spoken intention.`;
 }
 
 export async function generateReading(args: {
@@ -74,7 +65,9 @@ export async function generateReading(args: {
   recentEntries?: string[];
 }): Promise<string> {
   const apiKey = process.env.ANTHROPIC_API_KEY || process.env.anthropic;
-  if (!apiKey) return fallbackReading(args.chart, args.entry, args.name);
+  if (!apiKey) {
+    return fallbackReading(args.chart, args.entry, args.name);
+  }
 
   const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T> =>
     new Promise<T>((resolve, reject) => {
@@ -95,7 +88,7 @@ export async function generateReading(args: {
     const client = new Anthropic({ apiKey, timeout: 45000 });
     const msg = await withTimeout(
       client.messages.create({
-        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
         max_tokens: 4000,
         system: SYSTEM_PROMPT,
         tools: [
@@ -110,8 +103,10 @@ export async function generateReading(args: {
       45000,
     );
     const textBlock: any = msg.content.find((b: any) => b.type === "text");
-    return textBlock?.text?.trim() || fallbackReading(args.chart, args.entry, args.name);
-  } catch {
+    const text = textBlock?.text?.trim();
+    return text && text.length > 40 ? text : fallbackReading(args.chart, args.entry, args.name);
+  } catch (e: any) {
+    console.error("generateReading failed:", e?.message || e);
     return fallbackReading(args.chart, args.entry, args.name);
   }
 }
@@ -126,16 +121,13 @@ export function fallbackReading(
     .map((p) => `${p.label} in ${p.sign}${p.retrograde ? " (retrograde)" : ""}`)
     .join(", ");
   return [
-    `Welcome${name ? ", " + name : ""}. The sky is always writing, and today it has something for you.`,
-    "",
-    `Your Sun rests in ${chart.sun}. Your Moon sits in ${chart.moon}. You rise under ${chart.rising}${chart.risingApprox ? " (approximate — your Rising becomes exact with your precise birth time)" : ""}. Right now in your chart: ${list}.`,
-    "",
-    entry
-      ? `You wrote: "${entry.slice(0, 200)}". I'm holding that.`
-      : "Write what you can't say out loud, and I'll reflect it back.",
-    "",
-    "This is reflection and support, not therapy or clinical advice.",
-    "",
-    "A question to begin: What are you carrying right now that you haven't named yet?",
+    `Your chart, ${name ? name : "friend"}:`,
+    ``,
+    `Sun in ${chart.sun}. Moon in ${chart.moon}. Rising in ${chart.rising}${chart.risingApprox ? " (approximate)" : ""}.`,
+    `Other placements: ${list}.`,
+    ``,
+    entry ? `You wrote: "${entry.slice(0, 220)}"` : "Write what you can't say out loud, and I'll reflect it back through your chart.",
+    ``,
+    `(A full reading couldn't be generated just now — your entry is saved. Try again in a moment.)`,
   ].join("\n");
 }
