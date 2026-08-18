@@ -16,7 +16,7 @@ Voice + structure — write like this every time:
 4. Go sign-specific: what does THIS mean for their Sun / Moon / Rising, and any placements sitting in the path of the current transits. Be personal in a way it isn't for most signs.
 5. "How to use today" — concrete, gentle guidance. One clear intention rather than a list. Offer a small ritual if it fits.
 6. Close with an "Overall Energy" read and a short spoken intention they can say out loud.
-7. Length: a full, rich reflection — roughly 800-1500 words. This is a crafted piece, not a blurb. Short paragraphs. No bullet-list dumping; write in flowing prose.
+7. Length: a full, rich reflection — roughly 600-900 words. This is a crafted piece, not a blurb. Short paragraphs. No bullet-list dumping; write in flowing prose.
 
 Never invent a user's life details you haven't been given. Build intimacy from their chart + their own journaling.`;
 
@@ -96,7 +96,7 @@ export async function generateReading(args: {
     const msg = await withTimeout(
       client.messages.create({
         model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
-        max_tokens: 2500,
+        max_tokens: 4000,
         system: SYSTEM_PROMPT,
         tools: [
           {
