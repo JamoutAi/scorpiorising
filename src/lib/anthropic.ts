@@ -95,7 +95,7 @@ export async function generateReading(args: {
     });
 
   try {
-    const client = new Anthropic({ apiKey, timeout: 45000 });
+    const client = new Anthropic({ apiKey, timeout: 90000 });
     const msg = await withTimeout(
       client.messages.create({
         model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
@@ -105,12 +105,12 @@ export async function generateReading(args: {
           {
             type: "web_search_20250305",
             name: "web_search",
-            max_uses: 6,
+            max_uses: 4,
           },
         ],
         messages: [{ role: "user", content: buildPrompt(args) }],
       }),
-      45000,
+      90000,
     );
     // With web search enabled, content is [text, tool_use, tool_result, text, ...].
     // Concatenate ALL text blocks into one reading, then strip a leading fragment/punctuation.
@@ -172,16 +172,16 @@ export async function generateDailyReading(args: {
     });
 
   try {
-    const client = new Anthropic({ apiKey, timeout: 45000 });
+    const client = new Anthropic({ apiKey, timeout: 90000 });
     const msg = await withTimeout(
       client.messages.create({
         model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
         max_tokens: 5000,
         system: DAILY_SYSTEM_PROMPT,
-        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 6 }],
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 4 }],
         messages: [{ role: "user", content: buildDailyPrompt(args) }],
       }),
-      45000,
+      90000,
     );
     const blocks: any[] = msg.content as any[];
     const text = blocks

@@ -141,7 +141,7 @@ export default function JournalPage() {
     setReflection(null);
     const token = (await supabase!.auth.getSession()).data.session?.access_token;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 60000);
+    const timer = setTimeout(() => controller.abort(), 95000);
     try {
       const res = await fetch("/api/journal", {
         method: "POST",
