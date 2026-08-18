@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { placementMeaning, PLACEMENT_LABEL, PLACEMENT_INTRO, type PlacementType } from "@/lib/chartMeanings";
 
 interface Profile {
   id: string;
@@ -288,14 +289,21 @@ export default function JournalPage() {
               </form>
             </section>
           ) : (
-            <section className="mt-8 flex flex-wrap gap-2 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-              <span className="text-xs uppercase tracking-[0.2em] text-mint">Your chart</span>
-              <Chip label="Sun" value={profile.chart.sun} />
-              <Chip label="Moon" value={profile.chart.moon} />
-              <Chip label="Rising" value={profile.chart.rising} />
-              {profile.chart.risingApprox && (
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-paper/60">Rising approximate</span>
-              )}
+            <section className="mt-8 flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs uppercase tracking-[0.2em] text-mint">Your chart</span>
+                <Chip label="Sun" value={profile.chart.sun} />
+                <Chip label="Moon" value={profile.chart.moon} />
+                <Chip label="Rising" value={profile.chart.rising} />
+                {profile.chart.risingApprox && (
+                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-paper/60">Rising approximate</span>
+                )}
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <MeaningBlock type="sun" sign={profile.chart.sun} />
+                <MeaningBlock type="moon" sign={profile.chart.moon} />
+                <MeaningBlock type="rising" sign={profile.chart.rising} />
+              </div>
             </section>
           )}
 
@@ -362,5 +370,23 @@ function Chip({ label, value }: { label: string; value: string }) {
     <span className="rounded-full bg-mint/15 px-4 py-1.5 text-sm text-paper">
       <span className="text-mint">{label}</span> in {value}
     </span>
+  );
+}
+
+function MeaningBlock({ type, sign }: { type: PlacementType; sign: string }) {
+  const meaning = placementMeaning(type, sign);
+  if (!meaning) return null;
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "#2ed79f" }}>
+        {PLACEMENT_LABEL[type]} in {sign}
+      </p>
+      <p className="mt-1 text-xs" style={{ color: "#8c8295" }}>
+        {PLACEMENT_INTRO[type]}
+      </p>
+      <p className="mt-2 text-sm leading-relaxed" style={{ color: "#cdc5b1" }}>
+        {meaning}
+      </p>
+    </div>
   );
 }
