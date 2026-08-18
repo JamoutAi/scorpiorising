@@ -33,6 +33,7 @@ export default function JournalPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [gated, setGated] = useState(false);
   const [subReason, setSubReason] = useState("");
 
@@ -50,6 +51,12 @@ export default function JournalPage() {
   useEffect(() => {
     if (!loading && !user) router.replace("/login?redir=/journal");
   }, [loading, user, router]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -259,9 +266,11 @@ export default function JournalPage() {
             <h1
               style={{
                 fontFamily: "var(--font-display), serif",
-                fontSize: "2.4rem",
+                fontSize: scrolled ? "1.5rem" : "2.4rem",
                 fontWeight: 300,
-                color: "#f0ebe2",
+                color: "#f6f4f1",
+                transition: "font-size 300ms cubic-bezier(0.23,1,0.32,1), opacity 300ms ease",
+                opacity: scrolled ? 0.85 : 1,
               }}
             >
               Your Journal
@@ -355,6 +364,15 @@ export default function JournalPage() {
                         </div>
                       ))}
                   </div>
+                  <a
+                    href="https://www.etsy.com/listing/4507354459/personalized-astrology-birth-chart?ref=shop_home_feat_2&sr_prefetch=1&pf_from=shop_home&dd=1&logging_key=2a944cfa3166e012f68d1db075862f4f0e9904d5%3A4507354459"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-block text-sm transition hover:text-[#2ed79f]"
+                    style={{ color: "#2ed79f" }}
+                  >
+                    Get a custom reading from our favorite astrologer →
+                  </a>
                 </div>
               )}
             </section>

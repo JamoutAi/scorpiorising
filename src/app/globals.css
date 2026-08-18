@@ -47,22 +47,22 @@
 @theme inline {
   /* Celestial Ink — Scorpio Rising design system */
   --color-background: #1b1133;
-  --color-foreground: #ede8e0;
+  --color-foreground: #f6f4f1;
 
   --color-card: #251636;
-  --color-card-foreground: #ede8e0;
+  --color-card-foreground: #f6f4f1;
 
   --color-primary: #1fc896;
   --color-primary-foreground: #160d2b;
 
   --color-secondary: #2f1e46;
-  --color-secondary-foreground: #d0c9bc;
+  --color-secondary-foreground: #e6e1d8;
 
   --color-muted: #2a1b3f;
   --color-muted-foreground: #81768b;
 
   --color-accent: #3b2448;
-  --color-accent-foreground: #e7e1d2;
+  --color-accent-foreground: #f6f4f1;
 
   --color-border: rgba(255, 255, 255, 0.100);
   --color-input: rgba(255, 255, 255, 0.120);
@@ -72,7 +72,7 @@
   --color-phosphor: #2ed79f;
   --color-gold: #d9b264;
   --color-lavender: #8f6f9c;
-  --color-parchment: #f0ebe2;
+  --color-parchment: #f6f4f1;
   --color-plum: #1b1133;
   --color-indigo: #281b3e;
 
@@ -80,7 +80,7 @@
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
 
   /* Backward-compat aliases (older components still reference these) */
-  --color-paper: #ede8e0;
+  --color-paper: #f6f4f1;
   --color-ink: #1b1133;
   --color-ink-deep: #15102b;
   --color-mint: #1fc896;
@@ -98,17 +98,22 @@ html {
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 18px;
-  line-height: 1.7;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-size: 19px;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display), Georgia, serif;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  font-weight: 400;
 }
+
+/* Inner pages clear the fixed header so nothing sits underneath it */
+main { padding-top: 5.5rem; }
 
 @layer base {
   * {

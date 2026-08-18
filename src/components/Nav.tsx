@@ -35,9 +35,9 @@ export function Nav() {
     <header
       className="fixed left-0 right-0 top-0 z-50 transition-all duration-500"
       style={{
-        background: scrolled ? "rgba(27, 17, 51, 0.92)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255, 255, 255, 0.080)" : "none",
+        background: scrolled ? "rgba(21, 13, 43, 0.92)" : "rgba(21, 13, 43, 0.55)",
+        backdropFilter: "blur(16px)",
+        borderBottom: scrolled ? "1px solid rgba(46, 215, 159, 0.18)" : "1px solid rgba(255, 255, 255, 0.04)",
       }}
     >
       <div className="container-x flex items-center justify-between py-4">
@@ -46,7 +46,7 @@ export function Nav() {
           <img
             src="/brand/logo.png"
             alt="Scorpio Rising"
-            className="h-10 w-10 object-contain transition-all duration-300 group-hover:scale-105 constellation-glow"
+            className="h-14 w-14 object-contain transition-all duration-300 group-hover:scale-105 constellation-glow"
           />
           <div className="flex flex-col leading-none">
             <span
@@ -84,14 +84,14 @@ export function Nav() {
               href={l.href}
               style={{
                 fontFamily: "var(--font-sans), sans-serif",
-                fontSize: "0.78rem",
+                fontSize: "0.82rem",
                 fontWeight: 400,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: "#94899c",
+                color: "#cdc5b1",
                 transition: "color 200ms ease",
               }}
-              className="hover:text-[#ede8e0]"
+              className="hover:text-[#2ed79f]"
             >
               {l.label}
             </Link>
