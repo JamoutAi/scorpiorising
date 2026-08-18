@@ -229,7 +229,7 @@ export default function ProfilePage() {
                     </div>
                     <p className="mt-2 whitespace-pre-wrap" style={{ color: "#cdc5b1" }}>{e.body}</p>
                     {e.reading && (
-                      <p className="mt-3 border-t pt-3 text-sm" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#a99fb8" }}>
+                      <p className="mt-3 border-t pt-3 text-sm" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#cdc5b1" }}>
                         {e.reading}
                       </p>
                     )}

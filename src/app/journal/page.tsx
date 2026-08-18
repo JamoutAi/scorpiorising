@@ -35,7 +35,6 @@ export default function JournalPage() {
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [gated, setGated] = useState(false);
-  const [subReason, setSubReason] = useState("");
 
   // chart-setup form
   const [birthDate, setBirthDate] = useState("");
@@ -67,7 +66,6 @@ export default function JournalPage() {
 
         // Authoritative check: does this user have a live/trialing Stripe subscription?
         let hasLivePlan = false;
-        let subReason = "";
         if (token) {
           try {
             const subRes = await fetch("/api/subscription", {
@@ -76,7 +74,6 @@ export default function JournalPage() {
             if (subRes.ok) {
               const sub = await subRes.json();
               hasLivePlan = !!sub.hasPlan;
-              subReason = sub.reason || "";
             }
           } catch {
             /* ignore — fall back to DB profile below */
@@ -93,7 +90,6 @@ export default function JournalPage() {
         // Allow access if DB says active/trialing OR Stripe confirms a live plan.
         if (status !== "active" && status !== "trialing" && !hasLivePlan) {
           setGated(true);
-          setSubReason(subReason);
           return;
         }
         setGated(false);
@@ -245,11 +241,6 @@ export default function JournalPage() {
             <Link href="/#pricing" className="btn-phosphor">
               Choose a plan
             </Link>
-            {subReason && (
-              <p className="mt-6 text-xs" style={{ color: "#8c8295" }}>
-                Debug: {subReason}
-              </p>
-            )}
           </div>
         </main>
         <Footer />
