@@ -131,9 +131,28 @@ export async function POST(req: NextRequest) {
     }
     const { data: profile } = await client
       .from("profiles")
-      .select("chart, name")
+      .select("chart, name, plan_status")
       .maybeSingle();
     const chart = profile?.chart as ChartSummary | null;
+
+    // Freemium: free users get exactly ONE reflection. Paid (active/trialing) get unlimited.
+    const isPaid =
+      profile?.plan_status === "active" || profile?.plan_status === "trialing";
+    if (!isPaid) {
+      const { count } = await client
+        .from("entries")
+        .select("*", { count: "exact", head: true });
+      if ((count ?? 0) >= 1) {
+        return NextResponse.json(
+          {
+            error: "free_limit",
+            message:
+              "You've used your one free reflection. Upgrade to Mirror to keep receiving chart-aware reflections whenever you write.",
+          },
+          { status: 402 },
+        );
+      }
+    }
 
     // Pull recent entries for personalization context (exclude the one being written).
     const { data: recentRows } = await client

@@ -36,6 +36,10 @@ export default function JournalPage() {
   const [scrolled, setScrolled] = useState(false);
   const [gated, setGated] = useState(false);
 
+  // freemium upsell
+  const [freeLimit, setFreeLimit] = useState(false);
+  const [freeLimitMsg, setFreeLimitMsg] = useState("");
+
   // chart-setup form
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
@@ -154,6 +158,11 @@ export default function JournalPage() {
         ]);
         setReflection(data.reading);
         setEntry("");
+        setFreeLimit(false);
+      } else if (res.status === 402 && data?.error === "free_limit") {
+        setFreeLimit(true);
+        setFreeLimitMsg(data.message || "You've used your one free reflection. Upgrade to keep going.");
+        setReflection(null);
       } else {
         setReflection("Your entry was saved, but the reflection took too long to generate. You can refresh to see it in Past entries.");
       }
@@ -376,20 +385,25 @@ export default function JournalPage() {
               onChange={(e) => setEntry(e.target.value)}
               placeholder="Write what you can't say out loud…"
               rows={5}
-              className="w-full rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
+              disabled={freeLimit}
+              className="w-full rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50 disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={busy || !entry.trim()}
+              disabled={busy || !entry.trim() || freeLimit}
               className="mt-3 rounded-full bg-mint px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-ink transition hover:bg-mint-bright disabled:opacity-60"
             >
               {busy ? "Manifesting…" : "Receive your reflection"}
             </button>
-            {busy && (
+            {freeLimit ? (
+              <p className="mt-2 text-xs" style={{ color: "#2ed79f" }}>
+                You've used your free reflection — upgrade to keep writing.
+              </p>
+            ) : busy ? (
               <p className="mt-2 text-xs" style={{ color: "#8c8295" }}>
                 Reading your stars — this can take up to a minute.
               </p>
-            )}
+            ) : null}
           </form>
 
           {reflection && (
@@ -397,6 +411,16 @@ export default function JournalPage() {
               <p className="text-xs uppercase tracking-[0.2em] text-mint">Your reflection</p>
               <p className="mt-3 whitespace-pre-wrap leading-relaxed">{reflection}</p>
               <p className="mt-4 text-xs text-paper/50">Reflection and support, not therapy.</p>
+            </div>
+          )}
+
+          {freeLimit && (
+            <div className="mt-6 rounded-2xl border border-mint/40 bg-mint/10 p-8 text-center">
+              <p className="font-serif text-2xl font-light text-paper">Your free reflection is complete.</p>
+              <p className="mx-auto mt-3 max-w-md text-sm text-paper/70">{freeLimitMsg}</p>
+              <Link href="/#pricing" className="btn-phosphor mt-6 inline-block">
+                See plans &amp; upgrade
+              </Link>
             </div>
           )}
 

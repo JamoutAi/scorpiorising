@@ -47,11 +47,11 @@ function PlanButton({ plan, stripe, className }: { plan: string; stripe: string;
 const tiers = [
   {
     name: "Mirror",
-    price: "$9.99",
+    price: "$5.99",
     cadence: "/month",
     blurb: "Your daily reflection, chart-aware.",
     features: [
-      "Your natal chart, set once",
+      "Unlimited reflective entries",
       "Daily astrological framing",
       "Reflective responses to your entries",
       "Transit-timed check-ins",
@@ -62,12 +62,12 @@ const tiers = [
   },
   {
     name: "Mirror+",
-    price: "$17.99",
+    price: "$12.99",
     cadence: "/month",
     blurb: "Unlimited depth, memory, and continuity.",
     features: [
       "Everything in Mirror",
-      "Unlimited responsive entries",
+      "Daily star reading (general sky briefing)",
       "Full chart-aware depth & memory",
       "Deeper weekly & monthly reflections",
     ],
@@ -116,8 +116,8 @@ export function Pricing() {
               color: "#f0ebe2",
             }}
           >
-            Start free for 7 days. Go deeper{" "}
-            <em style={{ fontStyle: "italic", color: "#2ed79f" }}>when you're ready.</em>
+            Start free — your first reflection is on us.{" "}
+            <em style={{ fontStyle: "italic", color: "#2ed79f" }}>Go deeper when you're ready.</em>
           </h2>
         </div>
 
@@ -217,7 +217,7 @@ export function Pricing() {
                   ))}
                 </ul>
                 <span className="mb-8 block text-xs uppercase tracking-[0.15em]" style={{ color: "#2ed79f" }}>
-                  7-day free trial
+                  7-day free trial · cancel anytime
                 </span>
                 <PlanButton
                   plan={t.name === "Mirror+" ? "mirror_plus" : "mirror"}

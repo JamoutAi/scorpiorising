@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const PRICES: Record<string, string> = {
-  mirror: "price_1U2PdsDG0j62nIpyFYFL69is",
-  mirror_plus: "price_1U2PeADG0j62nIpyvJZitwlr",
+  mirror: "price_1U5sF4DG0j62nIpyfqvZzpWY", // Mirror — $5.99/mo
+  mirror_plus: "price_1U5sEbDG0j62nIpydgaQ2l3Z", // Mirror+ — $12.99/mo
 };
 
 export async function POST(req: NextRequest) {
