@@ -91,11 +91,9 @@ export default function JournalPage() {
         setProfile(data.profile);
         setEntries(data.entries || []);
         const status = data.profile?.plan_status;
-        // Allow access if DB says active/trialing OR Stripe confirms a live plan.
-        if (status !== "active" && status !== "trialing" && !hasLivePlan) {
-          setGated(true);
-          return;
-        }
+        // Freemium: every signed-in user can access the journal. The 1-free-reflection
+        // cap is enforced server-side in /api/journal (returns 402 free_limit). We no
+        // longer hard-gate on plan_status here.
         setGated(false);
         if (data.profile) {
           setName(data.profile.name || "");
