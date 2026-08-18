@@ -23,16 +23,16 @@ export async function POST(req: NextRequest) {
   } = await client.auth.getUser(auth.slice(7));
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  // Resolve plan from Stripe (authoritative) or profile.
-  let isMirrorPlus = false;
+  // Resolve plan from Stripe (authoritative) or profile. Any active paid plan = member.
+  let isMember = false;
   try {
     const sub = await (await fetch(`${URL.replace(/\/$/, "")}/api/subscription`, { headers: { authorization: auth } })).json();
-    isMirrorPlus = sub.hasPlan && sub.plan === "mirror_plus";
+    isMember = sub.hasPlan === true;
   } catch {
     const { data: prof } = await client.from("profiles").select("plan, plan_status").maybeSingle();
-    isMirrorPlus = prof?.plan === "mirror_plus" && (prof?.plan_status === "active" || prof?.plan_status === "trialing");
+    isMember = (prof?.plan_status === "active" || prof?.plan_status === "trialing");
   }
-  if (!isMirrorPlus) {
+  if (!isMember) {
     return NextResponse.json({ error: "upgrade_required" }, { status: 402 });
   }
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const PRICES: Record<string, string> = {
-  mirror: "price_1U5sF4DG0j62nIpyfqvZzpWY", // Mirror — $5.99/mo
-  mirror_plus: "price_1U5sEbDG0j62nIpydgaQ2l3Z", // Mirror+ — $12.99/mo
+const PRICES: Record<string, { id: string; annual: boolean }> = {
+  monthly: { id: "price_1U5sUIDG0j62nIpyaesyJnVx", annual: false }, // $12/mo
+  annual: { id: "price_1U5sUZDG0j62nIpytP3oJOGL", annual: true }, // $99/yr
 };
 
 export async function POST(req: NextRequest) {
@@ -11,32 +11,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {});
-  let plan = "mirror";
+  let billing: "monthly" | "annual" = "monthly";
   let userId: string | null = null;
   let email: string | null = null;
   try {
     const body = await req.json();
-    if (body.plan === "mirror_plus" || body.plan === "mirror+") plan = "mirror_plus";
+    if (body.billing === "annual") billing = "annual";
     userId = body.userId || null;
     email = body.email || null;
   } catch {
     /* ignore */
   }
-  const priceId = PRICES[plan];
-  if (!priceId) return NextResponse.json({ error: "unknown plan" }, { status: 400 });
-
+  const price = PRICES[billing];
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://scorpiorising.ai";
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer_email: email || undefined,
       client_reference_id: userId || undefined,
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items: [{ price: price.id, quantity: 1 }],
       subscription_data: { trial_period_days: 7 },
-      success_url: `${base}/journal?paid=${plan}&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${base}/journal?paid=${billing}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${base}/pricing`,
       allow_promotion_codes: true,
-      metadata: { plan },
+      metadata: { plan: "member", billing },
     });
     return NextResponse.json({ url: session.url });
   } catch (e: any) {

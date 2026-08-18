@@ -63,18 +63,16 @@ export default function ProfilePage() {
       try {
         const sub = await (await fetch("/api/subscription", { headers: { authorization: `Bearer ${token}` } })).json();
         if (sub.hasPlan) {
-          const plus = sub.plan === "mirror_plus";
-          setIsPlus(plus);
-          setPlanInfo(plus ? "Mirror+" : "Mirror");
+          setIsPlus(true);
+          setPlanInfo("Member");
         } else if (data.profile?.plan_status === "active" || data.profile?.plan_status === "trialing") {
-          const plus = data.profile.plan === "mirror_plus";
-          setIsPlus(plus);
-          setPlanInfo(plus ? "Mirror+" : "Mirror");
+          setIsPlus(true);
+          setPlanInfo("Member");
         } else {
           setPlanInfo("Free / no active plan");
         }
       } catch {
-        setPlanInfo(data.profile?.plan_status === "active" ? "Active" : "Free / no active plan");
+        setPlanInfo(data.profile?.plan_status === "active" ? "Member" : "Free / no active plan");
       }
     })();
   }, [user]);
@@ -118,7 +116,7 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (res.ok) setDaily(data.reading);
-      else if (res.status === 402) setDailyErr("Daily star readings are a Mirror+ feature. Upgrade to unlock.");
+      else if (res.status === 402) setDailyErr("Daily star readings are included with membership. Become a member to unlock.");
       else setDailyErr("Couldn't generate your star reading just now. Try again.");
     } catch {
       setDailyErr("The stars are taking their time. Try again in a moment.");
@@ -168,13 +166,13 @@ export default function ProfilePage() {
             </button>
           </section>
 
-          {/* Daily star reading (Mirror+) */}
+          {/* Daily star reading (member) */}
           <section className="card-vellum mb-6 p-7">
             <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#f0ebe2" }}>
               Your daily star reading
             </h2>
             <p className="mb-4 text-sm" style={{ color: "#8c8295" }}>
-              A general reading of today&rsquo;s sky moving through your chart. A Mirror+ feature.
+              A general reading of today&rsquo;s sky moving through your chart. Included in every membership.
             </p>
             <button onClick={showStars} disabled={dailyBusy} className="btn-phosphor">
               {dailyBusy ? "Reading the sky…" : "Show me the stars"}
@@ -189,7 +187,7 @@ export default function ProfilePage() {
                 {dailyErr}
                 {!isPlus && (
                   <button onClick={() => router.push("/pricing")} className="btn-ghost ml-3 mt-2">
-                    Upgrade to Mirror+
+                    Become a member
                   </button>
                 )}
               </p>
@@ -261,7 +259,7 @@ export default function ProfilePage() {
               <div className="flex flex-wrap gap-3">
                 {!isPlus && (
                   <button onClick={() => router.push("/pricing")} className="btn-phosphor">
-                    Upgrade to Mirror+
+                    Become a member
                   </button>
                 )}
                 <button onClick={manageBilling} disabled={busy} className="btn-ghost">

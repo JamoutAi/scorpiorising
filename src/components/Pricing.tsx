@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Reveal, StarField, ConstellationThread } from "./Design";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 
-function PlanButton({ plan, stripe, className }: { plan: string; stripe: string; className: string }) {
+function PlanButton({ billing, className }: { billing: "monthly" | "annual"; className: string }) {
   const [loading, setLoading] = useState(false);
   const onClick = async () => {
     setLoading(true);
@@ -24,60 +24,49 @@ function PlanButton({ plan, stripe, className }: { plan: string; stripe: string;
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, userId, email }),
+        body: JSON.stringify({ billing, userId, email }),
       });
       const json = await res.json();
       if (json.url) window.location.href = json.url;
       else {
-        window.location.href = stripe;
+        window.location.href = "/pricing";
       }
     } catch {
-      window.location.href = stripe;
+      window.location.href = "/pricing";
     } finally {
       setLoading(false);
     }
   };
   return (
     <button onClick={onClick} className={`mt-2 block w-full text-center ${className}`} disabled={loading}>
-      {loading ? "Redirecting…" : "Start 7-day free trial"}
+      {loading ? "Redirecting…" : "Try Your First Reflection Free"}
     </button>
   );
 }
 
 const tiers = [
   {
-    name: "Mirror",
-    price: "$5.99",
+    name: "Scorpio Rising",
+    monthly: "$12",
+    annual: "$99",
     cadence: "/month",
-    blurb: "Your daily reflection, chart-aware.",
+    annualCadence: "/year",
+    blurb: "Everything included. One membership.",
     features: [
+      "Your natal chart, set once",
       "Unlimited reflective entries",
-      "Daily astrological framing",
-      "Reflective responses to your entries",
-      "Transit-timed check-ins",
+      "Current transits & daily sky",
+      "Long-term memory of your story",
+      "Weekly Constellation & patterns",
+      "Private by design",
     ],
-    cta: "Start 7-day free trial",
-    stripe: "https://buy.stripe.com/eVq6oHaLmgfLani32P4Ni03",
-    highlight: false,
-  },
-  {
-    name: "Mirror+",
-    price: "$12.99",
-    cadence: "/month",
-    blurb: "Unlimited depth, memory, and continuity.",
-    features: [
-      "Everything in Mirror",
-      "Daily star reading (general sky briefing)",
-      "Full chart-aware depth & memory",
-      "Deeper weekly & monthly reflections",
-    ],
-    cta: "Start 7-day free trial",
-    stripe: "https://buy.stripe.com/6oU28rg5GaVr8fafPB4Ni02",
+    cta: "Try Your First Reflection Free",
     highlight: true,
   },
 ];
 
 export function Pricing() {
+  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   return (
     <section
       id="pricing"
@@ -183,7 +172,7 @@ export function Pricing() {
                     marginBottom: "0.5rem",
                   }}
                 >
-                  {t.price}
+                  {billing === "annual" ? t.annual : t.monthly}
                   <span
                     style={{
                       fontFamily: "var(--font-sans), sans-serif",
@@ -193,7 +182,7 @@ export function Pricing() {
                       marginLeft: "0.5rem",
                     }}
                   >
-                    {t.cadence}
+                    {billing === "annual" ? t.annualCadence : t.cadence}
                   </span>
                 </div>
                 <p
@@ -216,13 +205,26 @@ export function Pricing() {
                     </li>
                   ))}
                 </ul>
-                <span className="mb-8 block text-xs uppercase tracking-[0.15em]" style={{ color: "#2ed79f" }}>
+                <div className="mb-6 inline-flex rounded-full border border-white/15 p-1" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
+                  <button
+                    onClick={() => setBilling("monthly")}
+                    className={`rounded-full px-4 py-1 text-xs font-semibold ${billing === "monthly" ? "bg-mint text-ink" : "text-paper/60"}`}
+                  >
+                    Monthly · $12
+                  </button>
+                  <button
+                    onClick={() => setBilling("annual")}
+                    className={`rounded-full px-4 py-1 text-xs font-semibold ${billing === "annual" ? "bg-mint text-ink" : "text-paper/60"}`}
+                  >
+                    Annual · $99
+                  </button>
+                </div>
+                <p className="mb-5 text-xs uppercase tracking-[0.15em]" style={{ color: "#2ed79f" }}>
                   7-day free trial · cancel anytime
-                </span>
+                </p>
                 <PlanButton
-                  plan={t.name === "Mirror+" ? "mirror_plus" : "mirror"}
-                  stripe={t.stripe}
-                  className={t.highlight ? "btn-phosphor" : "btn-ghost"}
+                  billing={billing}
+                  className="btn-phosphor"
                 />
               </div>
             </Reveal>

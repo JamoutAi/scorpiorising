@@ -3,8 +3,8 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
 const PRICE_TO_PLAN: Record<string, string> = {
-  "price_1U5sF4DG0j62nIpyfqvZzpWY": "mirror", // Mirror — $5.99/mo
-  "price_1U5sEbDG0j62nIpydgaQ2l3Z": "mirror_plus", // Mirror+ — $12.99/mo
+  "price_1U5sUIDG0j62nIpyaesyJnVx": "member", // Monthly — $12/mo
+  "price_1U5sUZDG0j62nIpytP3oJOGL": "member", // Annual — $99/yr
 };
 
 export async function GET(req: NextRequest) {

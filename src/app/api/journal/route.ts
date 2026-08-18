@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
           {
             error: "free_limit",
             message:
-              "You've used your one free reflection. Upgrade to Mirror to keep receiving chart-aware reflections whenever you write.",
+              "You've used your one free reflection. Become a member to keep receiving chart-aware reflections whenever you write.",
           },
           { status: 402 },
         );

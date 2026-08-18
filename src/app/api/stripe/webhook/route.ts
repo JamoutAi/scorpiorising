@@ -3,8 +3,8 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
 const PLAN_BY_LINK: Record<string, string> = {
-  "https://buy.stripe.com/eVq6oHaLmgfLani32P4Ni03": "mirror",
-  "https://buy.stripe.com/6oU28rg5GaVr8fafPB4Ni02": "mirror_plus",
+  "https://buy.stripe.com/eVq6oHaLmgfLani32P4Ni03": "member",
+  "https://buy.stripe.com/6oU28rg5GaVr8fafPB4Ni02": "member",
 };
 
 function supabaseAdmin() {
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
       (session.customer_email as string) ||
       ((session as any).customer_details?.email as string) ||
       "";
-    const plan = (session.metadata?.plan as string) || PLAN_BY_LINK[session.url || ""] || "mirror";
+    const plan = (session.metadata?.plan as string) || PLAN_BY_LINK[session.url || ""] || "member";
     const trialEnd = (session as any).trial_end;
     // Prefer user-id match (set when signed in at checkout); fall back to email.
     if (userId) {
