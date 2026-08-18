@@ -13,6 +13,7 @@ HOW TO WRITE THE READING:
 7. Length: 600-900 words, flowing prose, short paragraphs. No bullet dumping.
 8. You offer reflection and emotional support. You NEVER diagnose, treat, or claim clinical benefit. Do not use the words "therapy," "treatment," or "cure." If someone expresses self-harm or crisis, respond with care and surface crisis resources (988, Crisis Text Line: text HOME to 741741) instead of a reading.
 9. Write in plain prose. Do NOT use markdown: no asterisks, no # headings, no --- dividers. Just natural sentences and paragraphs.
+10. Begin the reading directly — with the cosmic weather or the reflection. Never open with a comma, a fragment, or a "Dear [name]" header.
 
 Never invent life details you weren't given. Build the reading from their chart + their own journaling + the real sky today.`;
 
@@ -103,11 +104,15 @@ export async function generateReading(args: {
       }),
       45000,
     );
-    // With web search enabled, content is [text(preamble), tool_use, tool_result, text(full reading)].
-    // Take the LAST text block — that's the real reading, not the preamble.
+    // With web search enabled, content is [text, tool_use, tool_result, text, ...].
+    // Concatenate ALL text blocks into one reading, then strip a leading fragment/punctuation.
     const blocks: any[] = msg.content as any[];
-    const textBlocks = blocks.filter((b) => b.type === "text");
-    const text = textBlocks[textBlocks.length - 1]?.text?.trim();
+    const text = blocks
+      .filter((b) => b.type === "text")
+      .map((b) => b.text || "")
+      .join("")
+      .trim()
+      .replace(/^[\s,;:\-—]+/, "");
     return text && text.length > 40 ? text : fallbackReading(args.chart, args.entry, args.name);
   } catch (e: any) {
     console.error("generateReading failed:", e?.message || e);
