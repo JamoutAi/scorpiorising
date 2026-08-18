@@ -116,7 +116,7 @@ export function fallbackReading(
       ? `You wrote: "${entry.slice(0, 200)}". I'm holding that.`
       : "Write what you can't say out loud, and I'll reflect it back.",
     "",
-    "(This is a preview reflection. In the live app, every reading is a full, date-aware piece written uniquely to your chart, your entry, and the sky today — this is reflection and support, not therapy or clinical advice.)",
+    "This is reflection and support, not therapy or clinical advice.",
     "",
     "A question to begin: What are you carrying right now that you haven't named yet?",
   ].join("\n");

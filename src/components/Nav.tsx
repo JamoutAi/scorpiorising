@@ -104,6 +104,9 @@ export function Nav() {
               <Link href="/journal" className="btn-ghost py-2 px-5 text-sm">
                 Open Your Journal
               </Link>
+              <Link href="/profile" className="btn-ghost py-2 px-5 text-sm">
+                Profile
+              </Link>
               <button
                 onClick={() => supabase!.auth.signOut()}
                 className="text-xs font-semibold uppercase tracking-[0.15em] text-paper/60 transition hover:text-paper"
@@ -158,6 +161,11 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
+          {signedIn && (
+            <Link href="/profile" onClick={() => setMenuOpen(false)} className="btn-ghost mt-2 text-center">
+              Profile
+            </Link>
+          )}
           <Link href="/#pricing" className="btn-phosphor mt-2 text-center">
             Open Your Journal
           </Link>
