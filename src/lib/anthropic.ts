@@ -76,21 +76,39 @@ export async function generateReading(args: {
   const apiKey = process.env.ANTHROPIC_API_KEY || process.env.anthropic;
   if (!apiKey) return fallbackReading(args.chart, args.entry, args.name);
 
-  try {
-    const client = new Anthropic({ apiKey });
-    const msg = await client.messages.create({
-      model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
-      max_tokens: 2500,
-      system: SYSTEM_PROMPT,
-      tools: [
-        {
-          type: "web_search_20250305",
-          name: "web_search",
-          max_uses: 4,
+  const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T> =>
+    new Promise<T>((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error("timeout")), ms);
+      p.then(
+        (v) => {
+          clearTimeout(t);
+          resolve(v);
         },
-      ],
-      messages: [{ role: "user", content: buildPrompt(args) }],
+        (e) => {
+          clearTimeout(t);
+          reject(e);
+        },
+      );
     });
+
+  try {
+    const client = new Anthropic({ apiKey, timeout: 45000 });
+    const msg = await withTimeout(
+      client.messages.create({
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
+        max_tokens: 2500,
+        system: SYSTEM_PROMPT,
+        tools: [
+          {
+            type: "web_search_20250305",
+            name: "web_search",
+            max_uses: 2,
+          },
+        ],
+        messages: [{ role: "user", content: buildPrompt(args) }],
+      }),
+      45000,
+    );
     const textBlock: any = msg.content.find((b: any) => b.type === "text");
     return textBlock?.text?.trim() || fallbackReading(args.chart, args.entry, args.name);
   } catch {

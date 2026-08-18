@@ -133,20 +133,36 @@ export default function JournalPage() {
     setBusy(true);
     setReflection(null);
     const token = (await supabase!.auth.getSession()).data.session?.access_token;
-    const res = await fetch("/api/journal", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
-      body: JSON.stringify({ action: "addEntry", entry }),
-    });
-    const data = await res.json();
-    setBusy(false);
-    if (res.ok) {
-      setEntries((prev) => [
-        { id: data.entry.id, body: data.entry.body, created_at: data.entry.created_at, reading: data.reading },
-        ...prev,
-      ]);
-      setReflection(data.reading);
-      setEntry("");
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+    try {
+      const res = await fetch("/api/journal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: "addEntry", entry }),
+        signal: controller.signal,
+      });
+      const data = await res.json();
+      setBusy(false);
+      if (res.ok) {
+        setEntries((prev) => [
+          { id: data.entry.id, body: data.entry.body, created_at: data.entry.created_at, reading: data.reading },
+          ...prev,
+        ]);
+        setReflection(data.reading);
+        setEntry("");
+      } else {
+        setReflection("Your entry was saved, but the reflection took too long to generate. You can refresh to see it in Past entries.");
+      }
+    } catch (err) {
+      setBusy(false);
+      setReflection(
+        controller.signal.aborted
+          ? "The reflection is taking longer than expected. Your entry was saved — check Past entries in a moment."
+          : "Something went wrong. Your entry may still be saved in Past entries.",
+      );
+    } finally {
+      clearTimeout(timer);
     }
   }
 
