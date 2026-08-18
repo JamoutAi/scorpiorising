@@ -124,108 +124,88 @@ export function Pricing() {
                     : undefined
                 }
               >
-                {t.highlight && (
+                <div
+                  className="text-center"
+                >
                   <div
-                    className="absolute right-4 top-4 flex h-5 w-20 items-center justify-center opacity-30"
-                  >
-                    <ConstellationThread />
-                  </div>
-                )}
-                {t.highlight && (
-                  <div
-                    className="absolute left-4 top-4 rounded-full px-3 py-1"
                     style={{
-                      background: "rgba(46, 215, 159, 0.12)",
-                      border: "1px solid rgba(46, 215, 159, 0.35)",
                       fontFamily: "var(--font-sans), sans-serif",
-                      fontSize: "0.62rem",
+                      fontSize: "0.68rem",
                       fontWeight: 500,
-                      letterSpacing: "0.12em",
+                      letterSpacing: "0.18em",
                       textTransform: "uppercase",
                       color: "#2ed79f",
+                      marginTop: "0",
+                      marginBottom: "1rem",
                     }}
                   >
-                    Most Popular
+                    {t.name}
                   </div>
-                )}
-                <div
-                  style={{
-                    fontFamily: "var(--font-sans), sans-serif",
-                    fontSize: "0.68rem",
-                    fontWeight: 500,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: t.highlight ? "#2ed79f" : "#766a83",
-                    marginTop: t.highlight ? "2rem" : 0,
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {t.name}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-display), serif",
-                    fontSize: "3rem",
-                    fontWeight: 300,
-                    color: "#f0ebe2",
-                    lineHeight: 1,
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {billing === "annual" ? t.annual : t.monthly}
-                  <span
+                  <div
                     style={{
-                      fontFamily: "var(--font-sans), sans-serif",
-                      fontSize: "0.75rem",
-                      color: "#6c5a79",
-                      paddingBottom: "0.4rem",
-                      marginLeft: "0.5rem",
+                      fontFamily: "var(--font-display), serif",
+                      fontSize: "3.5rem",
+                      fontWeight: 300,
+                      color: "#f0ebe2",
+                      lineHeight: 1,
+                      marginBottom: "0.5rem",
                     }}
                   >
-                    {billing === "annual" ? t.annualCadence : t.cadence}
-                  </span>
-                </div>
-                <p
-                  style={{
-                    fontFamily: "var(--font-display), serif",
-                    fontSize: "0.95rem",
-                    color: "#6c5a79",
-                    marginBottom: "2rem",
-                  }}
-                >
-                  {t.blurb}
-                </p>
-                <ul className="mb-8 flex flex-col gap-3">
-                  {t.features.map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <span style={{ color: "#2ed79f", marginTop: "2px" }}>◎</span>
-                      <span style={{ fontFamily: "var(--font-display), serif", fontSize: "1rem", fontWeight: 300, color: "#8c8295" }}>
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mb-6 inline-flex rounded-full border border-white/15 p-1" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
-                  <button
-                    onClick={() => setBilling("monthly")}
-                    className={`rounded-full px-4 py-1 text-xs font-semibold ${billing === "monthly" ? "bg-mint text-ink" : "text-paper/60"}`}
+                    {billing === "annual" ? t.annual : t.monthly}
+                    <span
+                      style={{
+                        fontFamily: "var(--font-sans), sans-serif",
+                        fontSize: "0.8rem",
+                        color: "#6c5a79",
+                        paddingBottom: "0.4rem",
+                        marginLeft: "0.5rem",
+                      }}
+                    >
+                      {billing === "annual" ? t.annualCadence : t.cadence}
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      fontFamily: "var(--font-display), serif",
+                      fontSize: "0.95rem",
+                      color: "#6c5a79",
+                      marginBottom: "2rem",
+                    }}
                   >
-                    Monthly · $12
-                  </button>
-                  <button
-                    onClick={() => setBilling("annual")}
-                    className={`rounded-full px-4 py-1 text-xs font-semibold ${billing === "annual" ? "bg-mint text-ink" : "text-paper/60"}`}
-                  >
-                    Annual · $99
-                  </button>
+                    {t.blurb}
+                  </p>
+                  <ul className="mx-auto mb-8 flex max-w-xs flex-col gap-3 text-left">
+                    {t.features.map((item) => (
+                      <li key={item} className="flex items-start gap-3">
+                        <span style={{ color: "#2ed79f", marginTop: "2px" }}>◎</span>
+                        <span style={{ fontFamily: "var(--font-display), serif", fontSize: "1rem", fontWeight: 300, color: "#8c8295" }}>
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mb-6 inline-flex rounded-full border border-white/15 p-1" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
+                    <button
+                      onClick={() => setBilling("monthly")}
+                      className={`rounded-full px-4 py-1 text-xs font-semibold ${billing === "monthly" ? "bg-mint text-ink" : "text-paper/60"}`}
+                    >
+                      Monthly · $12
+                    </button>
+                    <button
+                      onClick={() => setBilling("annual")}
+                      className={`rounded-full px-4 py-1 text-xs font-semibold ${billing === "annual" ? "bg-mint text-ink" : "text-paper/60"}`}
+                    >
+                      Annual · $99
+                    </button>
+                  </div>
+                  <p className="mb-5 text-xs uppercase tracking-[0.15em]" style={{ color: "#2ed79f" }}>
+                    7-day free trial · cancel anytime
+                  </p>
+                  <PlanButton
+                    billing={billing}
+                    className="btn-phosphor"
+                  />
                 </div>
-                <p className="mb-5 text-xs uppercase tracking-[0.15em]" style={{ color: "#2ed79f" }}>
-                  7-day free trial · cancel anytime
-                </p>
-                <PlanButton
-                  billing={billing}
-                  className="btn-phosphor"
-                />
               </div>
             </Reveal>
           ))}

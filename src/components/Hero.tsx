@@ -41,28 +41,29 @@ export function Hero() {
                   color: "#2ed79f",
                 }}
               >
-                AI Journaling · Astrological Intelligence
+                Your chart + your story
               </span>
             </div>
             <h1
               className="reveal"
               style={{
                 fontFamily: "var(--font-display), serif",
-                fontSize: "clamp(3.4rem, 7.5vw, 5.8rem)",
+                fontSize: "clamp(2.6rem, 5.5vw, 4.4rem)",
                 fontWeight: 300,
-                lineHeight: 1.04,
+                lineHeight: 1.08,
                 letterSpacing: "-0.02em",
-                color: "#f0ebe2",
+                color: "#f6f4f1",
                 marginBottom: "1.5rem",
                 transitionDelay: "80ms",
               }}
             >
-              You&rsquo;ve been writing{" "}
-              <em style={{ fontStyle: "italic", color: "#2ed79f" }}>
-                in the dark.
-              </em>
+              Your birth chart knows who you are.
               <br />
-              We brought the stars.
+              Your journal knows what you&rsquo;re going through.
+              <br />
+              <em style={{ fontStyle: "italic", color: "#2ed79f" }}>
+                Scorpio Rising connects the two.
+              </em>
             </h1>
             <p
               className="reveal"
@@ -71,36 +72,25 @@ export function Hero() {
                 fontSize: "1.25rem",
                 fontWeight: 300,
                 lineHeight: 1.7,
-                color: "#958a9d",
+                color: "#b7adbf",
                 maxWidth: "480px",
                 marginBottom: "2.5rem",
                 transitionDelay: "160ms",
               }}
             >
-              A subscription diary where every entry gets a thoughtful, personal
-              response — written in the voice of someone who knows both your
-              story and your chart.
+              A private AI journal that remembers your story, understands your
+              birth chart, follows your current transits, and helps you see
+              patterns in your life over time.
             </p>
             <div className="reveal flex flex-wrap gap-4" style={{ transitionDelay: "240ms" }}>
               <Link href="/#pricing" className="btn-phosphor">
-                Begin Your First Entry
+                Try Your First Reflection Free
               </Link>
-              <Link href="/#how-it-works" className="btn-ghost">
-                See How It Works
+              <Link href="/#demo" className="btn-ghost">
+                See It In Action
               </Link>
             </div>
             <div className="reveal mt-10 flex items-center gap-6" style={{ transitionDelay: "320ms" }}>
-              <div className="flex -space-x-2">
-                {["🌙", "⭐", "✨", "🔮"].map((emoji, i) => (
-                  <div
-                    key={i}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border text-sm"
-                    style={{ background: "#2b1c40", borderColor: "#120a26" }}
-                  >
-                    {emoji}
-                  </div>
-                ))}
-              </div>
               <p
                 style={{
                   fontFamily: "var(--font-sans), sans-serif",
@@ -109,7 +99,7 @@ export function Hero() {
                   letterSpacing: "0.04em",
                 }}
               >
-                7-day free trial · No credit card noise, just the stars.
+                No credit card required. Experience the magic first.
               </p>
             </div>
           </div>
