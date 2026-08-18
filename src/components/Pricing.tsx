@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Reveal, StarField, ConstellationThread } from "./Design";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 
 function PlanButton({ billing, className }: { billing: "monthly" | "annual"; className: string }) {
   const [loading, setLoading] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    supabase!.auth.getSession().then(({ data }) => {
+      if (data.session?.user.id) setSignedIn(true);
+    });
+  }, []);
   const onClick = async () => {
     setLoading(true);
     try {
@@ -39,7 +46,7 @@ function PlanButton({ billing, className }: { billing: "monthly" | "annual"; cla
   };
   return (
     <button onClick={onClick} className={`mt-2 block w-full text-center ${className}`} disabled={loading}>
-      {loading ? "Redirecting…" : "Try Your First Reflection Free"}
+      {loading ? "Redirecting…" : signedIn ? "Become a Member" : "Try Your First Reflection Free"}
     </button>
   );
 }
