@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -31,8 +31,14 @@ export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [planInfo, setPlanInfo] = useState<string>(" Checking…");
+  const [planInfo, setPlanInfo] = useState<string>("Checking…");
+  const [isPlus, setIsPlus] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  // daily star reading
+  const [daily, setDaily] = useState<string | null>(null);
+  const [dailyBusy, setDailyBusy] = useState(false);
+  const [dailyErr, setDailyErr] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login?redir=/profile");
@@ -47,13 +53,19 @@ export default function ProfilePage() {
       setProfile(data.profile);
       setEntries(data.entries || []);
 
-      // Resolve plan status from Stripe (authoritative).
       try {
         const sub = await (await fetch("/api/subscription", { headers: { authorization: `Bearer ${token}` } })).json();
-        if (sub.hasPlan) setPlanInfo(sub.plan === "mirror_plus" ? "Mirror+" : "Mirror");
-        else if (data.profile?.plan_status === "active" || data.profile?.plan_status === "trialing")
-          setPlanInfo(data.profile.plan === "mirror_plus" ? "Mirror+" : "Mirror");
-        else setPlanInfo("Free / no active plan");
+        if (sub.hasPlan) {
+          const plus = sub.plan === "mirror_plus";
+          setIsPlus(plus);
+          setPlanInfo(plus ? "Mirror+" : "Mirror");
+        } else if (data.profile?.plan_status === "active" || data.profile?.plan_status === "trialing") {
+          const plus = data.profile.plan === "mirror_plus";
+          setIsPlus(plus);
+          setPlanInfo(plus ? "Mirror+" : "Mirror");
+        } else {
+          setPlanInfo("Free / no active plan");
+        }
       } catch {
         setPlanInfo(data.profile?.plan_status === "active" ? "Active" : "Free / no active plan");
       }
@@ -84,6 +96,31 @@ export default function ProfilePage() {
     if (res.ok) setEntries((prev) => prev.filter((e) => e.id !== id));
   }
 
+  async function showStars() {
+    setDailyBusy(true);
+    setDailyErr(null);
+    setDaily(null);
+    const token = (await supabase!.auth.getSession()).data.session?.access_token;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+    try {
+      const res = await fetch("/api/daily-reading", {
+        method: "POST",
+        headers: { authorization: `Bearer ${token}` },
+        signal: controller.signal,
+      });
+      const data = await res.json();
+      if (res.ok) setDaily(data.reading);
+      else if (res.status === 402) setDailyErr("Daily star readings are a Mirror+ feature. Upgrade to unlock.");
+      else setDailyErr("Couldn't generate your star reading just now. Try again.");
+    } catch {
+      setDailyErr("The stars are taking their time. Try again in a moment.");
+    } finally {
+      clearTimeout(timer);
+      setDailyBusy(false);
+    }
+  }
+
   if (!user) return null;
 
   return (
@@ -99,31 +136,6 @@ export default function ProfilePage() {
               Your Profile
             </h1>
           </div>
-
-          {/* Plan card */}
-          <section className="card-vellum mb-6 p-7">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#2ed79f" }}>
-                  Plan
-                </p>
-                <p className="mt-1" style={{ fontSize: "1.4rem", color: "#f0ebe2" }}>
-                  {planInfo}
-                </p>
-                {profile?.email && (
-                  <p className="mt-1 text-sm" style={{ color: "#8c8295" }}>
-                    {profile.email}
-                  </p>
-                )}
-              </div>
-              <button onClick={manageBilling} disabled={busy} className="btn-phosphor">
-                {busy ? "Opening…" : "Manage billing"}
-              </button>
-            </div>
-            <p className="mt-4 text-xs" style={{ color: "#8c8295" }}>
-              Upgrade, cancel, or update your payment method via Stripe.
-            </p>
-          </section>
 
           {/* Birth chart */}
           <section className="card-vellum mb-6 p-7">
@@ -145,8 +157,46 @@ export default function ProfilePage() {
               <p style={{ color: "#8c8295" }}>No chart set yet.</p>
             )}
             <button onClick={() => router.push("/journal")} className="btn-ghost mt-4">
-              {profile?.chart ? "Edit chart" : "Add your chart"}
+              Show me my chart
             </button>
+          </section>
+
+          {/* Daily star reading (Mirror+) */}
+          <section className="card-vellum mb-6 p-7">
+            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#f0ebe2" }}>
+              Your daily star reading
+            </h2>
+            <p className="mb-4 text-sm" style={{ color: "#8c8295" }}>
+              A general reading of today&rsquo;s sky moving through your chart. A Mirror+ feature.
+            </p>
+            <button onClick={showStars} disabled={dailyBusy} className="btn-phosphor">
+              {dailyBusy ? "Reading the sky…" : "Show me the stars"}
+            </button>
+            {dailyBusy && (
+              <p className="mt-3 text-xs" style={{ color: "#8c8295" }}>
+                Reading your stars — this can take up to a minute.
+              </p>
+            )}
+            {dailyErr && (
+              <p className="mt-4 rounded-xl border border-white/10 p-4 text-sm" style={{ color: "#cdc5b1", background: "rgba(255,255,255,0.04)" }}>
+                {dailyErr}
+                {!isPlus && (
+                  <button onClick={() => router.push("/pricing")} className="btn-ghost ml-3 mt-2">
+                    Upgrade to Mirror+
+                  </button>
+                )}
+              </p>
+            )}
+            {daily && (
+              <div className="mt-5 rounded-2xl border border-white/10 p-6" style={{ background: "rgba(255,255,255,0.04)" }}>
+                <p className="mt-2 whitespace-pre-wrap leading-relaxed" style={{ color: "#cdc5b1" }}>
+                  {daily}
+                </p>
+                <p className="mt-4 text-xs" style={{ color: "#8c8295" }}>
+                  Reflection and support, not therapy.
+                </p>
+              </div>
+            )}
           </section>
 
           {/* Past entries */}
@@ -183,6 +233,38 @@ export default function ProfilePage() {
             <button onClick={() => router.push("/journal")} className="btn-ghost mt-5">
               Open your journal
             </button>
+          </section>
+
+          {/* Plan — at the bottom */}
+          <section className="card-vellum mt-6 p-7">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#2ed79f" }}>
+                  Plan
+                </p>
+                <p className="mt-1" style={{ fontSize: "1.4rem", color: "#f0ebe2" }}>
+                  {planInfo}
+                </p>
+                {profile?.email && (
+                  <p className="mt-1 text-sm" style={{ color: "#8c8295" }}>
+                    {profile.email}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {!isPlus && (
+                  <button onClick={() => router.push("/pricing")} className="btn-phosphor">
+                    Upgrade to Mirror+
+                  </button>
+                )}
+                <button onClick={manageBilling} disabled={busy} className="btn-ghost">
+                  {busy ? "Opening…" : "Manage billing"}
+                </button>
+              </div>
+            </div>
+            <p className="mt-4 text-xs" style={{ color: "#8c8295" }}>
+              Upgrade, cancel, or update your payment method via Stripe.
+            </p>
           </section>
         </div>
       </main>

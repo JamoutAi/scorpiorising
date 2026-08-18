@@ -140,3 +140,89 @@ export function fallbackReading(
     `(A full reading couldn't be generated just now — your entry is saved. Try again in a moment.)`,
   ].join("\n");
 }
+
+export async function generateDailyReading(args: {
+  chart: ChartSummary;
+  name?: string;
+}): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.anthropic;
+  if (!apiKey) return fallbackDaily(args.chart, args.name);
+
+  const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T> =>
+    new Promise<T>((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error("timeout")), ms);
+      p.then(
+        (v) => {
+          clearTimeout(t);
+          resolve(v);
+        },
+        (e) => {
+          clearTimeout(t);
+          reject(e);
+        },
+      );
+    });
+
+  try {
+    const client = new Anthropic({ apiKey, timeout: 45000 });
+    const msg = await withTimeout(
+      client.messages.create({
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
+        max_tokens: 3000,
+        system: DAILY_SYSTEM_PROMPT,
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2 }],
+        messages: [{ role: "user", content: buildDailyPrompt(args) }],
+      }),
+      45000,
+    );
+    const blocks: any[] = msg.content as any[];
+    const text = blocks
+      .filter((b) => b.type === "text")
+      .map((b) => b.text || "")
+      .join("")
+      .trim()
+      .replace(/^[\s,;:\-—]+/, "");
+    return text && text.length > 40 ? text : fallbackDaily(args.chart, args.name);
+  } catch {
+    return fallbackDaily(args.chart, args.name);
+  }
+}
+
+const DAILY_SYSTEM_PROMPT = `You are a professional astrologer giving a DAILY star reading for a client. There is no journal entry today — this is a general reading of the sky and how it moves through their chart.
+
+HOW TO WRITE:
+1. Open by naming the REAL cosmic weather TODAY. Use the web search tool to ground current transits, moon phase, retrogrades, eclipses, or ingresses in real, verifiable detail — cite the date.
+2. Read their natal chart against today's sky: which placements are being activated, what energy is available, what to watch for.
+3. Give one concrete, gentle suggestion for moving through the day.
+4. Speak directly to them by name, like a one-on-one session — expert but intimate.
+5. Length: 500-800 words, flowing prose, short paragraphs. No bullet dumping.
+6. Offer reflection and support. NEVER diagnose, treat, or claim clinical benefit. Don't use the words "therapy," "treatment," or "cure." Surface crisis resources if needed.
+7. Plain prose, no markdown (no asterisks, no # headings, no ---). Begin directly — no comma fragment, no "Dear X" header.`;
+
+function buildDailyPrompt(args: { chart: ChartSummary; name?: string }): string {
+  const { chart, name } = args;
+  const placements = chart.placements
+    .map((p) => `${p.label} in ${p.sign}${p.retrograde ? " (retrograde)" : ""}`)
+    .join(", ");
+  return `Today is ${transitSummary()}.
+
+Give ${name ? name : "this client"} their daily star reading.
+
+Their natal chart:
+- Sun in ${chart.sun}
+- Moon in ${chart.moon}
+- Rising in ${chart.rising}${chart.risingApprox ? " (approximate)" : ""}
+- Full placements: ${placements}
+
+No journal entry today — make this a general daily reading of the sky and how it moves through their chart. Use web search to ground today's real cosmic weather. ~500-800 words.`;
+}
+
+function fallbackDaily(chart: ChartSummary, name?: string): string {
+  return [
+    `The sky today, ${name ? name : "friend"}:`,
+    ``,
+    `Sun in ${chart.sun}. Moon in ${chart.moon}. Rising in ${chart.rising}.`,
+    ``,
+    `(Your daily star reading couldn't be generated just now. Try again in a moment.)`,
+  ].join("\n");
+}
