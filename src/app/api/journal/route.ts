@@ -13,12 +13,22 @@ function authError() {
   return NextResponse.json({ error: "auth_required" }, { status: 401 });
 }
 
-async function getUser(req: NextRequest) {
+// Creates a Supabase client that carries the caller's JWT on every request,
+// so Row Level Security (auth.uid() = id) actually applies.
+function clientFor(req: NextRequest) {
   if (!URL || !ANON) return null;
   const token = req.headers.get("authorization")?.replace("Bearer ", "");
   if (!token) return null;
-  const client = createClient(URL, ANON, { auth: { persistSession: false } });
-  const { data } = await client.auth.getUser(token);
+  return createClient(URL, ANON, {
+    auth: { persistSession: false },
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+}
+
+async function getUser(req: NextRequest) {
+  const client = clientFor(req);
+  if (!client) return null;
+  const { data } = await client.auth.getUser();
   return data.user ? client : null;
 }
 

@@ -114,7 +114,12 @@ export default function JournalPage() {
     const data = await res.json();
     setBusy(false);
     if (!res.ok) {
-      setFormMsg(data.error === "place_not_found" ? "We couldn't find that place. Try a city, e.g. 'Austin, Texas'." : "Something went wrong saving your chart.");
+      const detail = typeof data.error === "string" && data.error ? ` (${data.error})` : "";
+      setFormMsg(
+        data.error === "place_not_found"
+          ? "We couldn't find that place. Try a city, e.g. 'Austin, Texas'."
+          : `Something went wrong saving your chart.${detail}`,
+      );
       return;
     }
     setProfile(data.profile);
