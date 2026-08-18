@@ -104,13 +104,19 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="relative hidden justify-center lg:flex">
-            <div className="relative">
+          <div className="relative hidden items-center justify-center lg:flex">
+            <div className="relative flex h-[520px] w-[520px] items-center justify-center">
+              {/* Pulsating rings */}
+              <span className="pulse-ring" style={{ width: "440px", height: "440px" }} />
+              <span className="pulse-ring delay" style={{ width: "440px", height: "440px" }} />
+              {/* Soft breathing halo */}
               <div
-                className="absolute inset-0 rounded-full blur-3xl"
+                className="breathe absolute rounded-full"
                 style={{
-                  background: "radial-gradient(circle, rgba(31, 200, 150, 0.18) 0%, transparent 70%)",
-                  transform: "scale(1.5)",
+                  width: "480px",
+                  height: "480px",
+                  background:
+                    "radial-gradient(circle, rgba(31, 200, 150, 0.16) 0%, rgba(46, 215, 159, 0.05) 45%, transparent 70%)",
                 }}
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -118,7 +124,7 @@ export function Hero() {
                 src="/brand/logo.png"
                 alt="Scorpio Rising"
                 className="constellation-glow float relative z-10"
-                style={{ width: "360px", height: "360px", objectFit: "contain" }}
+                style={{ width: "440px", height: "440px", objectFit: "contain" }}
               />
             </div>
           </div>
