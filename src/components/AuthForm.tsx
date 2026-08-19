@@ -13,7 +13,6 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [magic, setMagic] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
   const [msg, setMsg] = useState("");
 
@@ -30,23 +29,6 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     e.preventDefault();
     setStatus("loading");
     setMsg("");
-
-    if (magic) {
-      const { error } = await supabase!.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: "https://www.scorpiorising.ai/journal" },
-      });
-      if (error) {
-        setStatus("error");
-        setMsg(error.message);
-      } else {
-        setStatus("sent");
-        setMsg(
-          "If the link doesn't arrive within a minute, wait ~60 seconds and try again — email providers rate-limit magic links.",
-        );
-      }
-      return;
-    }
 
     if (mode === "signup") {
       const { data, error } = await supabase!.auth.signUp({
@@ -112,17 +94,15 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         placeholder="you@stars.com"
         className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
       />
-      {!magic && (
-        <input
-          type="password"
-          required
-          minLength={6}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password (min 6 characters)"
-          className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
-        />
-      )}
+      <input
+        type="password"
+        required
+        minLength={6}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password (min 6 characters)"
+        className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
+      />
 
       <button
         type="submit"
@@ -131,30 +111,12 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       >
         {status === "loading"
           ? "…"
-          : magic
-            ? "Email me a magic link"
-            : mode === "signup"
-              ? "Create account"
-              : "Sign in"}
+          : mode === "signup"
+            ? "Create account"
+            : "Sign in"}
       </button>
 
       {status === "error" && <p className="text-sm text-red-400">{msg}</p>}
-
-      <button
-        type="button"
-        onClick={() => setMagic((m) => !m)}
-        className="w-full rounded-xl py-3 font-semibold"
-        style={{
-          fontFamily: "var(--font-sans), sans-serif",
-          fontSize: "0.95rem",
-          letterSpacing: "0.02em",
-          color: "#2ed79f",
-          border: "1px solid #2ed79f",
-          background: "rgba(46,215,159,0.08)",
-        }}
-      >
-        {magic ? "Use password instead" : "Email me a magic link instead"}
-      </button>
 
       <p className="text-center text-sm text-paper/60">
         {mode === "signup" ? (
