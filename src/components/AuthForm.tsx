@@ -66,7 +66,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         <p className="font-medium" style={{ color: "#2ed79f" }}>Check your inbox.</p>
         <p className="mt-2 text-sm" style={{ color: "#cdc5b1" }}>{msg}</p>
         <p className="mt-3 text-xs" style={{ color: "#8c8295" }}>
-          Email slow or not arriving? Wait ~60s and try the magic-link option below, or sign in with a password.
+          Email slow or not arriving? Wait ~60s and try again — email providers sometimes delay the confirmation message.
         </p>
         <Link href="/login" className="mt-4 inline-block text-sm underline" style={{ color: "#2ed79f" }}>
           Back to sign in
