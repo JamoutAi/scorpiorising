@@ -7,11 +7,11 @@ const features = [
   },
   {
     title: "Memory with intention",
-    body: "It remembers the divorce, the goal you set in March, the name you'd rather not type again — and threads them through future reflections.",
+    body: "It remembers the goal you set in March, the name you'd rather not type again, the hard conversation you had with your mom — and threads them through future reflections.",
   },
   {
     title: "Transit-timed check-ins",
-    body: "Prompts align with your transits. \"This week's tension isn't just you — here's what's moving.\" That's the daily-return hook.",
+    body: "Prompts align with your transits. \"This week's tension isn't just you — here's what's moving.\" Get a fresh perspective daily on as many conversations as you like.",
   },
   {
     title: "Witness, not advice",
