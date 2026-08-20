@@ -143,7 +143,7 @@ export function fallbackReading(
     `Sun in ${chart.sun}. Moon in ${chart.moon}. Rising in ${chart.rising}${chart.risingApprox ? " (approximate)" : ""}.`,
     `Other placements: ${list}.`,
     ``,
-    entry ? `You wrote: "${entry.slice(0, 220)}"` : "Write what you can't say out loud, and I'll reflect it back through your chart.",
+    entry ? `You wrote: "${entry.slice(0, 220)}"` : "Write what's on your mind and in your heart, and I'll reflect it back through your chart.",
     ``,
     `(A full reading couldn't be generated just now — your entry is saved. Try again in a moment.)`,
   ].join("\n");

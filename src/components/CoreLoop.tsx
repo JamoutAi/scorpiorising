@@ -11,7 +11,7 @@ const steps = [
     number: "02",
     icon: "✦",
     title: "Write freely",
-    body: "Open the diary and write what you can't say out loud. No prompts required. No judgment. Just you and the page.",
+    body: "Open the diary and write what's on your mind and in your heart. No prompts required. No judgment. Just you and the page.",
   },
   {
     number: "03",
