@@ -205,13 +205,13 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Marquee items={MARQUEE} />
+        <ProductShowcase />
         <Demo />
         <WhyDifferent />
         <GetsToKnowYou />
         <CoreLoop />
         <MagicFeatures />
         <Story />
-        <ProductShowcase />
         <Pricing />
         <section className="relative overflow-hidden py-24" style={{ background: "#f7f3ea", color: "#17251f" }}>
           <div className="absolute left-8 top-8 hidden w-40 lg:block" style={{ transform: "rotate(15deg)" }}>

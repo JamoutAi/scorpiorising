@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/components/AuthProvider";
@@ -26,13 +27,21 @@ interface Entry {
   reading: string | null;
 }
 
+const NAV = [
+  { label: "Today", href: "/journal" },
+  { label: "Journal", href: "/journal" },
+  { label: "Patterns", href: "/patterns" },
+  { label: "My Story", href: "/story" },
+  { label: "My Chart", href: "/profile" },
+];
+
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [planInfo, setPlanInfo] = useState<string>("Checking…");
-  const [isPlus, setIsPlus] = useState(false);
+  const [isMember, setIsMember] = useState(false);
   const [busy, setBusy] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -63,10 +72,10 @@ export default function ProfilePage() {
       try {
         const sub = await (await fetch("/api/subscription", { headers: { authorization: `Bearer ${token}` } })).json();
         if (sub.hasPlan) {
-          setIsPlus(true);
+          setIsMember(true);
           setPlanInfo("Member");
         } else if (data.profile?.plan_status === "active" || data.profile?.plan_status === "trialing") {
-          setIsPlus(true);
+          setIsMember(true);
           setPlanInfo("Member");
         } else {
           setPlanInfo("Free / no active plan");
@@ -129,22 +138,50 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <>
+    <div className="flex min-h-screen" style={{ background: "#f7f3ea" }}>
       <Nav />
-      <main className="flex-1 px-5 py-16" style={{ background: "#0c2a23" }}>
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-10 text-center">
-            <Logo />
-            <h1
-              style={{ fontFamily: "var(--font-display), serif", fontSize: scrolled ? "1.5rem" : "2.4rem", fontWeight: 300, color: "#f6f4f1", marginTop: "1rem", transition: "font-size 300ms cubic-bezier(0.23,1,0.32,1), opacity 300ms ease", opacity: scrolled ? 0.85 : 1 }}
-            >
-              Your Profile
-            </h1>
+
+      {/* Forest sidebar */}
+      <aside className="app-sidebar fixed left-0 top-0 z-30 hidden h-screen w-60 flex-col p-5 lg:flex">
+        <Link href="/" className="mb-8 flex items-center gap-3">
+          <span className="h-9 w-9"><Logo /></span>
+        </Link>
+        <nav className="flex flex-col gap-1">
+          {NAV.map((n) => (
+            <Link key={n.label} href={n.href} className="app-nav-link rounded-lg px-4 py-2.5">
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="my-4 h-px" style={{ background: "rgba(244,241,234,0.08)" }} />
+        <Link href="/ask" className="app-nav-link rounded-lg px-4 py-2.5" style={{ color: "#1fc896" }}>
+          Ask Scorpio Rising
+        </Link>
+        <div className="mt-auto">
+          <Link href="/journal" className="mb-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#1fc896] px-4 py-3 text-sm font-semibold text-[#072019]">
+            <span className="text-lg leading-none">+</span> Start a new entry
+          </Link>
+          <Link href="/profile" className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-white/5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full text-sm" style={{ background: "rgba(31,200,150,0.18)", color: "#1fc896" }}>
+              {(profile?.name || user.email || "S").charAt(0).toUpperCase()}
+            </span>
+            <span className="flex-1 truncate text-sm" style={{ color: "#f4f1ea" }}>{profile?.name || user.email}</span>
+          </Link>
+          <button onClick={async () => { await supabase!.auth.signOut(); router.replace("/"); }} className="app-nav-link mt-1 w-full rounded-lg px-4 py-2 text-left text-xs">Sign out</button>
+        </div>
+      </aside>
+
+      <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
+        <div className="mx-auto max-w-3xl px-5 py-12">
+          {/* Mobile header */}
+          <div className="mb-6 flex items-center justify-between lg:hidden">
+            <h1 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.8rem", fontWeight: 300, color: "#17251f" }}>Your Profile</h1>
+            <Link href="/journal" className="btn-phosphor px-4 py-2 text-sm">Journal</Link>
           </div>
 
           {/* Birth chart */}
-          <section className="card-vellum mb-6 p-7">
-            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#f0ebe2" }}>
+          <section className="card-cream mb-6 p-7">
+            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#17251f" }}>
               Your birth chart
             </h2>
             {profile?.chart ? (
@@ -153,51 +190,51 @@ export default function ProfilePage() {
                 <Chip label="Moon" value={profile.chart.moon} />
                 <Chip label="Rising" value={profile.chart.rising} />
                 {profile.chart.risingApprox && (
-                  <span className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(255,255,255,0.1)", color: "#cdc5b1" }}>
+                  <span className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(23,37,31,0.06)", color: "#7a756e" }}>
                     Rising approximate
                   </span>
                 )}
               </div>
             ) : (
-              <p style={{ color: "#8c8295" }}>No chart set yet.</p>
+              <p style={{ color: "#7a756e" }}>No chart set yet.</p>
             )}
-            <button onClick={() => router.push("/journal")} className="btn-ghost mt-4">
+            <button onClick={() => router.push("/journal")} className="btn-ghost mt-4" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
               Show me my chart
             </button>
           </section>
 
           {/* Daily star reading (member) */}
-          <section className="card-vellum mb-6 p-7">
-            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#f0ebe2" }}>
+          <section className="card-cream mb-6 p-7">
+            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#17251f" }}>
               Your daily star reading
             </h2>
-            <p className="mb-4 text-sm" style={{ color: "#8c8295" }}>
+            <p className="mb-4 text-sm" style={{ color: "#7a756e" }}>
               A general reading of today&rsquo;s sky moving through your chart. Included in every membership.
             </p>
             <button onClick={showStars} disabled={dailyBusy} className="btn-phosphor">
               {dailyBusy ? "Reading the sky…" : "Show me the stars"}
             </button>
             {dailyBusy && (
-              <p className="mt-3 text-xs" style={{ color: "#8c8295" }}>
+              <p className="mt-3 text-xs" style={{ color: "#7a756e" }}>
                 Reading your stars — this can take up to a minute.
               </p>
             )}
             {dailyErr && (
-              <p className="mt-4 rounded-xl border border-white/10 p-4 text-sm" style={{ color: "#cdc5b1", background: "rgba(255,255,255,0.04)" }}>
+              <p className="mt-4 rounded-xl border p-4 text-sm" style={{ borderColor: "rgba(31,200,150,0.25)", color: "#17251f", background: "rgba(31,200,150,0.08)" }}>
                 {dailyErr}
-                {!isPlus && (
-                  <button onClick={() => router.push("/pricing")} className="btn-ghost ml-3 mt-2">
+                {!isMember && (
+                  <button onClick={() => router.push("/pricing")} className="btn-ghost ml-3 mt-2" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
                     Become a member
                   </button>
                 )}
               </p>
             )}
             {daily && (
-              <div className="mt-5 rounded-2xl border border-white/10 p-6" style={{ background: "rgba(255,255,255,0.04)" }}>
-                <p className="mt-2 whitespace-pre-wrap leading-relaxed" style={{ color: "#cdc5b1" }}>
+              <div className="mt-5 rounded-2xl border p-6" style={{ borderColor: "rgba(23,37,31,0.08)", background: "#fffdf8" }}>
+                <p className="mt-2 whitespace-pre-wrap leading-relaxed" style={{ color: "#17251f" }}>
                   {daily}
                 </p>
-                <p className="mt-4 text-xs" style={{ color: "#8c8295" }}>
+                <p className="mt-4 text-xs" style={{ color: "#9a948b" }}>
                   Reflection and support, not therapy.
                 </p>
               </div>
@@ -205,29 +242,29 @@ export default function ProfilePage() {
           </section>
 
           {/* Past entries */}
-          <section className="card-vellum p-7">
-            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#f0ebe2" }}>
+          <section className="card-cream p-7">
+            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#17251f" }}>
               Past entries ({entries.length})
             </h2>
             {entries.length === 0 ? (
-              <p style={{ color: "#8c8295" }}>No entries yet. Your reflections live in your journal.</p>
+              <p style={{ color: "#7a756e" }}>No entries yet. Your reflections live in your journal.</p>
             ) : (
               <div className="space-y-4">
                 {entries.map((e) => (
-                  <article key={e.id} className="rounded-2xl border p-5" style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}>
+                  <article key={e.id} className="rounded-2xl border p-5" style={{ borderColor: "rgba(23,37,31,0.08)", background: "#fffdf8" }}>
                     <div className="flex items-start justify-between gap-4">
-                      <p className="text-xs" style={{ color: "#8c8295" }}>{new Date(e.created_at).toLocaleString()}</p>
+                      <p className="text-xs" style={{ color: "#9a948b" }}>{new Date(e.created_at).toLocaleString()}</p>
                       <button
                         onClick={() => deleteEntry(e.id)}
-                        className="text-xs uppercase tracking-[0.1em] transition hover:text-red-300"
-                        style={{ color: "#8c8295" }}
+                        className="text-xs uppercase tracking-[0.1em] transition hover:text-red-500"
+                        style={{ color: "#b0a99f" }}
                       >
                         Delete
                       </button>
                     </div>
-                    <p className="mt-2 whitespace-pre-wrap" style={{ color: "#cdc5b1" }}>{e.body}</p>
+                    <p className="mt-2 whitespace-pre-wrap" style={{ color: "#17251f" }}>{e.body}</p>
                     {e.reading && (
-                      <p className="mt-3 border-t pt-3 text-sm" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#cdc5b1" }}>
+                      <p className="mt-3 border-t pt-3 text-sm" style={{ borderColor: "rgba(23,37,31,0.08)", color: "#3a4a43" }}>
                         {e.reading}
                       </p>
                     )}
@@ -235,53 +272,52 @@ export default function ProfilePage() {
                 ))}
               </div>
             )}
-            <button onClick={() => router.push("/journal")} className="btn-ghost mt-5">
+            <button onClick={() => router.push("/journal")} className="btn-ghost mt-5" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
               Open your journal
             </button>
           </section>
 
           {/* Plan — at the bottom */}
-          <section className="card-vellum mt-6 p-7">
+          <section className="card-cream mt-6 p-7">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#2ed79f" }}>
+                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>
                   Plan
                 </p>
-                <p className="mt-1" style={{ fontSize: "1.4rem", color: "#f0ebe2" }}>
+                <p className="mt-1" style={{ fontSize: "1.4rem", color: "#17251f" }}>
                   {planInfo}
                 </p>
                 {profile?.email && (
-                  <p className="mt-1 text-sm" style={{ color: "#8c8295" }}>
+                  <p className="mt-1 text-sm" style={{ color: "#7a756e" }}>
                     {profile.email}
                   </p>
                 )}
               </div>
               <div className="flex flex-wrap gap-3">
-                {!isPlus && (
+                {!isMember && (
                   <button onClick={() => router.push("/pricing")} className="btn-phosphor">
                     Become a member
                   </button>
                 )}
-                <button onClick={manageBilling} disabled={busy} className="btn-ghost">
+                <button onClick={manageBilling} disabled={busy} className="btn-ghost" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#17251f" }}>
                   {busy ? "Opening…" : "Manage billing"}
                 </button>
               </div>
             </div>
-            <p className="mt-4 text-xs" style={{ color: "#8c8295" }}>
+            <p className="mt-4 text-xs" style={{ color: "#9a948b" }}>
               Upgrade, cancel, or update your payment method via Stripe.
             </p>
           </section>
         </div>
       </main>
-      <Footer />
-    </>
+    </div>
   );
 }
 
 function Chip({ label, value }: { label: string; value: string }) {
   return (
-    <span className="rounded-full px-4 py-2 text-sm" style={{ background: "rgba(46,215,159,0.12)", color: "#2ed79f" }}>
-      <span style={{ opacity: 0.7 }}>{label}: </span>
+    <span className="rounded-full px-4 py-2 text-sm" style={{ background: "rgba(31,200,150,0.14)", color: "#17251f" }}>
+      <span style={{ color: "#1aa37c" }}>{label}: </span>
       {value}
     </span>
   );

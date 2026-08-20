@@ -19,7 +19,7 @@ export function Footer() {
                 fontSize: "1rem",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "#766a83",
+                color: "#f4f1ea",
               }}
             >
               Scorpio Rising
@@ -39,16 +39,16 @@ export function Footer() {
                   fontFamily: "var(--font-sans), sans-serif",
                   fontSize: "0.68rem",
                   letterSpacing: "0.08em",
-                  color: "#52425f",
+                  color: "#9bb3aa",
                   transition: "color 200ms ease",
                 }}
-                className="hover:text-[#8c8295]"
+                className="hover:text-[#1fc896]"
               >
                 {item.label}
               </Link>
             ))}
           </div>
-          <p style={{ fontFamily: "var(--font-sans), sans-serif", fontSize: "0.65rem", color: "#4b3a5e", letterSpacing: "0.05em" }}>
+          <p style={{ fontFamily: "var(--font-sans), sans-serif", fontSize: "0.65rem", color: "#7d948b", letterSpacing: "0.05em" }}>
             © {year} Scorpio Rising
           </p>
         </div>

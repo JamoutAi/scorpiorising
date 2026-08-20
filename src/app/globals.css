@@ -239,6 +239,34 @@ main { padding-top: 5.5rem; }
     color: #f4f1ea;
   }
 
+  /* Logged-in product: forest sidebar */
+  .app-sidebar {
+    background: #0c2a23;
+    border-right: 1px solid rgba(31, 200, 150, 0.12);
+    color: #f4f1ea;
+  }
+  .app-nav-link {
+    font-family: var(--font-sans), sans-serif;
+    font-size: 0.78rem;
+    letterSpacing: 0.06em;
+    color: #9bb3aa;
+    transition: color 200ms ease, background 200ms ease;
+  }
+  .app-nav-link:hover { color: #f4f1ea; background: rgba(244, 241, 234, 0.05); }
+  .app-nav-link.active { color: #1fc896; background: rgba(31, 200, 150, 0.10); }
+
+  /* Logged-in product: paper surfaces */
+  .paper-input {
+    background: #fffdf8;
+    border: 1px solid rgba(23, 37, 31, 0.12);
+    color: #17251f;
+    border-radius: 14px;
+    outline: none;
+  }
+  .paper-input::placeholder { color: rgba(23, 37, 31, 0.40); }
+  .paper-input:focus { border-color: rgba(31, 200, 150, 0.55); }
+  .paper { background: #f7f3ea; color: #17251f; }
+
   /* Fingerprint ridge texture overlay */
   .ridge-texture::before {
     content: '';
