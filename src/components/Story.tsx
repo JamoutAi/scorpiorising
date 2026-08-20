@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Reveal, StarField, ConstellationThread } from "./Design";
 
 export function Story() {
@@ -29,16 +28,16 @@ export function Story() {
                 marginBottom: "2rem",
               }}
             >
-              I built the thing that{" "}
+              This started as{" "}
               <em style={{ fontStyle: "italic", color: "#d9b264" }}>
-                got me through my divorce.
+                something personal.
               </em>
             </h2>
             <Reveal delay={160}>
               {[
-                "I'm Claire Redsun. I'm a Scorpio Rising — which means I was built for transformation, even when it doesn't feel that way. During my divorce, I needed something that could hold the weight of what I was going through without flinching.",
-                "I journaled. I checked my chart. I looked for something that could connect the two — that could reflect me back to myself with both warmth and intelligence. That thing didn't exist. So I built it.",
-                "Scorpio Rising isn't named after your sign. It's named after mine. But the app meets you in yours.",
+                "This started as something personal. I needed something that could hold real weight — the kind of days when you're looking for meaning, or just looking to be met where you are. I built it during a tough season in my life, and quickly realized it helped me through all days and seasons.",
+                "What I needed was something that could sit at the intersection of journaling and astrology and actually reflect me back to myself with warmth and intelligence — and do the same for you, whatever you're moving through.",
+                "That thing didn't exist. So I built it with my best friend. Scorpio Rising isn't named after your sign. It's a nod to the energy the whole app is built on — transformation, depth, and the willingness to look inward. But it meets you in yours!",
               ].map((para, i) => (
                 <p
                   key={i}
@@ -55,32 +54,6 @@ export function Story() {
                 </p>
               ))}
             </Reveal>
-            <Reveal delay={240}>
-              <div className="mt-8 flex items-center gap-4">
-                <div
-                  className="flex h-12 w-12 items-center justify-center rounded-full text-xl"
-                  style={{ background: "#2b1c40", border: "1px solid rgba(255, 255, 255, 0.100)" }}
-                >
-                  ♏
-                </div>
-                <div>
-                  <div style={{ fontFamily: "var(--font-display), serif", fontSize: "1.1rem", fontWeight: 500, color: "#f0ebe2" }}>
-                    Claire Redsun
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-sans), sans-serif",
-                      fontSize: "0.68rem",
-                      letterSpacing: "0.12em",
-                      color: "#6c5a79",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Founder · Scorpio Rising
-                  </div>
-                </div>
-              </div>
-            </Reveal>
           </div>
 
           <Reveal delay={80}>
@@ -88,8 +61,8 @@ export function Story() {
               <div className="absolute -inset-4 rounded-2xl blur-2xl" style={{ background: "radial-gradient(circle, rgba(217, 178, 100, 0.07) 0%, transparent 70%)" }} />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/founder-mood.jpg"
-                alt="Writing by candlelight"
+                src="/assets/scorpio-story.png"
+                alt="Scorpio Rising"
                 className="relative z-10 w-full rounded-sm object-cover"
                 style={{ maxHeight: "480px", border: "1px solid rgba(255, 255, 255, 0.080)" }}
               />
