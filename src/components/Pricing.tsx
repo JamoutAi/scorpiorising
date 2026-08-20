@@ -234,7 +234,11 @@ export function Pricing() {
             color: "#9a948b",
           }}
         >
-          Not a substitute for professional care. Crisis support always available. Privacy is a feature, not fine print.
+          Not a substitute for professional care. Scorpio Rising is reflection, not a crisis service — see our{" "}
+          <a href="/support" style={{ color: "#c5a46b", textDecoration: "underline" }}>
+            Support
+          </a>{" "}
+          page in a crisis. Privacy is a feature, not fine print.
         </p>
       </div>
     </section>

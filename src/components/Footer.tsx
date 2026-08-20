@@ -9,6 +9,21 @@ export function Footer() {
       style={{ background: "#0c2a23", borderTop: "1px solid rgba(31, 200, 150, 0.12)" }}
     >
       <div className="container-x">
+        <p
+          className="mb-8 text-center"
+          style={{
+            fontFamily: "var(--font-sans), sans-serif",
+            fontSize: "0.68rem",
+            letterSpacing: "0.04em",
+            color: "#7d948b",
+          }}
+        >
+          Scorpio Rising is reflection and support, not a crisis service. If you're in crisis, please visit our{" "}
+          <Link href="/support" style={{ color: "#9bb3aa", textDecoration: "underline" }}>
+            Support
+          </Link>{" "}
+          page for resources.
+        </p>
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <Link href="/" className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
