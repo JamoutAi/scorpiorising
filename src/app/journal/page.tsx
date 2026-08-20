@@ -8,6 +8,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/Logo";
+import { Sidebar } from "@/components/Sidebar";
 import { placementMeaning, PLACEMENT_LABEL, PLACEMENT_INTRO, type PlacementType, planetMeaning } from "@/lib/chartMeanings";
 
 interface Profile {
@@ -25,14 +26,6 @@ interface Entry {
   created_at: string;
   reading: string | null;
 }
-
-const NAV = [
-  { label: "Today", href: "/journal" },
-  { label: "Journal", href: "/journal" },
-  { label: "Patterns", href: "/patterns" },
-  { label: "My Story", href: "/story" },
-  { label: "My Chart", href: "/profile" },
-];
 
 export default function JournalPage() {
   const { user, loading, configured } = useAuth();
@@ -108,10 +101,10 @@ export default function JournalPage() {
     setBusy(true);
     setFormMsg("");
     try {
-      const res = await fetch("/api/chart", {
+      const res = await fetch("/api/journal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ birthDate, birthTime, birthPlace, name }),
+        body: JSON.stringify({ action: "saveProfile", birthDate, birthTime, birthPlace, name }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Could not read chart");
@@ -218,35 +211,7 @@ export default function JournalPage() {
       <Nav />
 
       {/* Forest sidebar */}
-      <aside className="app-sidebar fixed left-0 top-0 z-30 hidden h-screen w-60 flex-col p-5 lg:flex">
-        <Link href="/" className="mb-8 flex items-center gap-3">
-          <span className="h-9 w-9"><Logo /></span>
-        </Link>
-        <nav className="flex flex-col gap-1">
-          {NAV.map((n) => (
-            <Link key={n.label} href={n.href} className="app-nav-link rounded-lg px-4 py-2.5">
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="my-4 h-px" style={{ background: "rgba(244,241,234,0.08)" }} />
-        <Link href="/ask" className="app-nav-link rounded-lg px-4 py-2.5" style={{ color: "#1fc896" }}>
-          Ask Scorpio Rising
-        </Link>
-
-        <div className="mt-auto">
-          <Link href="/journal" className="mb-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#1fc896] px-4 py-3 text-sm font-semibold text-[#072019]">
-            <span className="text-lg leading-none">+</span> Start a new entry
-          </Link>
-          <Link href="/profile" className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-white/5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full text-sm" style={{ background: "rgba(31,200,150,0.18)", color: "#1fc896" }}>
-              {(profile?.name || user.email || "S").charAt(0).toUpperCase()}
-            </span>
-            <span className="flex-1 truncate text-sm" style={{ color: "#f4f1ea" }}>{profile?.name || user.email}</span>
-          </Link>
-          <button onClick={signOut} className="app-nav-link mt-1 w-full rounded-lg px-4 py-2 text-left text-xs">Sign out</button>
-        </div>
-      </aside>
+      <Sidebar email={user.email ?? undefined} name={profile?.name} onSignOut={signOut} active="Today" />
 
       <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto max-w-3xl px-5 py-12">
