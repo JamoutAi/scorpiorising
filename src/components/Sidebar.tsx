@@ -52,7 +52,7 @@ export function Sidebar({
         >
           <span className="text-lg leading-none">+</span> Start a new entry
         </Link>
-        <Link href="/profile" className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-white/5">
+        <Link href="/settings" className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-white/5">
           <span
             className="flex h-9 w-9 items-center justify-center rounded-full text-sm"
             style={{ background: "rgba(31,200,150,0.18)", color: "#1fc896" }}

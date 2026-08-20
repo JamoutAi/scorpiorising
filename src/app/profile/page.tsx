@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
@@ -65,28 +66,6 @@ export default function ProfilePage() {
   }, [user]);
 
   if (!user) return null;
-
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  async function handleDelete() {
-    setDeleting(true);
-    try {
-      const { data: sessionData } = await supabase!.auth.getSession();
-      const token = sessionData.session?.access_token;
-      const res = await fetch("/api/delete-account", {
-        method: "POST",
-        headers: token ? { authorization: `Bearer ${token}` } : {},
-      });
-      if (!res.ok) throw new Error("delete failed");
-      await supabase!.auth.signOut();
-      router.replace("/");
-    } catch {
-      setDeleting(false);
-      setConfirmDelete(false);
-      alert("Something went wrong deleting your account. Please contact support.");
-    }
-  }
 
   const chart = profile?.chart;
   const sun = chart?.placements?.find((p: any) => p.key === "sun");
@@ -218,42 +197,6 @@ export default function ProfilePage() {
             </section>
           </div>
 
-          {/* Account */}
-          <section className="card-cream p-6" style={{ borderColor: "rgba(178, 58, 58, 0.25)" }}>
-            <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.3rem", fontWeight: 300, color: "#17251f" }}>Account</h2>
-            <p className="mt-1 text-sm" style={{ color: "#7a756e" }}>
-              Permanently delete your account and all your entries, reflections, and chart. This cannot be undone.
-            </p>
-            {!confirmDelete ? (
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="mt-4 rounded-full border px-5 py-2 text-sm font-medium transition hover:bg-black/5"
-                style={{ borderColor: "rgba(178, 58, 58, 0.4)", color: "#b23a3a" }}
-              >
-                Delete my account
-              </button>
-            ) : (
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <span className="text-sm" style={{ color: "#b23a3a" }}>Are you sure?</span>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="rounded-full px-5 py-2 text-sm font-semibold text-white transition disabled:opacity-60"
-                  style={{ background: "#b23a3a" }}
-                >
-                  {deleting ? "Deleting…" : "Yes, delete everything"}
-                </button>
-                <button
-                  onClick={() => setConfirmDelete(false)}
-                  className="rounded-full border px-5 py-2 text-sm font-medium transition hover:bg-black/5"
-                  style={{ borderColor: "rgba(23,37,31,0.15)", color: "#17251f" }}
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-          </section>
-
           {/* Past entries */}
           <section className="card-cream p-6">
             <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Past entries ({entries.length})</h2>
@@ -271,6 +214,17 @@ export default function ProfilePage() {
               </div>
             )}
           </section>
+
+          {/* Discreet management entry */}
+          <div className="mt-6 text-center">
+            <Link
+              href="/settings"
+              className="text-xs uppercase tracking-[0.14em] transition hover:text-[#1aa37c]"
+              style={{ color: "#9a948b" }}
+            >
+              Manage membership &amp; account
+            </Link>
+          </div>
         </div>
       </main>
     </div>
