@@ -65,8 +65,13 @@ export default function PrivacyPage() {
               Your controls
             </h2>
             <p>
-              You can export or delete your data at any time from your account
-              settings. Deletion is permanent and removes your entries from our
+              You can permanently delete your account and all of your data at any
+              time from your account settings (on the{" "}
+              <a href="/profile" className="text-mint underline">
+                My Chart
+              </a>{" "}
+              page, under &ldquo;Account&rdquo;). Deletion is permanent and
+              removes your entries, reflections, chart, and profile from our
               systems.
             </p>
 

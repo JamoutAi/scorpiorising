@@ -51,7 +51,7 @@ export function WaitlistCTA() {
             margin: "0 auto 2.5rem",
           }}
         >
-          Begin your first entry on a 7-day free trial. No card noise — just the stars.
+          Begin your first entry on a 7-day free trial. Just the stars.
         </p>
         <div className="reveal flex flex-wrap justify-center gap-4">
           <Link href="/signup?redir=/profile" className="btn-phosphor">

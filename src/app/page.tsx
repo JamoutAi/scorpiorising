@@ -7,6 +7,7 @@ import { Story } from "@/components/Story";
 import { Pricing } from "@/components/Pricing";
 import { ProductShowcase } from "@/components/ProductShowcase";
 import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { Faq } from "@/components/Faq";
 import { Footer } from "@/components/Footer";
 import { Marquee, Reveal, ConstellationThread } from "@/components/Design";
 
@@ -269,6 +270,7 @@ export default function Home() {
           </div>
         </section>
         <WaitlistCTA />
+        <Faq />
       </main>
       <Footer />
     </>
