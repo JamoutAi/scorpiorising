@@ -44,8 +44,21 @@ export default function TermsPage() {
             </h2>
             <p>
               You are responsible for the accuracy of the birth information you
-              provide. Paid plans renew until cancelled. We will notify you before
-              any price change affecting your plan.
+              provide. Paid plans renew automatically until cancelled. We will
+              notify you before any price change affecting your plan.
+            </p>
+
+            <h2 className="font-serif text-2xl font-semibold text-paper">
+              Free trial &amp; billing
+            </h2>
+            <p>
+              New members start with a 7-day free trial. You will not be charged
+              during the trial period. At the end of the trial your selected plan
+              renews automatically — currently $16.99/month or $79.99/year —
+              until you cancel. You can cancel anytime from your account
+              settings (Settings → Manage billing), and you will keep access
+              until the end of the current billing period. Cancelling during the
+              trial stops any charge before it happens.
             </p>
 
             <h2 className="font-serif text-2xl font-semibold text-paper">

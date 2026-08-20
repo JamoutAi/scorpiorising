@@ -71,9 +71,9 @@ export function ProductShowcase() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
-          {/* Today */}
+          {/* My Chart */}
           <Reveal delay={0} className="lg:col-span-2">
-            <AppPanel label="Today">
+            <AppPanel label="My Chart">
               <p
                 style={{
                   fontFamily: "var(--font-display), serif",

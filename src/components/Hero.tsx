@@ -99,7 +99,7 @@ export function Hero() {
                   letterSpacing: "0.04em",
                 }}
               >
-                No credit card required. Experience the magic first.
+                Start free for 7 days. Cancel anytime before it ends — no charge.
               </p>
             </div>
           </div>
