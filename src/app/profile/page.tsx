@@ -9,6 +9,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Sidebar } from "@/components/Sidebar";
 import { NatalChart } from "@/components/NatalChart";
+import { EntryCard } from "@/components/EntryCard";
 import { planetMeaning } from "@/lib/chartMeanings";
 
 interface Profile {
@@ -205,11 +206,7 @@ export default function ProfilePage() {
             ) : (
               <div className="mt-4 space-y-3">
                 {entries.map((e) => (
-                  <article key={e.id} className="rounded-xl border p-4" style={{ borderColor: "rgba(23,37,31,0.08)" }}>
-                    <p className="mb-1 text-xs" style={{ color: "#9a948b" }}>{new Date(e.created_at).toLocaleString()}</p>
-                    <p className="whitespace-pre-wrap text-sm" style={{ color: "#17251f" }}>{e.body}</p>
-                    {e.reading && <p className="mt-2 border-t pt-2 text-sm" style={{ borderColor: "rgba(23,37,31,0.08)", color: "#3a4a43" }}>{e.reading}</p>}
-                  </article>
+                  <EntryCard key={e.id} createdAt={e.created_at} body={e.body} reading={e.reading} />
                 ))}
               </div>
             )}
