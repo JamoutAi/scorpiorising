@@ -24,7 +24,7 @@ function PlanButton({ billing, label, className }: { billing: "monthly" | "annua
         email = data.session?.user.email ?? null;
       }
       if (!userId) {
-        window.location.href = `/signup?redir=/profile`;
+        window.location.href = `/start-trial`;
         return;
       }
       const res = await fetch("/api/checkout", {

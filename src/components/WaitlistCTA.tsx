@@ -54,7 +54,7 @@ export function WaitlistCTA() {
           Begin your first entry on a 7-day free trial. Just the stars.
         </p>
         <div className="reveal flex flex-wrap justify-center gap-4">
-          <Link href="/signup?redir=/profile" className="btn-phosphor">
+          <Link href="/start-trial" className="btn-phosphor">
             Begin Your First Entry
           </Link>
           <Link href="/login" className="btn-ghost">
