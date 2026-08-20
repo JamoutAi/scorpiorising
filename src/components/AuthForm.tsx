@@ -60,6 +60,31 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     }
   }
 
+  async function onForgot() {
+    if (!email) {
+      setStatus("error");
+      setMsg("Enter your email above first, then tap Forgot password.");
+      return;
+    }
+    setStatus("loading");
+    setMsg("");
+    try {
+      const { error } = await supabase!.auth.resetPasswordForEmail(email, {
+        redirectTo: "https://www.scorpiorising.ai/reset",
+      });
+      if (error) {
+        setStatus("error");
+        setMsg(error.message);
+        return;
+      }
+      setStatus("sent");
+      setMsg("Check your email for a secure link to reset your password.");
+    } catch {
+      setStatus("error");
+      setMsg("Something went wrong. Please try again.");
+    }
+  }
+
   if (status === "sent") {
     return (
       <div className="rounded-2xl border p-6" style={{ borderColor: "rgba(46,215,159,0.3)", background: "rgba(46,215,159,0.1)" }}>
@@ -100,9 +125,22 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         minLength={6}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password (min 6 characters)"
+        placeholder="you@stars.com"
         className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
       />
+
+      {mode === "login" && (
+        <div className="text-right">
+          <button
+            type="button"
+            onClick={onForgot}
+            className="text-xs underline"
+            style={{ color: "#2ed79f" }}
+          >
+            Forgot password?
+          </button>
+        </div>
+      )}
 
       <button
         type="submit"
