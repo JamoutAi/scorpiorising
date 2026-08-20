@@ -275,11 +275,10 @@ export default function JournalPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                    <MeaningBlock type="sun" sign={profile.chart.sun} />
-                    <MeaningBlock type="moon" sign={profile.chart.moon} />
-                    <MeaningBlock type="rising" sign={profile.chart.rising} />
-                  </div>
+                  <p className="mt-3 text-sm leading-relaxed" style={{ color: "#3a4a43" }}>
+                    Sun in {profile.chart.sun}, Moon in {profile.chart.moon}, Rising {profile.chart.rising}.
+                    {profile.chart.risingApprox ? " (Rising approximate — add your birth time for precision.)" : ""}
+                  </p>
                 </section>
 
                 {/* Write card */}
