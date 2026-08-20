@@ -215,7 +215,7 @@ export default function JournalPage() {
       <Sidebar email={user.email ?? undefined} name={profile?.name} onSignOut={signOut} active="Today" />
 
       <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
-        <div className="mx-auto max-w-3xl px-5 py-12">
+        <div className="mx-auto max-w-4xl px-5 py-12">
           {/* Mobile header */}
           <div className="mb-6 flex items-center justify-between lg:hidden">
             <h1 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.8rem", fontWeight: 300, color: "#17251f" }}>Your Journal</h1>

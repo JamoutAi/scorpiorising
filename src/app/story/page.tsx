@@ -50,7 +50,7 @@ export default function StoryPage() {
       <Sidebar email={user.email ?? undefined} onSignOut={() => { supabase!.auth.signOut().then(() => router.replace("/")); }} active="My Story" />
 
       <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
-        <div className="mx-auto max-w-3xl px-5 py-12">
+        <div className="mx-auto max-w-4xl px-5 py-12">
           <div className="mb-8">
             <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>My Story</p>
             <h1 style={{ fontFamily: "var(--font-display), serif", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 300, color: "#17251f" }}>

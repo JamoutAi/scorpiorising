@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/components/AuthProvider";
@@ -9,18 +8,18 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Sidebar } from "@/components/Sidebar";
 import { NatalChart } from "@/components/NatalChart";
+import { planetMeaning } from "@/lib/chartMeanings";
 
 interface Profile {
   id: string;
-  name?: string;
-  email?: string;
-  birth_date?: string;
-  birth_time?: string;
-  birth_place?: string;
+  name?: string | null;
+  birth_date?: string | null;
+  birth_place?: string | null;
   chart?: any;
-  plan?: string;
   plan_status?: string;
+  plan?: string;
 }
+
 interface Entry {
   id: string;
   body: string;
@@ -28,273 +27,194 @@ interface Entry {
   reading: string | null;
 }
 
+const THEMES: { key: string; words: string[] }[] = [
+  { key: "Boundaries", words: ["boundary", "boundaries", "respect", "people-please", "guilt", "permission"] },
+  { key: "Work", words: ["job", "work", "boss", "career", "quit", "quitting", "burnout", "business"] },
+  { key: "Rest & health", words: ["tired", "exhausted", "sleep", "rest", "anxious", "stress", "calm", "peace"] },
+  { key: "Relationships", words: ["partner", "boyfriend", "girlfriend", "husband", "wife", "ex", "family", "friend"] },
+  { key: "Self", words: ["worth", "confident", "confidence", "purpose", "identity", "myself"] },
+  { key: "Change", words: ["change", "afraid", "scared", "fear", "risk", "transition", "moving", "stuck"] },
+  { key: "Joy", words: ["happy", "joy", "excited", "grateful", "proud", "hope", "creative"] },
+];
+
+function deg(p: any) {
+  if (!p || typeof p.degreeInSign !== "number") return "";
+  return `${Math.round(p.degreeInSign)}°`;
+}
+
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [planInfo, setPlanInfo] = useState<string>("Checking…");
-  const [isMember, setIsMember] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  // daily star reading
-  const [daily, setDaily] = useState<string | null>(null);
-  const [dailyBusy, setDailyBusy] = useState(false);
-  const [dailyErr, setDailyErr] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login?redir=/profile");
   }, [loading, user, router]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
     if (!user) return;
     (async () => {
-      const token = (await supabase!.auth.getSession()).data.session?.access_token;
-      const res = await fetch("/api/journal", { headers: { authorization: `Bearer ${token}` } });
-      const data = await res.json();
-      setProfile(data.profile);
-      setEntries(data.entries || []);
-
-      try {
-        const sub = await (await fetch("/api/subscription", { headers: { authorization: `Bearer ${token}` } })).json();
-        if (sub.hasPlan) {
-          setIsMember(true);
-          setPlanInfo("Member");
-        } else if (data.profile?.plan_status === "active" || data.profile?.plan_status === "trialing") {
-          setIsMember(true);
-          setPlanInfo("Member");
-        } else {
-          setPlanInfo("Free / no active plan");
-        }
-      } catch {
-        setPlanInfo(data.profile?.plan_status === "active" ? "Member" : "Free / no active plan");
-      }
+      const [{ data: p }, { data: e }] = await Promise.all([
+        supabase!.from("profiles").select("*").eq("id", user.id).maybeSingle(),
+        supabase!.from("entries").select("id, body, created_at, reading:readings(content)").order("created_at", { ascending: false }).limit(12),
+      ]);
+      setProfile(p);
+      setEntries((e ?? []).map((row: any) => ({ id: row.id, body: row.body, created_at: row.created_at, reading: row.reading?.[0]?.content ?? null })));
     })();
   }, [user]);
 
-  async function manageBilling() {
-    setBusy(true);
-    const token = (await supabase!.auth.getSession()).data.session?.access_token;
-    const res = await fetch("/api/billing-portal", {
-      method: "POST",
-      headers: { authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-    setBusy(false);
-    if (data.url) window.location.href = data.url;
-    else router.push(data.url || "/pricing");
-  }
-
-  async function deleteEntry(id: string) {
-    if (!confirm("Delete this entry and its reflection? This can't be undone.")) return;
-    const token = (await supabase!.auth.getSession()).data.session?.access_token;
-    const res = await fetch("/api/journal", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
-      body: JSON.stringify({ action: "deleteEntry", entryId: id }),
-    });
-    if (res.ok) setEntries((prev) => prev.filter((e) => e.id !== id));
-  }
-
-  async function showStars() {
-    setDailyBusy(true);
-    setDailyErr(null);
-    setDaily(null);
-    const token = (await supabase!.auth.getSession()).data.session?.access_token;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 95000);
-    try {
-      const res = await fetch("/api/daily-reading", {
-        method: "POST",
-        headers: { authorization: `Bearer ${token}` },
-        signal: controller.signal,
-      });
-      const data = await res.json();
-      if (res.ok) setDaily(data.reading);
-      else if (res.status === 402) setDailyErr("Daily star readings are included with membership. Become a member to unlock.");
-      else setDailyErr("Couldn't generate your star reading just now. Try again.");
-    } catch {
-      setDailyErr("The stars are taking their time. Try again in a moment.");
-    } finally {
-      clearTimeout(timer);
-      setDailyBusy(false);
-    }
-  }
-
   if (!user) return null;
+
+  const chart = profile?.chart;
+  const sun = chart?.placements?.find((p: any) => p.key === "sun");
+  const moon = chart?.placements?.find((p: any) => p.key === "moon");
+  const rising = chart?.placements?.find((p: any) => p.key === "rising");
+  const isPaid = profile?.plan_status === "active" || profile?.plan_status === "trialing";
+
+  const themeCounts = THEMES.map((t) => ({
+    key: t.key,
+    count: entries.filter((e) => t.words.some((w) => (e.body + " " + (e.reading || "")).toLowerCase().includes(w))).length,
+  })).filter((t) => t.count > 0).sort((a, b) => b.count - a.count).slice(0, 4);
 
   return (
     <div className="flex min-h-screen" style={{ background: "#f7f3ea" }}>
       <Nav />
-
-      {/* Forest sidebar */}
       <Sidebar
         email={user.email ?? undefined}
-        name={profile?.name}
+        name={profile?.name ?? undefined}
         onSignOut={() => { supabase!.auth.signOut().then(() => router.replace("/")); }}
         active="My Chart"
       />
 
       <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
-        <div className="mx-auto max-w-3xl px-5 py-12">
-          {/* Mobile header */}
-          <div className="mb-6 flex items-center justify-between lg:hidden">
-            <h1 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.8rem", fontWeight: 300, color: "#17251f" }}>Your Profile</h1>
-            <Link href="/journal" className="btn-phosphor px-4 py-2 text-sm">Journal</Link>
+        <div className="mx-auto max-w-6xl px-5 py-10">
+          {/* Header */}
+          <div className="mb-8">
+            <p className="text-xs uppercase tracking-[0.22em]" style={{ color: "#1aa37c" }}>My Chart</p>
+            <h1 style={{ fontFamily: "var(--font-display), serif", fontSize: "clamp(2.2rem,4.5vw,3.2rem)", fontWeight: 300, color: "#17251f", lineHeight: 1.05 }}>
+              Good{new Date().getHours() < 12 ? " morning" : new Date().getHours() < 18 ? " afternoon" : " evening"}, {profile?.name?.split(" ")[0] || "friend"}.
+            </h1>
+            <p className="mt-2 text-base" style={{ color: "#7a756e" }}>Here is your cosmic and personal snapshot.</p>
           </div>
 
-          {/* Birth chart */}
-          <section className="card-cream mb-6 p-7">
-            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#17251f" }}>
-              Your birth chart
-            </h2>
-            {profile?.chart ? (
-              <div className="grid gap-6 sm:grid-cols-[200px_1fr] sm:items-center">
-                <div className="mx-auto">
-                  <NatalChart chart={profile.chart} size={200} />
-                </div>
-                <div className="flex flex-wrap gap-2">
-                <Chip label="Sun" value={profile.chart.sun} />
-                <Chip label="Moon" value={profile.chart.moon} />
-                <Chip label="Rising" value={profile.chart.rising} />
-                {profile.chart.risingApprox && (
-                  <span className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(23,37,31,0.06)", color: "#7a756e" }}>
-                    Rising approximate
-                  </span>
-                )}
+          {/* Snapshot cards */}
+          <div className="mb-6 grid gap-4 sm:grid-cols-3">
+            {[
+              { label: "Sun", sign: chart?.sun, d: deg(sun), note: planetMeaning("sun", chart?.sun) || "" },
+              { label: "Moon", sign: chart?.moon, d: deg(moon), note: planetMeaning("moon", chart?.moon) || "" },
+              { label: "Rising", sign: chart?.rising, d: deg(rising), note: planetMeaning("rising", chart?.rising) || "" },
+            ].map((s) => (
+              <div key={s.label} className="card-cream p-5">
+                <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "#9a948b" }}>{s.label}</p>
+                <p style={{ fontFamily: "var(--font-display), serif", fontSize: "1.7rem", fontWeight: 300, color: "#17251f" }}>
+                  {s.sign || "—"}{s.d && <span style={{ fontSize: "1rem", color: "#1aa37c" }}> {s.d}</span>}
+                </p>
+                <p className="mt-1 text-xs leading-snug" style={{ color: "#7a756e" }}>{s.note}</p>
               </div>
-              </div>
-            ) : (
-              <p style={{ color: "#7a756e" }}>No chart set yet.</p>
-            )}
-            <button onClick={() => router.push("/journal")} className="btn-ghost mt-4" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
-              Show me my chart
-            </button>
-          </section>
+            ))}
+          </div>
 
-          {/* Daily star reading (member) */}
-          <section className="card-cream mb-6 p-7">
-            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#17251f" }}>
-              Your daily star reading
-            </h2>
-            <p className="mb-4 text-sm" style={{ color: "#7a756e" }}>
-              A general reading of today&rsquo;s sky moving through your chart. Included in every membership.
-            </p>
-            <button onClick={showStars} disabled={dailyBusy} className="btn-phosphor">
-              {dailyBusy ? "Reading the sky…" : "Show me the stars"}
-            </button>
-            {dailyBusy && (
-              <p className="mt-3 text-xs" style={{ color: "#7a756e" }}>
-                Reading your stars — this can take up to a minute.
-              </p>
-            )}
-            {dailyErr && (
-              <p className="mt-4 rounded-xl border p-4 text-sm" style={{ borderColor: "rgba(31,200,150,0.25)", color: "#17251f", background: "rgba(31,200,150,0.08)" }}>
-                {dailyErr}
-                {!isMember && (
-                  <button onClick={() => router.push("/pricing")} className="btn-ghost ml-3 mt-2" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
-                    Become a member
-                  </button>
+          {/* Chart + Chapter */}
+          <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+            {/* Birth chart */}
+            <section className="card-cream p-6">
+              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Your birth chart</h2>
+              {chart ? (
+                <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+                  <div className="shrink-0">
+                    <NatalChart chart={chart} size={260} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm" style={{ color: "#7a756e" }}>
+                      Sun in {chart.sun}{deg(sun) && ` ${deg(sun)}`}, Moon in {chart.moon}{deg(moon) && ` ${deg(moon)}`}, Rising {chart.rising}{deg(rising) && ` ${deg(rising)}`}.
+                    </p>
+                    <p className="mt-2 text-sm" style={{ color: "#3a4a43" }}>{planetMeaning("rising", chart.rising)}</p>
+                    <button onClick={() => router.push("/journal")} className="btn-ghost mt-4" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
+                      Show me my chart
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4">
+                  <p style={{ color: "#7a756e" }}>No chart set yet.</p>
+                  <button onClick={() => router.push("/journal")} className="btn-phosphor mt-4">Set your chart</button>
+                </div>
+              )}
+            </section>
+
+            {/* Current chapter / story so far */}
+            <section className="card-cream p-6">
+              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Your story so far</h2>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "rgba(31,200,150,0.08)" }}>
+                  <span style={{ color: "#17251f" }}>Journal entries</span>
+                  <span className="font-medium" style={{ color: "#1aa37c" }}>{entries.length}</span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "rgba(31,200,150,0.08)" }}>
+                  <span style={{ color: "#17251f" }}>Membership</span>
+                  <span className="font-medium" style={{ color: "#1aa37c" }}>{isPaid ? "Member" : "Free"}</span>
+                </div>
+                {themeCounts.length > 0 && (
+                  <div className="rounded-xl px-4 py-3" style={{ background: "rgba(197,164,107,0.10)" }}>
+                    <p className="mb-2 text-xs uppercase tracking-[0.16em]" style={{ color: "#9a948b" }}>Recurring themes</p>
+                    <div className="flex flex-wrap gap-2">
+                      {themeCounts.map((t) => (
+                        <span key={t.key} className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(23,37,31,0.06)", color: "#17251f" }}>{t.key}</span>
+                      ))}
+                    </div>
+                  </div>
                 )}
-              </p>
-            )}
-            {daily && (
-              <div className="mt-5 rounded-2xl border p-6" style={{ borderColor: "rgba(23,37,31,0.08)", background: "#fffdf8" }}>
-                <p className="mt-2 whitespace-pre-wrap leading-relaxed" style={{ color: "#17251f" }}>
-                  {daily}
-                </p>
-                <p className="mt-4 text-xs" style={{ color: "#9a948b" }}>
-                  Reflection and support, not therapy.
-                </p>
+                <button onClick={() => router.push("/story")} className="btn-ghost w-full" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
+                  View your timeline
+                </button>
               </div>
-            )}
-          </section>
+            </section>
+          </div>
+
+          {/* Sky today + quick actions */}
+          <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+            <section className="card-cream p-6">
+              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Your daily star reading</h2>
+              <p className="mt-2 text-sm" style={{ color: "#7a756e" }}>A general reading of today&apos;s sky moving through your chart. Included in every membership.</p>
+              <button onClick={() => router.push("/reading")} className="btn-phosphor mt-4">Show me the stars</button>
+            </section>
+
+            <section className="card-cream p-6">
+              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Quick actions</h2>
+              <div className="mt-4 space-y-2">
+                <button onClick={() => router.push("/ask")} className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition hover:bg-black/5" style={{ background: "rgba(31,200,150,0.08)", color: "#17251f" }}>
+                  <span>Ask Scorpio Rising</span><span style={{ color: "#1aa37c" }}>→</span>
+                </button>
+                <button onClick={() => router.push("/journal")} className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition hover:bg-black/5" style={{ background: "rgba(31,200,150,0.08)", color: "#17251f" }}>
+                  <span>Write in your journal</span><span style={{ color: "#1aa37c" }}>→</span>
+                </button>
+                <button onClick={() => router.push("/patterns")} className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition hover:bg-black/5" style={{ background: "rgba(31,200,150,0.08)", color: "#17251f" }}>
+                  <span>See your patterns</span><span style={{ color: "#1aa37c" }}>→</span>
+                </button>
+              </div>
+            </section>
+          </div>
 
           {/* Past entries */}
-          <section className="card-cream p-7">
-            <h2 className="mb-4" style={{ fontFamily: "var(--font-display), serif", fontSize: "1.5rem", fontWeight: 300, color: "#17251f" }}>
-              Past entries ({entries.length})
-            </h2>
+          <section className="card-cream p-6">
+            <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Past entries ({entries.length})</h2>
             {entries.length === 0 ? (
-              <p style={{ color: "#7a756e" }}>No entries yet. Your reflections live in your journal.</p>
+              <p className="mt-3 text-sm" style={{ color: "#7a756e" }}>No entries yet. Your reflections will appear here.</p>
             ) : (
-              <div className="space-y-4">
+              <div className="mt-4 space-y-3">
                 {entries.map((e) => (
-                  <article key={e.id} className="rounded-2xl border p-5" style={{ borderColor: "rgba(23,37,31,0.08)", background: "#fffdf8" }}>
-                    <div className="flex items-start justify-between gap-4">
-                      <p className="text-xs" style={{ color: "#9a948b" }}>{new Date(e.created_at).toLocaleString()}</p>
-                      <button
-                        onClick={() => deleteEntry(e.id)}
-                        className="text-xs uppercase tracking-[0.1em] transition hover:text-red-500"
-                        style={{ color: "#b0a99f" }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                    <p className="mt-2 whitespace-pre-wrap" style={{ color: "#17251f" }}>{e.body}</p>
-                    {e.reading && (
-                      <p className="mt-3 border-t pt-3 text-sm" style={{ borderColor: "rgba(23,37,31,0.08)", color: "#3a4a43" }}>
-                        {e.reading}
-                      </p>
-                    )}
+                  <article key={e.id} className="rounded-xl border p-4" style={{ borderColor: "rgba(23,37,31,0.08)" }}>
+                    <p className="mb-1 text-xs" style={{ color: "#9a948b" }}>{new Date(e.created_at).toLocaleString()}</p>
+                    <p className="whitespace-pre-wrap text-sm" style={{ color: "#17251f" }}>{e.body}</p>
+                    {e.reading && <p className="mt-2 border-t pt-2 text-sm" style={{ borderColor: "rgba(23,37,31,0.08)", color: "#3a4a43" }}>{e.reading}</p>}
                   </article>
                 ))}
               </div>
             )}
-            <button onClick={() => router.push("/journal")} className="btn-ghost mt-5" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
-              Open your journal
-            </button>
-          </section>
-
-          {/* Plan — at the bottom */}
-          <section className="card-cream mt-6 p-7">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>
-                  Plan
-                </p>
-                <p className="mt-1" style={{ fontSize: "1.4rem", color: "#17251f" }}>
-                  {planInfo}
-                </p>
-                {profile?.email && (
-                  <p className="mt-1 text-sm" style={{ color: "#7a756e" }}>
-                    {profile.email}
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {!isMember && (
-                  <button onClick={() => router.push("/pricing")} className="btn-phosphor">
-                    Become a member
-                  </button>
-                )}
-                <button onClick={manageBilling} disabled={busy} className="btn-ghost" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#17251f" }}>
-                  {busy ? "Opening…" : "Manage billing"}
-                </button>
-              </div>
-            </div>
-            <p className="mt-4 text-xs" style={{ color: "#9a948b" }}>
-              Upgrade, cancel, or update your payment method via Stripe.
-            </p>
           </section>
         </div>
       </main>
     </div>
-  );
-}
-
-function Chip({ label, value }: { label: string; value: string }) {
-  return (
-    <span className="rounded-full px-4 py-2 text-sm" style={{ background: "rgba(31,200,150,0.14)", color: "#17251f" }}>
-      <span style={{ color: "#1aa37c" }}>{label}: </span>
-      {value}
-    </span>
   );
 }
