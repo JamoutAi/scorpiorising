@@ -84,7 +84,7 @@ export function Hero() {
             </p>
             <div className="reveal flex flex-wrap gap-4" style={{ transitionDelay: "240ms" }}>
               <Link href="/signup?redir=/profile" className="btn-phosphor">
-                Try Your First Reflection Free
+                Start Your 7-Day Free Trial
               </Link>
               <Link href="/#demo" className="btn-ghost">
                 See It In Action
