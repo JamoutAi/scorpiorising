@@ -3,8 +3,8 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
 const PRICE_TO_PLAN: Record<string, string> = {
-  "price_1U5sUIDG0j62nIpyaesyJnVx": "member", // Monthly — $12/mo
-  "price_1U5sUZDG0j62nIpytP3oJOGL": "member", // Annual — $99/yr
+  "price_1U6b60DG0j62nIpyDJMkD7tD": "member", // Monthly — $16.99/mo
+  "price_1U5sUZDG0j62nIpytP3oJOGL": "member", // Annual — $79.99/yr
 };
 
 export async function GET(req: NextRequest) {

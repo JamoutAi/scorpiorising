@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Reveal, StarField, ConstellationThread } from "./Design";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 
-function PlanButton({ billing, className }: { billing: "monthly" | "annual"; className: string }) {
+function PlanButton({ billing, label, className }: { billing: "monthly" | "annual"; label: string; className: string }) {
   const [loading, setLoading] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => {
@@ -23,7 +23,6 @@ function PlanButton({ billing, className }: { billing: "monthly" | "annual"; cla
         userId = data.session?.user.id ?? null;
         email = data.session?.user.email ?? null;
       }
-      // Must be signed in so the webhook can match the plan to this account.
       if (!userId) {
         window.location.href = `/signup?redir=/profile`;
         return;
@@ -46,19 +45,19 @@ function PlanButton({ billing, className }: { billing: "monthly" | "annual"; cla
   };
   return (
     <button onClick={onClick} className={`mt-2 block w-full text-center ${className}`} disabled={loading}>
-      {loading ? "Redirecting…" : signedIn ? "Become a Member" : "Try Your First Reflection Free"}
+      {loading ? "Redirecting…" : label}
     </button>
   );
 }
 
 const tiers = [
   {
-    name: "Scorpio Rising",
-    monthly: "$12",
-    annual: "$99",
+    name: "Monthly",
+    billing: "monthly" as const,
+    price: "$16.99",
     cadence: "/month",
-    annualCadence: "/year",
-    blurb: "Everything included. One membership.",
+    equiv: null as string | null,
+    blurb: "Flexible. Cancel anytime.",
     features: [
       "Your natal chart, set once",
       "Unlimited reflective entries",
@@ -67,13 +66,28 @@ const tiers = [
       "Weekly Constellation & patterns",
       "Private by design",
     ],
-    cta: "Try Your First Reflection Free",
+    highlight: false,
+    badge: null as string | null,
+  },
+  {
+    name: "Annual",
+    billing: "annual" as const,
+    price: "$79.99",
+    cadence: "/year",
+    equiv: "$6.67/mo billed annually",
+    blurb: "Best value. Two months free.",
+    features: [
+      "Everything in Monthly",
+      "7-day free trial — then $6.67/mo",
+      "Save over paying monthly",
+      "All future features included",
+    ],
     highlight: true,
+    badge: "7-Day Free Trial",
   },
 ];
 
 export function Pricing() {
-  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   return (
     <section
       id="pricing"
@@ -109,9 +123,12 @@ export function Pricing() {
               color: "#17251f",
             }}
           >
-            Start free — your first reflection is on us.{" "}
-            <em style={{ fontStyle: "italic", color: "#1aa37c" }}>Go deeper when you're ready.</em>
+            Start free for 7 days.{" "}
+            <em style={{ fontStyle: "italic", color: "#1aa37c" }}>Keep going when it helps.</em>
           </h2>
+          <p className="reveal mt-4 text-base" style={{ color: "#7a756e" }}>
+            Try Scorpio Rising free for a week. Then $16.99/month or $79.99/year. Cancel anytime.
+          </p>
         </div>
 
         <div className="mx-auto grid max-w-3xl gap-6 md:grid-cols-2">
@@ -128,6 +145,14 @@ export function Pricing() {
                     : undefined
                 }
               >
+                {t.badge && (
+                  <span
+                    className="absolute -top-3 right-6 rounded-full px-4 py-1 text-xs font-semibold"
+                    style={{ background: "#c5a46b", color: "#08201a" }}
+                  >
+                    {t.badge}
+                  </span>
+                )}
                 <div
                   style={{
                     fontFamily: "var(--font-sans), sans-serif",
@@ -151,7 +176,7 @@ export function Pricing() {
                     marginBottom: "0.5rem",
                   }}
                 >
-                  {billing === "annual" ? t.annual : t.monthly}
+                  {t.price}
                   <span
                     style={{
                       fontFamily: "var(--font-sans), sans-serif",
@@ -161,9 +186,12 @@ export function Pricing() {
                       marginLeft: "0.5rem",
                     }}
                   >
-                    {billing === "annual" ? t.annualCadence : t.cadence}
+                    {t.cadence}
                   </span>
                 </div>
+                {t.equiv && (
+                  <p className="mb-2 text-sm" style={{ color: "#1aa37c" }}>{t.equiv}</p>
+                )}
                 <p
                   style={{
                     fontFamily: "var(--font-display), serif",
@@ -184,26 +212,14 @@ export function Pricing() {
                     </li>
                   ))}
                 </ul>
-                <div className="mb-6 inline-flex rounded-full border p-1" style={{ borderColor: "rgba(23,37,31,0.12)", fontFamily: "var(--font-sans), sans-serif" }}>
-                  <button
-                    onClick={() => setBilling("monthly")}
-                    className="rounded-full px-4 py-1 text-xs font-semibold transition"
-                    style={billing === "monthly" ? { background: "#1fc896", color: "#072019" } : { color: "#7a756e" }}
-                  >
-                    Monthly · $12
-                  </button>
-                  <button
-                    onClick={() => setBilling("annual")}
-                    className="rounded-full px-4 py-1 text-xs font-semibold transition"
-                    style={billing === "annual" ? { background: "#1fc896", color: "#072019" } : { color: "#7a756e" }}
-                  >
-                    Annual · $99
-                  </button>
-                </div>
                 <p className="mb-5 text-xs uppercase tracking-[0.15em]" style={{ color: "#1aa37c" }}>
                   7-day free trial · cancel anytime
                 </p>
-                <PlanButton billing={billing} className="btn-phosphor" />
+                <PlanButton
+                  billing={t.billing}
+                  label={t.highlight ? "Start 7-Day Free Trial" : "Start 7-Day Free Trial"}
+                  className="btn-phosphor"
+                />
               </div>
             </Reveal>
           ))}
