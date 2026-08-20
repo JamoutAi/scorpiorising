@@ -25,7 +25,7 @@ function PlanButton({ billing, className }: { billing: "monthly" | "annual"; cla
       }
       // Must be signed in so the webhook can match the plan to this account.
       if (!userId) {
-        window.location.href = `/signup?redir=/journal`;
+        window.location.href = `/signup?redir=/profile`;
         return;
       }
       const res = await fetch("/api/checkout", {

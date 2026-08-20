@@ -52,7 +52,7 @@ export default function JournalPage() {
   const [reflection, setReflection] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loading && !user) router.replace("/login?redir=/journal");
+    if (!loading && !user) router.replace("/login?redir=/profile");
   }, [loading, user, router]);
 
   useEffect(() => {
@@ -196,7 +196,7 @@ export default function JournalPage() {
               <Logo />
             </div>
             <p className="text-ink/70">Please sign in to open your journal.</p>
-            <Link href="/login?redir=/journal" className="btn-phosphor mt-6 inline-block">Sign in</Link>
+            <Link href="/login?redir=/profile" className="btn-phosphor mt-6 inline-block">Sign in</Link>
           </div>
         </main>
       </>
@@ -207,7 +207,7 @@ export default function JournalPage() {
     <div className="flex min-h-screen" style={{ background: "#f7f3ea" }}>
       <Nav />
 
-      <Sidebar email={user.email ?? undefined} name={profile?.name ?? undefined} onSignOut={signOut} active="Today" />
+      <Sidebar email={user.email ?? undefined} name={profile?.name ?? undefined} onSignOut={signOut} active="Journal" />
 
       <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto max-w-4xl px-5 py-12">

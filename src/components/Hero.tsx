@@ -83,7 +83,7 @@ export function Hero() {
               patterns in your life over time.
             </p>
             <div className="reveal flex flex-wrap gap-4" style={{ transitionDelay: "240ms" }}>
-              <Link href="/signup?redir=/journal" className="btn-phosphor">
+              <Link href="/signup?redir=/profile" className="btn-phosphor">
                 Try Your First Reflection Free
               </Link>
               <Link href="/#demo" className="btn-ghost">

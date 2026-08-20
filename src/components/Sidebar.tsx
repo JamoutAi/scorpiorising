@@ -4,11 +4,10 @@ import Link from "next/link";
 import { Logo } from "./Logo";
 
 const NAV = [
-  { label: "Today", href: "/journal" },
+  { label: "My Chart", href: "/profile" },
   { label: "Journal", href: "/journal" },
   { label: "Patterns", href: "/patterns" },
   { label: "My Story", href: "/story" },
-  { label: "My Chart", href: "/profile" },
 ];
 
 export function Sidebar({

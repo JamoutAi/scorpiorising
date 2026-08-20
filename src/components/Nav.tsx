@@ -119,7 +119,7 @@ export function Nav() {
               <Link href="/login" className="btn-ghost py-2 px-5 text-sm">
                 Sign In
               </Link>
-              <Link href="/signup?redir=/journal" className="btn-phosphor py-2 px-5 text-sm">
+              <Link href="/signup?redir=/profile" className="btn-phosphor py-2 px-5 text-sm">
                 Open Your Journal
               </Link>
             </>
@@ -166,7 +166,7 @@ export function Nav() {
               Profile
             </Link>
           )}
-          <Link href="/signup?redir=/journal" className="btn-phosphor mt-2 text-center">
+          <Link href="/signup?redir=/profile" className="btn-phosphor mt-2 text-center">
             Open Your Journal
           </Link>
         </div>
