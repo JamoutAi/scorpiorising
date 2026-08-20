@@ -93,8 +93,8 @@ export default function StartTrial() {
       <Nav />
       <main className="flex min-h-screen items-center justify-center px-5 py-24" style={{ background: "#0c2a23" }}>
         <div className="card-cream w-full max-w-md p-10 text-center">
-          <div className="mx-auto mb-6 w-32 opacity-40">
-            <Logo />
+          <div className="mx-auto mb-6 w-32">
+            <Logo tone="dark" />
           </div>
           <h1 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.9rem", fontWeight: 300, color: "#17251f" }}>
             Your 7-day free trial

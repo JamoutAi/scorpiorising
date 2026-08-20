@@ -1,6 +1,8 @@
 import Link from "next/link";
 
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ className = "", tone = "light" }: { className?: string; tone?: "light" | "dark" }) {
+  const ink = tone === "dark" ? "#17251f" : "#f4f1ea";
+  const accent = tone === "dark" ? "#1aa37c" : "#1fc896";
   return (
     <Link href="/" className={`flex items-center gap-2 ${className}`}>
       <svg
@@ -8,7 +10,8 @@ export function Logo({ className = "" }: { className?: string }) {
         height="22"
         viewBox="0 0 24 24"
         fill="none"
-        className="shrink-0 text-paper"
+        className="shrink-0"
+        style={{ color: ink }}
         aria-hidden="true"
       >
         <circle cx="12" cy="12" r="5.5" stroke="currentColor" strokeWidth="1.5" />
@@ -23,8 +26,8 @@ export function Logo({ className = "" }: { className?: string }) {
         />
         <circle cx="12" cy="12" r="1.5" fill="currentColor" />
       </svg>
-      <span className="font-serif text-lg font-bold tracking-tight text-paper">
-        SCORPIO <span className="text-mint">Rising</span>
+      <span className="font-serif text-lg font-bold tracking-tight" style={{ color: ink }}>
+        SCORPIO <span style={{ color: accent }}>Rising</span>
       </span>
     </Link>
   );
