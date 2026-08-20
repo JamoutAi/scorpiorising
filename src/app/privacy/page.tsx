@@ -15,8 +15,9 @@ export default function PrivacyPage() {
           <div className="mt-10 space-y-6 text-paper/80">
             <p>
               Scorpio Rising is a journal. That means the words you write here are
-              among the most vulnerable you will ever put down. Privacy is not
-              fine print for us — it is a feature and a promise.
+              among the most vulnerable you will ever put down. We take privacy
+              seriously, and we'd rather be straight with you about what it does
+              and doesn't mean than make promises we can't keep.
             </p>
 
             <h2 className="font-serif text-2xl font-semibold text-paper">
@@ -32,17 +33,35 @@ export default function PrivacyPage() {
               How we protect it
             </h2>
             <ul className="list-disc space-y-2 pl-6">
-              <li>Journal entries are encrypted at rest.</li>
+              <li>Journal entries are encrypted at rest on our servers.</li>
               <li>
-                Row-level security ensures a user can only ever read and write
-                their own data. Our systems are scoped so no operator can read
-                your entries.
+                Row-level security ensures other users can never read your data.
+                As the operator, we can access stored data to run the service, and
+                our infrastructure provider can too.
               </li>
               <li>
                 Your chart and entries are never sold, and never used to train
                 models that serve other people.
               </li>
+              <li>
+                This is not end-to-end encrypted, so it is not technically
+                inaccessible to us. For that reason it should not be treated as
+                legally privileged.
+              </li>
             </ul>
+
+            <h2 className="font-serif text-2xl font-semibold text-paper">
+              Legal disclosure
+            </h2>
+            <p>
+              Like most online services, Scorpio Rising could be required to
+              disclose account data if compelled by law — for example, by a
+              subpoena, court order, or search warrant served on us or our
+              infrastructure providers. Deleting your account removes your data
+              from our systems, but it does not protect data that has already
+              been preserved by legal process. If confidentiality matters in a
+              legal situation, do not write it here.
+            </p>
 
             <h2 className="font-serif text-2xl font-semibold text-paper">
               Not a substitute for care
@@ -67,10 +86,10 @@ export default function PrivacyPage() {
             <p>
               You can permanently delete your account and all of your data at any
               time from your account settings (on the{" "}
-              <a href="/profile" className="text-mint underline">
-                My Chart
+              <a href="/settings" className="text-mint underline">
+                Settings
               </a>{" "}
-              page, under &ldquo;Account&rdquo;). Deletion is permanent and
+              page, under &ldquo;Close account&rdquo;). Deletion is permanent and
               removes your entries, reflections, chart, and profile from our
               systems.
             </p>

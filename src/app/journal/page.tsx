@@ -252,6 +252,9 @@ export default function JournalPage() {
                 <p className="mb-4 mt-1 text-sm" style={{ color: "#7a756e" }}>
                   What's on your mind and in your heart? Scorpio Rising reflects it back through your chart.
                 </p>
+                <p className="mb-4 text-xs" style={{ color: "#9a948b" }}>
+                  Your entries are private to your account, but they are not legally privileged — avoid writing anything you wouldn&rsquo;t want disclosed in a legal matter.
+                </p>
                 <form onSubmit={submitEntry}>
                   <textarea
                     value={entry}
