@@ -39,18 +39,15 @@ export default function JournalPage() {
   const [scrolled, setScrolled] = useState(false);
   const [gated, setGated] = useState(false);
 
-  // freemium upsell
   const [freeLimit, setFreeLimit] = useState(false);
   const [freeLimitMsg, setFreeLimitMsg] = useState("");
 
-  // chart-setup form
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
   const [birthPlace, setBirthPlace] = useState("");
   const [name, setName] = useState("");
   const [formMsg, setFormMsg] = useState("");
 
-  // compose
   const [entry, setEntry] = useState("");
   const [reflection, setReflection] = useState<string | null>(null);
 
@@ -83,7 +80,6 @@ export default function JournalPage() {
         .order("created_at", { ascending: false });
       setEntries(e ?? []);
 
-      // freemium: free users capped after 1 reflection
       const isActive =
         p?.plan_status === "active" || p?.plan_status === "trialing";
       if (!isActive && (e ?? []).length >= 1) {
@@ -211,8 +207,7 @@ export default function JournalPage() {
     <div className="flex min-h-screen" style={{ background: "#f7f3ea" }}>
       <Nav />
 
-      {/* Forest sidebar */}
-      <Sidebar email={user.email ?? undefined} name={profile?.name} onSignOut={signOut} active="Today" />
+      <Sidebar email={user.email ?? undefined} name={profile?.name ?? undefined} onSignOut={signOut} active="Today" />
 
       <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto max-w-4xl px-5 py-12">
@@ -259,34 +254,72 @@ export default function JournalPage() {
               </form>
             </section>
           ) : (
-            <section className="card-cream mt-2 p-6">
-              <div className="mb-4 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-                <div className="shrink-0">
-                  <NatalChart chart={profile.chart} size={180} />
-                </div>
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>Your chart</span>
-                    <Chip label="Sun" value={profile.chart.sun} />
-                    <Chip label="Moon" value={profile.chart.moon} />
-                    <Chip label="Rising" value={profile.chart.rising} />
-                    {profile.chart.risingApprox && (
-                      <span className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(23,37,31,0.06)", color: "#7a756e" }}>Rising approximate</span>
-                    )}
+            <>
+              {/* Bento: chart + write */}
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+                {/* Chart card */}
+                <section className="card-cream p-6">
+                  <div className="mb-4 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+                    <div className="shrink-0">
+                      <NatalChart chart={profile.chart} size={180} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>Your chart</span>
+                        <Chip label="Sun" value={profile.chart.sun} />
+                        <Chip label="Moon" value={profile.chart.moon} />
+                        <Chip label="Rising" value={profile.chart.rising} />
+                        {profile.chart.risingApprox && (
+                          <span className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(23,37,31,0.06)", color: "#7a756e" }}>Rising approximate</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    <MeaningBlock type="sun" sign={profile.chart.sun} />
+                    <MeaningBlock type="moon" sign={profile.chart.moon} />
+                    <MeaningBlock type="rising" sign={profile.chart.rising} />
+                  </div>
+                </section>
+
+                {/* Write card */}
+                <section className="card-cream flex flex-col p-6">
+                  <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.4rem", fontWeight: 300, color: "#17251f" }}>Write a reflection</h2>
+                  <p className="mb-3 text-sm" style={{ color: "#7a756e" }}>Scorpio Rising reads your stars as you write.</p>
+                  <form onSubmit={submitEntry} className="flex flex-1 flex-col">
+                    <textarea
+                      value={entry}
+                      onChange={(e) => setEntry(e.target.value)}
+                      placeholder="What's on your mind?"
+                      rows={5}
+                      disabled={freeLimit}
+                      className="paper-input w-full flex-1 px-5 py-4 text-lg disabled:opacity-50"
+                      style={{ fontFamily: "var(--font-display), serif" }}
+                    />
+                    <button type="submit" disabled={busy || !entry.trim() || freeLimit} className="btn-phosphor mt-3 self-start">
+                      {busy ? "Connecting the dots…" : "Write"}
+                    </button>
+                    {freeLimit ? (
+                      <p className="mt-2 text-xs" style={{ color: "#1aa37c" }}>You've used your free reflection — upgrade to keep writing.</p>
+                    ) : busy ? (
+                      <p className="mt-2 text-xs" style={{ color: "#7a756e" }}>Reading your stars — this can take up to a minute.</p>
+                    ) : null}
+                  </form>
+                  {reflection && (
+                    <div className="mt-4 border-t pt-4" style={{ borderColor: "rgba(23,37,31,0.08)" }}>
+                      <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>Your reflection</p>
+                      <p className="mt-2 whitespace-pre-wrap leading-relaxed" style={{ color: "#17251f" }}>{reflection}</p>
+                      <p className="mt-3 text-xs" style={{ color: "#9a948b" }}>Reflection and support, not therapy.</p>
+                    </div>
+                  )}
+                </section>
               </div>
 
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <MeaningBlock type="sun" sign={profile.chart.sun} />
-                <MeaningBlock type="moon" sign={profile.chart.moon} />
-                <MeaningBlock type="rising" sign={profile.chart.rising} />
-              </div>
-
+              {/* Rest of your sky */}
               {profile.chart.placements?.length > 0 && (
-                <div className="mt-5 border-t pt-4" style={{ borderColor: "rgba(23,37,31,0.08)" }}>
+                <div className="card-cream mt-6 p-6">
                   <p className="mb-3 text-xs uppercase tracking-[0.2em]" style={{ color: "#7a756e" }}>The rest of your sky</p>
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {profile.chart.placements
                       .filter((p: any) => !["sun", "moon", "rising", "ascendant"].includes(p.key?.toLowerCase()))
                       .map((p: any, i: number) => (
@@ -312,90 +345,51 @@ export default function JournalPage() {
                   </a>
                 </div>
               )}
-            </section>
-          )}
 
-          {/* Compose */}
-          <form onSubmit={submitEntry} className="mt-8">
-            <textarea
-              value={entry}
-              onChange={(e) => setEntry(e.target.value)}
-              placeholder="What's on your mind?"
-              rows={5}
-              disabled={freeLimit}
-              className="paper-input w-full px-5 py-4 text-lg disabled:opacity-50"
-              style={{ fontFamily: "var(--font-display), serif" }}
-            />
-            <button
-              type="submit"
-              disabled={busy || !entry.trim() || freeLimit}
-              className="btn-phosphor mt-3"
-            >
-              {busy ? "Connecting the dots…" : "Write"}
-            </button>
-            {freeLimit ? (
-              <p className="mt-2 text-xs" style={{ color: "#1aa37c" }}>
-                You've used your free reflection — upgrade to keep writing.
+              {freeLimit && (
+                <div className="card-cream mt-6 border border-[#1fc896]/40 p-8 text-center">
+                  <p style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Your free reflection is complete.</p>
+                  <p className="mx-auto mt-3 max-w-md text-sm" style={{ color: "#7a756e" }}>{freeLimitMsg}</p>
+                  <Link href="/pricing" className="btn-phosphor mt-6 inline-block">
+                    See plans &amp; upgrade
+                  </Link>
+                </div>
+              )}
+
+              {/* History */}
+              {entries.length > 0 && (
+                <section className="mt-10 space-y-6">
+                  <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.4rem", fontWeight: 300, color: "#17251f" }}>Past entries</h2>
+                  {entries.map((e) => (
+                    <article key={e.id} className="card-cream p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <p className="text-xs" style={{ color: "#9a948b" }}>{new Date(e.created_at).toLocaleString()}</p>
+                        <button
+                          onClick={() => deleteEntry(e.id)}
+                          className="text-xs uppercase tracking-[0.1em] transition hover:text-red-500"
+                          style={{ color: "#b0a99f" }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                      <p className="mt-2 whitespace-pre-wrap" style={{ color: "#17251f" }}>{e.body}</p>
+                      {e.reading && (
+                        <p className="mt-4 border-t pt-4" style={{ borderColor: "rgba(23,37,31,0.08)", color: "#3a4a43" }}>{e.reading}</p>
+                      )}
+                    </article>
+                  ))}
+                </section>
+              )}
+
+              {entries.length === 0 && !reflection && (
+                <p className="mt-12 text-center" style={{ color: "#9a948b" }}>Your journal is empty. Write your first entry above.</p>
+              )}
+
+              <p className="mt-12 text-center text-sm" style={{ color: "#9a948b" }}>
+                Need support? <Link href="/support" className="underline" style={{ color: "#1aa37c" }}>Crisis resources</Link>
               </p>
-            ) : busy ? (
-              <p className="mt-2 text-xs" style={{ color: "#7a756e" }}>
-                Reading your stars — this can take up to a minute.
-              </p>
-            ) : null}
-          </form>
-
-          {reflection && (
-            <div className="card-cream mt-6 p-6">
-              <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>Your reflection</p>
-              <p className="mt-3 whitespace-pre-wrap leading-relaxed" style={{ color: "#17251f" }}>{reflection}</p>
-              <p className="mt-4 text-xs" style={{ color: "#9a948b" }}>Reflection and support, not therapy.</p>
-            </div>
+            </>
           )}
-
-          {freeLimit && (
-            <div className="card-cream mt-6 border border-[#1fc896]/40 p-8 text-center">
-              <p style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Your free reflection is complete.</p>
-              <p className="mx-auto mt-3 max-w-md text-sm" style={{ color: "#7a756e" }}>{freeLimitMsg}</p>
-              <Link href="/pricing" className="btn-phosphor mt-6 inline-block">
-                See plans &amp; upgrade
-              </Link>
-            </div>
-          )}
-
-          {/* History */}
-          {entries.length > 0 && (
-            <section className="mt-12 space-y-6">
-              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.4rem", fontWeight: 300, color: "#17251f" }}>Past entries</h2>
-              {entries.map((e) => (
-                <article key={e.id} className="card-cream p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <p className="text-xs" style={{ color: "#9a948b" }}>{new Date(e.created_at).toLocaleString()}</p>
-                    <button
-                      onClick={() => deleteEntry(e.id)}
-                      className="text-xs uppercase tracking-[0.1em] transition hover:text-red-500"
-                      style={{ color: "#b0a99f" }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  <p className="mt-2 whitespace-pre-wrap" style={{ color: "#17251f" }}>{e.body}</p>
-                  {e.reading && (
-                    <p className="mt-4 border-t pt-4" style={{ borderColor: "rgba(23,37,31,0.08)", color: "#3a4a43" }}>{e.reading}</p>
-                  )}
-                </article>
-              ))}
-            </section>
-          )}
-
-          {entries.length === 0 && !reflection && (
-            <p className="mt-12 text-center" style={{ color: "#9a948b" }}>
-              Your journal is empty. Write your first entry above.
-            </p>
-          )}
-
-          <p className="mt-12 text-center text-sm" style={{ color: "#9a948b" }}>
-            Need support? <Link href="/support" className="underline" style={{ color: "#1aa37c" }}>Crisis resources</Link>
-          </p>
         </div>
       </main>
     </div>
