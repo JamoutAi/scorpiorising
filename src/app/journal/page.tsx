@@ -9,6 +9,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/Logo";
 import { Sidebar } from "@/components/Sidebar";
+import { NatalChart } from "@/components/NatalChart";
 import { placementMeaning, PLACEMENT_LABEL, PLACEMENT_INTRO, type PlacementType, planetMeaning } from "@/lib/chartMeanings";
 
 interface Profile {
@@ -131,7 +132,7 @@ export default function JournalPage() {
       const res = await fetch("/api/journal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: entry }),
+        body: JSON.stringify({ action: "addEntry", entry }),
       });
       const json = await res.json();
       if (res.status === 402) {
@@ -259,14 +260,21 @@ export default function JournalPage() {
             </section>
           ) : (
             <section className="card-cream mt-2 p-6">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>Your chart</span>
-                <Chip label="Sun" value={profile.chart.sun} />
-                <Chip label="Moon" value={profile.chart.moon} />
-                <Chip label="Rising" value={profile.chart.rising} />
-                {profile.chart.risingApprox && (
-                  <span className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(23,37,31,0.06)", color: "#7a756e" }}>Rising approximate</span>
-                )}
+              <div className="mb-4 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+                <div className="shrink-0">
+                  <NatalChart chart={profile.chart} size={180} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>Your chart</span>
+                    <Chip label="Sun" value={profile.chart.sun} />
+                    <Chip label="Moon" value={profile.chart.moon} />
+                    <Chip label="Rising" value={profile.chart.rising} />
+                    {profile.chart.risingApprox && (
+                      <span className="rounded-full px-3 py-1 text-xs" style={{ background: "rgba(23,37,31,0.06)", color: "#7a756e" }}>Rising approximate</span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="mt-5 grid gap-3 sm:grid-cols-3">

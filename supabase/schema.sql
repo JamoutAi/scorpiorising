@@ -55,7 +55,24 @@ drop policy if exists "readings own" on public.readings;
 create policy "readings own" on public.readings
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
--- 5) Auto-create a profile row when a user signs up.
+-- 6) Ask Scorpio Rising — saved conversations (max 20 per user).
+create table if not exists public.chats (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text default 'New conversation',
+  messages jsonb not null default '[]'::jsonb,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index if not exists chats_user_idx on public.chats(user_id, updated_at desc);
+
+alter table public.chats enable row level security;
+
+drop policy if exists "chats own" on public.chats;
+create policy "chats own" on public.chats
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql

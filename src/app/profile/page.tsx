@@ -8,6 +8,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Sidebar } from "@/components/Sidebar";
+import { NatalChart } from "@/components/NatalChart";
 
 interface Profile {
   id: string;
@@ -155,7 +156,11 @@ export default function ProfilePage() {
               Your birth chart
             </h2>
             {profile?.chart ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="grid gap-6 sm:grid-cols-[200px_1fr] sm:items-center">
+                <div className="mx-auto">
+                  <NatalChart chart={profile.chart} size={200} />
+                </div>
+                <div className="flex flex-wrap gap-2">
                 <Chip label="Sun" value={profile.chart.sun} />
                 <Chip label="Moon" value={profile.chart.moon} />
                 <Chip label="Rising" value={profile.chart.rising} />
@@ -164,6 +169,7 @@ export default function ProfilePage() {
                     Rising approximate
                   </span>
                 )}
+              </div>
               </div>
             ) : (
               <p style={{ color: "#7a756e" }}>No chart set yet.</p>

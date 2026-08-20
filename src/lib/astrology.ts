@@ -15,6 +15,7 @@ export interface PlanetPlacement {
   label: string;
   sign: string;
   degreeInSign: number;
+  absDegree: number;
   retrograde: boolean;
 }
 
@@ -67,16 +68,22 @@ export function calculateChart(
 
   const bodies: Record<string, any> = horoscope.CelestialBodies || {};
 
+  const SIGNS = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+
   const placements: PlanetPlacement[] = PLANET_KEYS.map((key) => {
     const b = bodies[key] || {};
     const signObj = b.Sign || {};
     const ecl = b.ChartPosition?.Ecliptic?.DecimalDegrees;
+    const signLabel = (signObj.label as string) || "unknown";
     const degreeInSign = typeof ecl === "number" ? +((ecl % 30) + 1).toFixed(1) : 0;
+    const signIndex = SIGNS.indexOf(signLabel);
+    const absDegree = signIndex >= 0 ? +(signIndex * 30 + (ecl - Math.floor(ecl / 30) * 30)).toFixed(2) : 0;
     return {
       key,
       label: (b.label as string) || key.charAt(0).toUpperCase() + key.slice(1),
-      sign: (signObj.label as string) || "unknown",
+      sign: signLabel,
       degreeInSign,
+      absDegree,
       retrograde: !!b.retrograde,
     };
   });

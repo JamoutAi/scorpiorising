@@ -236,6 +236,53 @@ Their natal chart:
 Use web search NOW for: (a) today's Moon sign + phase + active transits, (b) ${chart.sun} Sun-sign horoscope from at least two sources, (c) current Chinese zodiac / lunar-month energy, (d) any transit hitting their Moon (${chart.moon}), Rising (${chart.rising}), or a stellium. Then structure: dominant energy → opportunities → challenges → overall rating + one-line intention. 700-1000 words. No bullet points, no headers.`;
 }
 
+export async function generateAstroAnswer(args: {
+  chart: ChartSummary;
+  name?: string;
+  question: string;
+  recentEntries?: string[];
+  history?: string[];
+}): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.anthropic;
+  const SCOPE = `You are Scorpio Rising — an astrology companion. You ONLY answer questions about astrology, natal charts, horoscopes, transits, the planets, the zodiac, and the user's personal birth chart and journal. If a question is NOT about astrology, stars, horoscopes, transits, or the user's chart, politely decline and redirect: "I'm your astrology companion — I can only speak to your chart, the stars, horoscopes, and transits. Ask me about those." Never answer general-knowledge, coding, news, math, or off-topic requests. Build every answer from their chart + the real sky (use web search for current transits) + their journal where relevant. Warm, literary, concise. No markdown headers.`;
+
+  if (!apiKey) {
+    return "The stars are quiet right now — your question is saved, but I couldn't generate an answer. Try again in a moment.";
+  }
+
+  const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T> =>
+    new Promise<T>((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error("timeout")), ms);
+      p.then((v) => { clearTimeout(t); resolve(v); }, (e) => { clearTimeout(t); reject(e); });
+    });
+
+  const ctx = [
+    args.history?.length ? `Conversation so far:\n${args.history.slice(-10).join("\n")}` : "",
+    args.recentEntries?.length ? `Their recent journal (most recent last):\n${args.recentEntries.slice(-6).map((e) => `— ${e}`).join("\n")}` : "",
+  ].filter(Boolean).join("\n\n");
+
+  const userMsg = `Their chart: Sun ${args.chart.sun}, Moon ${args.chart.moon}, Rising ${args.chart.rising}.${args.chart.risingApprox ? " (Rising approximate)" : ""}\nFull placements: ${args.chart.placements.map((p) => `${p.label} in ${p.sign}${p.retrograde ? " (retrograde)" : ""}`).join(", ")}\n\n${ctx}\n\nQuestion: ${args.question}`;
+
+  try {
+    const client = new Anthropic({ apiKey, timeout: 90000 });
+    const msg = await withTimeout(
+      client.messages.create({
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
+        max_tokens: 1500,
+        system: SCOPE,
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 4 }],
+        messages: [{ role: "user", content: userMsg }],
+      }),
+      90000,
+    );
+    const blocks: any[] = msg.content as any[];
+    const text = blocks.filter((b) => b.type === "text").map((b) => b.text || "").join("").trim().replace(/^[\s,;:\-—]+/, "");
+    return text && text.length > 20 ? text : "I can only speak to astrology, your chart, and the stars. Try asking about a transit, your Sun sign, or what's moving in the sky.";
+  } catch {
+    return "The stars are quiet right now. Try again in a moment.";
+  }
+}
+
 function fallbackDaily(chart: ChartSummary, name?: string): string {
   return [
     `The sky today, ${name ? name : "friend"}:`,

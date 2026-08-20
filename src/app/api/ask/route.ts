@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { generateReading } from "@/lib/anthropic";
+import { generateAstroAnswer } from "@/lib/anthropic";
 import { calculateChart } from "@/lib/astrology";
 import { geocodeCity } from "@/lib/geocode";
 
@@ -71,11 +71,12 @@ export async function POST(req: NextRequest) {
       .map((e: any) => `${new Date(e.created_at).toLocaleDateString()}: ${e.body}`)
       .slice(-12);
 
-    const reading = await generateReading({
+    const reading = await generateAstroAnswer({
       chart,
       name: profile.name || user.email || undefined,
-      entry: `Question for Scorpio Rising: ${question}\n\nRecent journal history:\n${recentTimeline.join("\n")}`,
+      question,
       recentEntries,
+      history: body.history || [],
     });
 
     return NextResponse.json({ answer: reading });
