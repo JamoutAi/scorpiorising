@@ -25,7 +25,7 @@ export function MagicFeatures() {
       id="features"
       className="relative overflow-hidden py-28"
       style={{
-        background: "#15102b",
+        background: "#0c2a23",
         backgroundImage: "url(/assets/constellation-texture.jpg)",
         backgroundSize: "cover",
         backgroundBlendMode: "overlay",

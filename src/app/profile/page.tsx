@@ -131,7 +131,7 @@ export default function ProfilePage() {
   return (
     <>
       <Nav />
-      <main className="flex-1 px-5 py-16" style={{ background: "#15102b" }}>
+      <main className="flex-1 px-5 py-16" style={{ background: "#0c2a23" }}>
         <div className="mx-auto max-w-3xl">
           <div className="mb-10 text-center">
             <Logo />

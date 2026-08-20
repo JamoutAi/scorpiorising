@@ -196,7 +196,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#15102b", color: "#8c8295" }}>
+        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>
           Sign-in isn&rsquo;t configured yet. Add the Supabase keys in Vercel and run the schema SQL.
         </main>
         <Footer />
@@ -207,7 +207,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#15102b", color: "#766a83" }}>Opening your journal…</main>
+        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>Opening your journal…</main>
       </>
     );
   }
@@ -217,7 +217,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 flex items-center justify-center px-5 py-32" style={{ background: "#15102b" }}>
+        <main className="flex-1 flex items-center justify-center px-5 py-32" style={{ background: "#0c2a23" }}>
           <div className="card-vellum max-w-md p-10 text-center">
             <div className="mx-auto mb-6 w-40 opacity-30">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -258,7 +258,7 @@ export default function JournalPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1" style={{ background: "#15102b" }}>
+      <main className="flex-1" style={{ background: "#0c2a23" }}>
         <div className="mx-auto max-w-3xl px-5 py-12">
           <div className="flex items-center justify-between">
             <h1

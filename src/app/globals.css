@@ -45,44 +45,50 @@
 }
 
 @theme inline {
-  /* Celestial Ink — Scorpio Rising design system */
-  --color-background: #1b1133;
-  --color-foreground: #f6f4f1;
+  /* Scorpio Rising v2 — Deep Forest Green + Warm Cream + bright Scorpio green */
+  --color-background: #0c2a23;          /* deep forest green (brand/nav/hero) */
+  --color-foreground: #f4f1ea;          /* warm cream text on dark */
 
-  --color-card: #251636;
-  --color-card-foreground: #f6f4f1;
+  --color-card: #103329;                /* dark forest card */
+  --color-card-foreground: #f4f1ea;
 
-  --color-primary: #1fc896;
-  --color-primary-foreground: #160d2b;
+  --color-primary: #1fc896;            /* bright Scorpio green (existing) */
+  --color-primary-foreground: #072019;
 
-  --color-secondary: #2f1e46;
+  --color-secondary: #0a241d;
   --color-secondary-foreground: #e6e1d8;
 
-  --color-muted: #2a1b3f;
-  --color-muted-foreground: #81768b;
+  --color-muted: #143a30;
+  --color-muted-foreground: #9bb3aa;
 
-  --color-accent: #3b2448;
-  --color-accent-foreground: #f6f4f1;
+  --color-accent: #163f33;
+  --color-accent-foreground: #f4f1ea;
 
-  --color-border: rgba(255, 255, 255, 0.100);
-  --color-input: rgba(255, 255, 255, 0.120);
+  --color-border: rgba(244, 241, 234, 0.120);
+  --color-input: rgba(244, 241, 234, 0.140);
   --color-ring: #1fc896;
 
   /* Brand palette */
+  --color-forest: #0c2a23;             /* deep forest green */
+  --color-forest-deep: #08201a;        /* near-black green */
+  --color-forest-soft: #103329;
+  --color-cream: #f7f3ea;              /* warm cream background */
+  --color-cream-2: #efe9dc;
+  --color-ink: #17251f;                /* deep ink text on cream */
+  --color-taupe: #7a756e;             /* soft taupe secondary text */
+  --color-gold: #c5a46b;               /* antique gold (rare accent) */
   --color-phosphor: #2ed79f;
-  --color-gold: #d9b264;
-  --color-lavender: #8f6f9c;
-  --color-parchment: #f6f4f1;
-  --color-plum: #1b1133;
-  --color-indigo: #281b3e;
+  --color-lavender: #8f6f9c;           /* tiny supporting accent only */
+  --color-parchment: #f7f3ea;
+  --color-plum: #0c2a23;
+  --color-indigo: #0a241d;
 
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
 
   /* Backward-compat aliases (older components still reference these) */
-  --color-paper: #f6f4f1;
-  --color-ink: #1b1133;
-  --color-ink-deep: #15102b;
+  --color-paper: #f4f1ea;
+  --color-ink-deep: #08201a;
   --color-mint: #1fc896;
   --color-mint-bright: #43e1ad;
 }
@@ -146,54 +152,66 @@ main { padding-top: 5.5rem; }
   /* Phosphor green glow button */
   .btn-phosphor {
     background: #1fc896;
-    color: #160d2b;
+    color: #072019;
     font-family: var(--font-sans), sans-serif;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 0.875rem 2.25rem;
+    padding: 0.95rem 2.4rem;
     border-radius: 2px;
     border: none;
     transition: all 160ms cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow: 0 0 20px rgba(31, 200, 150, 0.25);
+    box-shadow: 0 0 20px rgba(31, 200, 150, 0.22);
     display: inline-block;
     text-align: center;
   }
   .btn-phosphor:hover {
     background: #43e1ad;
-    box-shadow: 0 0 32px rgba(31, 200, 150, 0.45);
+    box-shadow: 0 0 32px rgba(31, 200, 150, 0.40);
     transform: translateY(-1px);
   }
   .btn-phosphor:active { transform: scale(0.97); }
 
-  /* Ghost outline button */
+  /* Ghost outline button (on dark) */
   .btn-ghost {
     background: transparent;
-    color: #ede8e0;
+    color: #f4f1ea;
     font-family: var(--font-sans), sans-serif;
     font-size: 0.875rem;
     font-weight: 400;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 0.875rem 2.25rem;
+    padding: 0.95rem 2.4rem;
     border-radius: 2px;
-    border: 1px solid rgba(255, 255, 255, 0.200);
+    border: 1px solid rgba(244, 241, 234, 0.220);
     transition: all 160ms cubic-bezier(0.23, 1, 0.32, 1);
     display: inline-block;
     text-align: center;
   }
   .btn-ghost:hover {
-    border-color: rgba(255, 255, 255, 0.400);
-    background: rgba(255, 255, 255, 0.050);
+    border-color: rgba(31, 200, 150, 0.600);
+    background: rgba(31, 200, 150, 0.060);
   }
   .btn-ghost:active { transform: scale(0.97); }
 
-  /* Vellum card surface */
+  /* Forest-dark surface (brand) */
+  .surface-dark {
+    background: #0c2a23;
+    color: #f4f1ea;
+  }
+
+  /* Warm cream surface (content areas) */
+  .surface-cream {
+    background: #f7f3ea;
+    color: #17251f;
+  }
+
+  /* Vellum card surface — dark forest card for dark sections */
   .card-vellum {
-    background: #231431;
-    border: 1px solid rgba(255, 255, 255, 0.060);
-    border-radius: 1px;
+    background: #103329;
+    border: 1px solid rgba(244, 241, 234, 0.060);
+    border-radius: 6px;
     position: relative;
     overflow: hidden;
   }
@@ -204,13 +222,21 @@ main { padding-top: 5.5rem; }
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.020) 0%, transparent 60%);
     pointer-events: none;
   }
-  .card-vellum::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(46, 215, 159, 0.25), transparent);
-    pointer-events: none;
+
+  /* Cream paper card (for cream content areas) */
+  .card-cream {
+    background: #fffdf8;
+    border: 1px solid rgba(23, 37, 31, 0.080);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(23, 37, 31, 0.04), 0 8px 24px rgba(23, 37, 31, 0.05);
+    color: #17251f;
+  }
+  /* Deep forest card (for cream areas, e.g. Constellation) */
+  .card-forest {
+    background: #0c2a23;
+    border: 1px solid rgba(31, 200, 150, 0.180);
+    border-radius: 12px;
+    color: #f4f1ea;
   }
 
   /* Fingerprint ridge texture overlay */
@@ -302,8 +328,8 @@ main { padding-top: 5.5rem; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #1b1133; }
-::-webkit-scrollbar-thumb { background: #372452; border-radius: 3px; }
+::-webkit-scrollbar-track { background: #0c2a23; }
+::-webkit-scrollbar-thumb { background: #1c4236; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(31, 200, 150, 0.5); }
 
-::selection { background: rgba(31, 200, 150, 0.3); color: #f0ebe2; }
+::selection { background: rgba(31, 200, 150, 0.30); color: #f4f1ea; }

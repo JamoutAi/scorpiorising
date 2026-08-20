@@ -5,8 +5,8 @@ import { useEffect, useRef } from "react";
 /* Ink-wash SVG divider — organic, fingerprint-ridge-like */
 export function InkDivider({
   flip = false,
-  fromColor = "#1b1133",
-  toColor = "#15102b",
+  fromColor = "#0c2a23",
+  toColor = "#08201a",
 }: {
   flip?: boolean;
   fromColor?: string;
@@ -143,9 +143,9 @@ export function Marquee({ items }: { items: string[] }) {
   return (
     <section
       style={{
-        background: "#211435",
-        borderTop: "1px solid rgba(255, 255, 255, 0.070)",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.070)",
+        background: "#0c2a23",
+        borderTop: "1px solid rgba(31, 200, 150, 0.10)",
+        borderBottom: "1px solid rgba(31, 200, 150, 0.10)",
         padding: "1.1rem 0",
         overflow: "hidden",
       }}

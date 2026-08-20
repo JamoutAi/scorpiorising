@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer
       className="py-12"
-      style={{ background: "#100a22", borderTop: "1px solid rgba(255, 255, 255, 0.070)" }}
+      style={{ background: "#0c2a23", borderTop: "1px solid rgba(31, 200, 150, 0.12)" }}
     >
       <div className="container-x">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">

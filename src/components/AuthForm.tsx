@@ -181,9 +181,9 @@ export function AuthShell({ children, title }: { children: React.ReactNode; titl
   return (
     <section
       className="relative flex min-h-[80vh] items-center justify-center px-5 py-16"
-      style={{ background: "#15102b", backgroundImage: "url(/assets/constellation-texture.jpg)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}
+      style={{ background: "#0c2a23", backgroundImage: "url(/assets/constellation-texture.jpg)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}
     >
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(21,16,43,0.92), rgba(15,10,37,0.92))" }} />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(12,42,35,0.92), rgba(8,32,26,0.94))" }} />
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}

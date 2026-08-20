@@ -35,9 +35,9 @@ export function Nav() {
     <header
       className="fixed left-0 right-0 top-0 z-50 transition-all duration-500"
       style={{
-        background: scrolled ? "rgba(21, 13, 43, 0.92)" : "rgba(21, 13, 43, 0.55)",
+        background: scrolled ? "rgba(8, 32, 26, 0.92)" : "rgba(12, 42, 35, 0.55)",
         backdropFilter: "blur(16px)",
-        borderBottom: scrolled ? "1px solid rgba(46, 215, 159, 0.18)" : "1px solid rgba(255, 255, 255, 0.04)",
+        borderBottom: scrolled ? "1px solid rgba(31, 200, 150, 0.18)" : "1px solid rgba(244, 241, 234, 0.04)",
       }}
     >
       <div className="container-x flex items-center justify-between py-4">
@@ -56,7 +56,7 @@ export function Nav() {
                 fontWeight: 300,
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
-                color: "#8f6f9c",
+                color: "#1fc896",
               }}
             >
               Scorpio
@@ -68,7 +68,7 @@ export function Nav() {
                 fontStyle: "italic",
                 fontWeight: 500,
                 letterSpacing: "0.05em",
-                color: "#ede8e0",
+                color: "#f4f1ea",
                 marginTop: "-2px",
               }}
             >
@@ -88,10 +88,10 @@ export function Nav() {
                 fontWeight: 400,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: "#cdc5b1",
+                color: "#c9d3cd",
                 transition: "color 200ms ease",
               }}
-              className="hover:text-[#2ed79f]"
+              className="hover:text-[#1fc896]"
             >
               {l.label}
             </Link>
@@ -119,7 +119,7 @@ export function Nav() {
               <Link href="/login" className="btn-ghost py-2 px-5 text-sm">
                 Sign In
               </Link>
-              <Link href="/#pricing" className="btn-phosphor py-2 px-5 text-sm">
+              <Link href="/signup?redir=/journal" className="btn-phosphor py-2 px-5 text-sm">
                 Open Your Journal
               </Link>
             </>
@@ -131,9 +131,9 @@ export function Nav() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          <span className="block h-px w-6 bg-[#ede8e0]" />
-          <span className="block h-px w-6 bg-[#ede8e0]" />
-          <span className="block h-px w-6 bg-[#ede8e0]" />
+          <span className="block h-px w-6 bg-[#f4f1ea]" />
+          <span className="block h-px w-6 bg-[#f4f1ea]" />
+          <span className="block h-px w-6 bg-[#f4f1ea]" />
         </button>
       </div>
 
@@ -141,8 +141,8 @@ export function Nav() {
         <div
           className="flex flex-col gap-5 px-6 py-6 md:hidden"
           style={{
-            background: "rgba(27, 17, 51, 0.97)",
-            borderTop: "1px solid rgba(255, 255, 255, 0.080)",
+            background: "rgba(8, 32, 26, 0.97)",
+            borderTop: "1px solid rgba(244, 241, 234, 0.080)",
           }}
         >
           {links.map((l) => (
@@ -166,7 +166,7 @@ export function Nav() {
               Profile
             </Link>
           )}
-          <Link href="/#pricing" className="btn-phosphor mt-2 text-center">
+          <Link href="/signup?redir=/journal" className="btn-phosphor mt-2 text-center">
             Open Your Journal
           </Link>
         </div>

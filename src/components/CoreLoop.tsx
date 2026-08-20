@@ -26,7 +26,7 @@ export function CoreLoop() {
     <section
       id="how-it-works"
       className="ridge-texture relative overflow-hidden py-28"
-      style={{ background: "#1b1133" }}
+      style={{ background: "#0c2a23" }}
     >
       <StarField count={22} />
       <div className="absolute right-8 top-12 hidden w-48 lg:block">

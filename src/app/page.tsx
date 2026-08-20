@@ -5,6 +5,7 @@ import { CoreLoop } from "@/components/CoreLoop";
 import { MagicFeatures } from "@/components/MagicFeatures";
 import { Story } from "@/components/Story";
 import { Pricing } from "@/components/Pricing";
+import { ProductShowcase } from "@/components/ProductShowcase";
 import { WaitlistCTA } from "@/components/WaitlistCTA";
 import { Footer } from "@/components/Footer";
 import { Marquee, Reveal, ConstellationThread } from "@/components/Design";
@@ -44,24 +45,24 @@ function WhyDifferent() {
     { k: "Memory", d: "What's happened before" },
   ];
   return (
-    <section className="relative overflow-hidden py-28" style={{ background: "#1b1133" }}>
+    <section className="relative overflow-hidden py-28" style={{ background: "#0c2a23", color: "#f4f1ea" }}>
       <div className="container-x relative z-10">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <div className="reveal mb-5 flex items-center justify-center gap-3">
-            <span className="bar" style={{ background: "#2ed79f", height: "1px", width: "2rem" }} />
+            <span className="bar" style={{ background: "#1fc896", height: "1px", width: "2rem" }} />
             <span
               style={{
                 fontFamily: "var(--font-sans), sans-serif",
                 fontSize: "0.68rem",
-                fontWeight: 500,
+                fontWeight: 600,
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                color: "#2ed79f",
+                color: "#1fc896",
               }}
             >
               Why it's different
             </span>
-            <span className="bar" style={{ background: "#2ed79f", height: "1px", width: "2rem" }} />
+            <span className="bar" style={{ background: "#1fc896", height: "1px", width: "2rem" }} />
           </div>
           <h2
             className="reveal"
@@ -70,12 +71,12 @@ function WhyDifferent() {
               fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
               fontWeight: 300,
               lineHeight: 1.12,
-              color: "#f6f4f1",
+              color: "#f4f1ea",
             }}
           >
             Your horoscope doesn&rsquo;t know what happened yesterday.
             <br />
-            <em style={{ fontStyle: "italic", color: "#2ed79f" }}>Scorpio Rising does.</em>
+            <em style={{ fontStyle: "italic", color: "#1fc896" }}>Scorpio Rising does.</em>
           </h2>
         </div>
 
@@ -88,7 +89,7 @@ function WhyDifferent() {
                     fontFamily: "var(--font-display), serif",
                     fontSize: "1.2rem",
                     fontWeight: 300,
-                    color: "#f6f4f1",
+                    color: "#f4f1ea",
                     marginBottom: "0.4rem",
                   }}
                 >
@@ -98,7 +99,7 @@ function WhyDifferent() {
                   style={{
                     fontFamily: "var(--font-sans), sans-serif",
                     fontSize: "0.78rem",
-                    color: "#8c8295",
+                    color: "#9bb3aa",
                   }}
                 >
                   {l.d}
@@ -108,7 +109,7 @@ function WhyDifferent() {
           ))}
         </div>
 
-        <p className="reveal mt-8 text-center text-sm" style={{ color: "#766a83" }}>
+        <p className="reveal mt-8 text-center text-sm" style={{ color: "#9bb3aa" }}>
           Four layers, one reflection — built from your chart and your actual life.
         </p>
       </div>
@@ -124,24 +125,24 @@ function GetsToKnowYou() {
     { d: "Month 6", t: "You have a searchable map of an entire chapter of your life." },
   ];
   return (
-    <section className="relative overflow-hidden py-28" style={{ background: "#15102b" }}>
+    <section className="relative overflow-hidden py-28" style={{ background: "#f7f3ea", color: "#17251f" }}>
       <div className="container-x relative z-10">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <div className="reveal mb-5 flex items-center justify-center gap-3">
-            <span className="bar" style={{ background: "#2ed79f", height: "1px", width: "2rem" }} />
+            <span className="bar" style={{ background: "#1fc896", height: "1px", width: "2rem" }} />
             <span
               style={{
                 fontFamily: "var(--font-sans), sans-serif",
                 fontSize: "0.68rem",
-                fontWeight: 500,
+                fontWeight: 600,
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                color: "#2ed79f",
+                color: "#1aa37c",
               }}
             >
               It gets to know you
             </span>
-            <span className="bar" style={{ background: "#2ed79f", height: "1px", width: "2rem" }} />
+            <span className="bar" style={{ background: "#1fc896", height: "1px", width: "2rem" }} />
           </div>
           <h2
             className="reveal"
@@ -150,29 +151,29 @@ function GetsToKnowYou() {
               fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
               fontWeight: 300,
               lineHeight: 1.12,
-              color: "#f6f4f1",
+              color: "#17251f",
             }}
           >
             The longer you stay,{" "}
-            <em style={{ fontStyle: "italic", color: "#2ed79f" }}>the more it sees.</em>
+            <em style={{ fontStyle: "italic", color: "#1aa37c" }}>the more it sees.</em>
           </h2>
         </div>
 
         <div className="mx-auto max-w-3xl space-y-4">
           {steps.map((s, i) => (
             <Reveal key={s.d} delay={i * 90}>
-              <div className="flex items-start gap-5 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className="flex items-start gap-5 rounded-2xl border p-5" style={{ background: "#fffdf8", borderColor: "rgba(23,37,31,0.08)" }}>
                 <div
                   className="shrink-0 rounded-full px-4 py-1"
                   style={{
-                    background: "rgba(46, 215, 159, 0.12)",
-                    border: "1px solid rgba(46, 215, 159, 0.35)",
+                    background: "rgba(31, 200, 150, 0.12)",
+                    border: "1px solid rgba(31, 200, 150, 0.35)",
                     fontFamily: "var(--font-sans), sans-serif",
                     fontSize: "0.7rem",
                     fontWeight: 600,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color: "#2ed79f",
+                    color: "#1aa37c",
                   }}
                 >
                   {s.d}
@@ -183,7 +184,7 @@ function GetsToKnowYou() {
                     fontSize: "1.15rem",
                     fontWeight: 300,
                     lineHeight: 1.6,
-                    color: "#cdc5b1",
+                    color: "#17251f",
                   }}
                 >
                   {s.t}
@@ -210,8 +211,9 @@ export default function Home() {
         <CoreLoop />
         <MagicFeatures />
         <Story />
+        <ProductShowcase />
         <Pricing />
-        <section className="relative overflow-hidden py-24" style={{ background: "#1b1133" }}>
+        <section className="relative overflow-hidden py-24" style={{ background: "#f7f3ea", color: "#17251f" }}>
           <div className="absolute left-8 top-8 hidden w-40 lg:block" style={{ transform: "rotate(15deg)" }}>
             <ConstellationThread />
           </div>
@@ -219,15 +221,15 @@ export default function Home() {
             <div className="grid gap-6 md:grid-cols-3">
               {TESTIMONIALS.map((t, i) => (
                 <Reveal key={i} delay={i * 100}>
-                  <div className="card-vellum h-full p-7">
+                  <div className="card-cream h-full p-7">
                     <div className="mb-4 flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full" style={{ background: "#2ed79f" }} />
-                      <div className="h-px flex-1" style={{ background: "linear-gradient(to right, rgba(46, 215, 159, 0.4), transparent)" }} />
+                      <div className="h-2 w-2 rounded-full" style={{ background: "#1fc896" }} />
+                      <div className="h-px flex-1" style={{ background: "linear-gradient(to right, rgba(31, 200, 150, 0.4), transparent)" }} />
                     </div>
                     <div
                       style={{
                         fontSize: "1.8rem",
-                        color: "rgba(217, 178, 100, 0.45)",
+                        color: "rgba(31, 200, 150, 0.45)",
                         fontFamily: "var(--font-display), serif",
                         lineHeight: 1,
                         marginBottom: "1rem",
@@ -242,7 +244,7 @@ export default function Home() {
                         fontStyle: "italic",
                         fontWeight: 300,
                         lineHeight: 1.7,
-                        color: "#988da0",
+                        color: "#3a4a43",
                         marginBottom: "1.25rem",
                       }}
                     >
@@ -252,10 +254,10 @@ export default function Home() {
                       style={{
                         fontFamily: "var(--font-sans), sans-serif",
                         fontSize: "0.68rem",
-                        fontWeight: 500,
+                        fontWeight: 600,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#2ed79f",
+                        color: "#1aa37c",
                       }}
                     >
                       — {t.sign}

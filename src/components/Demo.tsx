@@ -12,7 +12,7 @@ Something to sit with: if you didn't have to justify leaving, what would you wan
 
 export function Demo() {
   return (
-    <section id="demo" className="relative overflow-hidden py-28" style={{ background: "#15102b" }}>
+    <section id="demo" className="relative overflow-hidden py-28" style={{ background: "#0c2a23", color: "#f4f1ea" }}>
       <div className="container-x relative z-10">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <div className="reveal mb-5 flex items-center justify-center gap-3">

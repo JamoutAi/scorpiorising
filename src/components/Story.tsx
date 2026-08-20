@@ -6,8 +6,7 @@ export function Story() {
     <section
       id="our-story"
       className="relative overflow-hidden py-28"
-      style={{ background: "#1b1133" }}
-    >
+      style={{ background: "#0c2a23" }}>
       <StarField count={28} />
       <div className="absolute right-12 top-20 hidden w-56 lg:block">
         <ConstellationThread className="opacity-25" />

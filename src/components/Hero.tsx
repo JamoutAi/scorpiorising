@@ -5,7 +5,7 @@ export function Hero() {
   return (
     <section
       className="relative flex min-h-screen items-center overflow-hidden"
-      style={{ background: "#120a26" }}
+      style={{ background: "#0c2a23" }}
     >
       <div
         className="absolute inset-0"
@@ -13,14 +13,14 @@ export function Hero() {
           backgroundImage: "url(/assets/hero-bg.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.3,
+          opacity: 0.18,
         }}
       />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(135deg, rgba(14, 10, 32, 0.9) 0%, rgba(46, 215, 159, 0.55) 50%, rgba(46, 215, 159, 0.75) 100%)",
+            "radial-gradient(120% 120% at 50% 0%, rgba(12,42,35,0.4) 0%, rgba(8,32,26,0.85) 55%, rgba(8,32,26,0.95) 100%)",
         }}
       />
       <div className="absolute inset-0 ridge-texture" style={{ zIndex: 1 }} />
@@ -52,7 +52,7 @@ export function Hero() {
                 fontWeight: 300,
                 lineHeight: 1.08,
                 letterSpacing: "-0.02em",
-                color: "#f6f4f1",
+                color: "#f4f1ea",
                 marginBottom: "1.5rem",
                 transitionDelay: "80ms",
               }}
@@ -72,7 +72,7 @@ export function Hero() {
                 fontSize: "1.25rem",
                 fontWeight: 300,
                 lineHeight: 1.7,
-                color: "#b7adbf",
+                color: "#c9d3cd",
                 maxWidth: "480px",
                 marginBottom: "2.5rem",
                 transitionDelay: "160ms",
@@ -95,7 +95,7 @@ export function Hero() {
                 style={{
                   fontFamily: "var(--font-sans), sans-serif",
                   fontSize: "0.75rem",
-                  color: "#766a83",
+                  color: "#9bb3aa",
                   letterSpacing: "0.04em",
                 }}
               >
@@ -132,7 +132,7 @@ export function Hero() {
       </div>
       <div
         className="pointer-events-none absolute bottom-0 left-0 right-0 h-40"
-        style={{ background: "linear-gradient(to bottom, transparent, #211435)" }}
+        style={{ background: "linear-gradient(to bottom, transparent, #08201a)" }}
       />
     </section>
   );

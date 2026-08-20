@@ -6,7 +6,7 @@ export function WaitlistCTA() {
     <section
       className="relative overflow-hidden py-32 text-center"
       style={{
-        background: "#120b26",
+        background: "#0c2a23",
         backgroundImage: "url(/assets/hero-bg.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center bottom",
