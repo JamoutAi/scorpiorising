@@ -39,8 +39,17 @@ export default function PatternsPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase!.from("entries").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
-      setEntries(data ?? []);
+      const { data } = await supabase!
+        .from("entries")
+        .select("id, body, created_at, readings(content)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      setEntries(
+        (data ?? []).map((r: any) => ({
+          ...r,
+          reading: r.readings?.[0]?.content ?? null,
+        })),
+      );
       setLoaded(true);
     })();
   }, [user]);

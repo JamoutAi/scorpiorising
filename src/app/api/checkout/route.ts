@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     /* ignore */
   }
   const price = PRICES[billing];
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://scorpiorising.ai";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://www.scorpiorising.ai";
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",

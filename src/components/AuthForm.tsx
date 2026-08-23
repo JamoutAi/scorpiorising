@@ -125,7 +125,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         minLength={6}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="you@stars.com"
+        placeholder="Password (min 6 characters)"
         className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
       />
 

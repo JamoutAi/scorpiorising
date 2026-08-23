@@ -70,9 +70,10 @@ export default function JournalPage() {
   const [entry, setEntry] = useState("");
   const [reflection, setReflection] = useState<string | null>(null);
   const [entryMsg, setEntryMsg] = useState("");
+  const [activating, setActivating] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) router.replace("/login?redir=/profile");
+    if (!loading && !user) router.replace("/login?redir=/journal");
   }, [loading, user, router]);
 
   useEffect(() => {
@@ -100,6 +101,36 @@ export default function JournalPage() {
       setLoaded(true);
     })();
   }, [loading, user]);
+
+  // After Stripe checkout (?paid=...), membership is unlocked by a webhook that
+  // can land seconds after the redirect — poll until it does so the paywall lifts.
+  useEffect(() => {
+    if (loading || !user) return;
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get("paid")) return;
+    setActivating(true);
+    let tries = 0;
+    const timer = setInterval(async () => {
+      tries += 1;
+      const { data: p } = await supabase!
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
+      const active = p?.plan_status === "active" || p?.plan_status === "trialing";
+      if (active || tries >= 15) {
+        clearInterval(timer);
+        if (active) {
+          setProfile(p);
+          setFreeLimit(false);
+          setFreeLimitMsg("");
+        }
+        setActivating(false);
+        router.replace("/journal");
+      }
+    }, 2000);
+    return () => clearInterval(timer);
+  }, [loading, user, router]);
 
   async function saveProfile(ev: React.FormEvent) {
     ev.preventDefault();
@@ -209,7 +240,7 @@ export default function JournalPage() {
               <Logo />
             </div>
             <p className="text-ink/70">Please sign in to open your journal.</p>
-            <Link href="/login?redir=/profile" className="btn-phosphor mt-6 inline-block">Sign in</Link>
+            <Link href="/login?redir=/journal" className="btn-phosphor mt-6 inline-block">Sign in</Link>
           </div>
         </main>
       </>
@@ -230,6 +261,14 @@ export default function JournalPage() {
               {(profile?.name || user.email || "S").charAt(0).toUpperCase()}
             </Link>
           </div>
+
+          {activating && (
+            <div className="card-cream mb-6 p-5 text-center">
+              <p className="text-sm" style={{ color: "#1aa37c" }}>
+                Payment received — activating your membership… this takes a few seconds.
+              </p>
+            </div>
+          )}
 
           {/* Chart setup (first run only) */}
           {!profile?.chart ? (

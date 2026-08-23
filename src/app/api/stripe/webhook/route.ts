@@ -69,7 +69,16 @@ export async function POST(req: NextRequest) {
       ((session as any).customer_details?.email as string) ||
       "";
     const plan = (session.metadata?.plan as string) || PLAN_BY_LINK[session.url || ""] || "member";
-    const trialEnd = (session as any).trial_end;
+    // trial_end lives on the subscription object, not the checkout session.
+    let trialEnd: number | null = null;
+    if (session.subscription) {
+      try {
+        const sub = await stripe.subscriptions.retrieve(session.subscription as string);
+        trialEnd = sub.trial_end;
+      } catch {
+        /* non-fatal: plan still unlocks, trial date just stays unset */
+      }
+    }
     // Prefer user-id match (set when signed in at checkout); fall back to email.
     if (userId) {
       await applyPlanById(userId, plan, trialEnd);

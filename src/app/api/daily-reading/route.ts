@@ -23,15 +23,10 @@ export async function POST(req: NextRequest) {
   } = await client.auth.getUser(auth.slice(7));
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  // Resolve plan from Stripe (authoritative) or profile. Any active paid plan = member.
-  let isMember = false;
-  try {
-    const sub = await (await fetch(`${URL.replace(/\/$/, "")}/api/subscription`, { headers: { authorization: auth } })).json();
-    isMember = sub.hasPlan === true;
-  } catch {
-    const { data: prof } = await client.from("profiles").select("plan, plan_status").maybeSingle();
-    isMember = (prof?.plan_status === "active" || prof?.plan_status === "trialing");
-  }
+  // Membership check: plan_status is kept current by the Stripe webhook.
+  const { data: prof } = await client.from("profiles").select("plan_status").maybeSingle();
+  const isMember =
+    prof?.plan_status === "active" || prof?.plan_status === "trialing";
   if (!isMember) {
     return NextResponse.json({ error: "upgrade_required" }, { status: 402 });
   }

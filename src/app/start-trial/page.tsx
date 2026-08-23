@@ -32,10 +32,14 @@ export default function StartTrial() {
       const { data } = await supabase!.auth.getSession();
       const userId = data.session?.user.id ?? null;
       const userEmail = data.session?.user.email ?? null;
+      const billing =
+        new URLSearchParams(window.location.search).get("billing") === "annual"
+          ? "annual"
+          : "monthly";
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ billing: "monthly", userId, email: userEmail }),
+        body: JSON.stringify({ billing, userId, email: userEmail }),
       });
       const json = await res.json();
       if (json.url) {
@@ -57,7 +61,11 @@ export default function StartTrial() {
     if (!email || !password) return;
     setBusy(true);
     setMsg("");
-    const { data, error } = await supabase!.auth.signUp({ email, password });
+    const { data, error } = await supabase!.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: "https://www.scorpiorising.ai/start-trial" },
+    });
     if (error) {
       // If the account exists, try to sign in instead.
       const login = await supabase!.auth.signInWithPassword({ email, password });
