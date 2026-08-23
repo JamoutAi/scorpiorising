@@ -27,6 +27,29 @@ interface Entry {
   reading: string | null;
 }
 
+async function authHeaders(): Promise<Record<string, string>> {
+  const { data } = await supabase!.auth.getSession();
+  const token = data.session?.access_token;
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
+async function fetchEntries(userId: string): Promise<Entry[]> {
+  const { data } = await supabase!
+    .from("entries")
+    .select("id, body, created_at, readings(content)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  return (data ?? []).map((r: any) => ({
+    id: r.id,
+    body: r.body,
+    created_at: r.created_at,
+    reading: r.readings?.[0]?.content ?? null,
+  }));
+}
+
 export default function JournalPage() {
   const { user, loading, configured } = useAuth();
   const router = useRouter();
@@ -46,6 +69,7 @@ export default function JournalPage() {
 
   const [entry, setEntry] = useState("");
   const [reflection, setReflection] = useState<string | null>(null);
+  const [entryMsg, setEntryMsg] = useState("");
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login?redir=/profile");
@@ -62,16 +86,12 @@ export default function JournalPage() {
         .maybeSingle();
       setProfile(p);
 
-      const { data: e } = await supabase!
-        .from("entries")
-        .select("id, body, created_at, reading")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      setEntries(e ?? []);
+      const e = await fetchEntries(user.id);
+      setEntries(e);
 
       const isActive =
         p?.plan_status === "active" || p?.plan_status === "trialing";
-      if (!isActive && (e ?? []).length >= 1) {
+      if (!isActive && e.length >= 1) {
         setFreeLimit(true);
         setFreeLimitMsg(
           "You've had your first free reflection. Become a member to keep writing — it's $16.99/month or $79.99/year."
@@ -89,7 +109,7 @@ export default function JournalPage() {
     try {
       const res = await fetch("/api/journal", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: await authHeaders(),
         body: JSON.stringify({ action: "saveProfile", birthDate, birthTime, birthPlace, name }),
       });
       const json = await res.json();
@@ -113,30 +133,33 @@ export default function JournalPage() {
     if (!user || !entry.trim() || freeLimit) return;
     setBusy(true);
     setReflection(null);
+    setEntryMsg("");
     try {
       const res = await fetch("/api/journal", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: await authHeaders(),
         body: JSON.stringify({ action: "addEntry", entry }),
       });
       const json = await res.json();
       if (res.status === 402) {
         setFreeLimit(true);
         setFreeLimitMsg(
-          json.error || "You've used your free reflection — become a member to keep writing."
+          json.message || "You've used your free reflection — become a member to keep writing."
         );
         return;
       }
-      setReflection(json.reflection ?? "Saved. Your reflection will appear shortly.");
+      if (!res.ok) {
+        throw new Error(
+          json.error === "auth_required"
+            ? "Your session has expired — please sign in again."
+            : json.error || "Could not save your entry."
+        );
+      }
+      setReflection(json.reading ?? "Saved. Your reflection will appear shortly.");
       setEntry("");
-      const { data: e } = await supabase!
-        .from("entries")
-        .select("id, body, created_at, reading")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      setEntries(e ?? []);
-    } catch {
-      setReflection("Saved. Your reflection will appear shortly.");
+      setEntries(await fetchEntries(user.id));
+    } catch (err: any) {
+      setEntryMsg(err?.message || "Something went wrong saving your entry. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -276,6 +299,9 @@ export default function JournalPage() {
                     ) : null}
                   </div>
                 </form>
+                {entryMsg && (
+                  <p className="mt-3 text-sm" style={{ color: "#b3261e" }}>{entryMsg}</p>
+                )}
                 {reflection && (
                   <div className="mt-6 border-t pt-5" style={{ borderColor: "rgba(23,37,31,0.08)" }}>
                     <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>Your reflection</p>
