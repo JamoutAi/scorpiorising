@@ -45,7 +45,7 @@ export function Footer() {
               { label: "Privacy", href: "/privacy" },
               { label: "Terms", href: "/terms" },
               { label: "Support", href: "/support" },
-              { label: "Our Story", href: "/story" },
+              { label: "Our Story", href: "/#our-story" },
             ].map((item) => (
               <Link
                 key={item.label}

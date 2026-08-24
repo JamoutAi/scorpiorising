@@ -27,8 +27,19 @@ export default function StoryPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase!.from("entries").select("*").eq("user_id", user.id).order("created_at", { ascending: true });
-      setEntries(data ?? []);
+      const { data } = await supabase!
+        .from("entries")
+        .select("id, body, created_at, readings(content)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true });
+      setEntries(
+        (data ?? []).map((r: any) => ({
+          id: r.id,
+          body: r.body,
+          created_at: r.created_at,
+          reading: r.readings?.[0]?.content ?? null,
+        })),
+      );
     })();
   }, [user]);
 
