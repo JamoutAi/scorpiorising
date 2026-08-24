@@ -68,6 +68,8 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
+  const [showFullChart, setShowFullChart] = useState(false);
+
   const chart = profile?.chart;
   const sun = chart?.placements?.find((p: any) => p.key === "sun");
   const moon = chart?.placements?.find((p: any) => p.key === "moon");
@@ -132,8 +134,8 @@ export default function ProfilePage() {
                       Sun in {chart.sun}{deg(sun) && ` ${deg(sun)}`}, Moon in {chart.moon}{deg(moon) && ` ${deg(moon)}`}, Rising {chart.rising}{deg(rising) && ` ${deg(rising)}`}.
                     </p>
                     <p className="mt-2 text-sm" style={{ color: "#3a4a43" }}>{planetMeaning("rising", chart.rising)}</p>
-                    <button onClick={() => router.push("/journal")} className="btn-ghost mt-4" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
-                      Show me my chart
+                    <button onClick={() => setShowFullChart((v) => !v)} className="btn-ghost mt-4" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
+                      {showFullChart ? "Hide full chart" : "Show me my chart"}
                     </button>
                   </div>
                 </div>
@@ -141,6 +143,30 @@ export default function ProfilePage() {
                 <div className="mt-4">
                   <p style={{ color: "#7a756e" }}>No chart set yet.</p>
                   <button onClick={() => router.push("/journal")} className="btn-phosphor mt-4">Set your chart</button>
+                </div>
+              )}
+
+              {chart && showFullChart && (
+                <div className="mt-6 border-t pt-5" style={{ borderColor: "rgba(23,37,31,0.08)" }}>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {(chart.placements ?? []).map((pl: any) => (
+                      <div key={pl.key} className="rounded-xl p-3" style={{ background: "rgba(31,200,150,0.06)" }}>
+                        <p className="text-sm" style={{ color: "#17251f" }}>
+                          <strong>{pl.label}</strong> in {pl.sign}
+                          {typeof pl.degreeInSign === "number" && ` — ${Math.round(pl.degreeInSign)}°`}
+                          {pl.retrograde && " ℞"}
+                        </p>
+                        {planetMeaning(pl.key, pl.sign) && (
+                          <p className="mt-1 text-xs" style={{ color: "#7a756e" }}>{planetMeaning(pl.key, pl.sign)}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {chart.risingApprox && (
+                    <p className="mt-3 text-xs" style={{ color: "#9a948b" }}>
+                      Rising is approximate because no birth time was given.
+                    </p>
+                  )}
                 </div>
               )}
             </section>

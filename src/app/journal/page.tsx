@@ -315,7 +315,7 @@ export default function JournalPage() {
                   What's on your mind and in your heart? Scorpio Rising reflects it back through your chart.
                 </p>
                 <p className="mb-4 text-xs" style={{ color: "#9a948b" }}>
-                  Your entries are private to your account, but they are not legally privileged — avoid writing anything you wouldn&rsquo;t want disclosed in a legal matter.
+                  Your entries are private to your account, but like anything stored or shared online, they may be disclosed if required by law or through a valid legal process.
                 </p>
                 <form onSubmit={submitEntry}>
                   <textarea
@@ -329,7 +329,7 @@ export default function JournalPage() {
                   />
                   <div className="mt-4 flex flex-wrap items-center gap-4">
                     <button type="submit" disabled={busy || !entry.trim() || freeLimit} className="btn-phosphor">
-                      {busy ? "Reflecting…" : "Write"}
+                      {busy ? "Reflecting…" : "Send to the stars"}
                     </button>
                     {freeLimit ? (
                       <span className="text-xs" style={{ color: "#1aa37c" }}>Free reflection used — upgrade to keep writing.</span>
