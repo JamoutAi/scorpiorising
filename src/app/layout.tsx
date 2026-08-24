@@ -26,7 +26,7 @@ export const metadata: Metadata = {
       "A diary that knows your chart. Write freely; get a reflection written in the voice of someone who knows both your story and your stars.",
     url: siteUrl,
     siteName: "Scorpio Rising",
-    images: [{ url: "/og.svg", width: 1200, height: 630, alt: "Scorpio Rising" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Scorpio Rising" }],
     type: "website",
   },
   twitter: {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: "Scorpio Rising — Your AI Journaling Companion",
     description:
       "A diary that knows your chart. Write freely; get a reflection written in the voice of someone who knows your stars.",
-    images: ["/og.svg"],
+    images: ["/og.png"],
   },
   icons: {
     icon: "/brand/favicon.svg",
