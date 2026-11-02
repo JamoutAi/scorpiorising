@@ -6,12 +6,14 @@ interface EntryCardProps {
   createdAt: string;
   body: string;
   reading: string | null;
+  onDelete?: () => void | Promise<void>;
 }
 
 // A compact, collapsible journal entry. Shows a bar with the date and a short
 // preview; expands to reveal the full entry + reflection.
-export function EntryCard({ createdAt, body, reading }: EntryCardProps) {
+export function EntryCard({ createdAt, body, reading, onDelete }: EntryCardProps) {
   const [open, setOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const date = new Date(createdAt);
   const dateLabel = date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
   const timeLabel = date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
@@ -52,6 +54,29 @@ export function EntryCard({ createdAt, body, reading }: EntryCardProps) {
             <div className="mt-4 border-t pt-4" style={{ borderColor: "rgba(23,37,31,0.08)" }}>
               <p className="mb-2 text-xs uppercase tracking-[0.16em]" style={{ color: "#9a948b" }}>Your reflection</p>
               <p className="whitespace-pre-wrap text-sm" style={{ color: "#3a4a43", lineHeight: 1.7 }}>{reading}</p>
+            </div>
+          )}
+          {onDelete && (
+            <div className="mt-4 flex items-center justify-end gap-3 text-xs uppercase tracking-[0.1em]">
+              {!confirmDelete ? (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="transition hover:text-red-500"
+                  style={{ color: "#b0a99f" }}
+                >
+                  Delete entry
+                </button>
+              ) : (
+                <>
+                  <span style={{ color: "#7a756e" }}>Delete this entry?</span>
+                  <button onClick={() => onDelete()} className="font-semibold text-red-500 transition hover:text-red-600">
+                    Yes, delete
+                  </button>
+                  <button onClick={() => setConfirmDelete(false)} className="transition hover:text-black" style={{ color: "#b0a99f" }}>
+                    Cancel
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>

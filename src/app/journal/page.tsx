@@ -366,16 +366,13 @@ export default function JournalPage() {
                   </h2>
                   <div className="space-y-3">
                     {entries.map((e) => (
-                      <div key={e.id} className="relative">
-                        <EntryCard createdAt={e.created_at} body={e.body} reading={e.reading} />
-                        <button
-                          onClick={() => deleteEntry(e.id)}
-                          className="absolute right-3 top-3 z-10 text-xs uppercase tracking-[0.1em] transition hover:text-red-500"
-                          style={{ color: "#b0a99f" }}
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      <EntryCard
+                        key={e.id}
+                        createdAt={e.created_at}
+                        body={e.body}
+                        reading={e.reading}
+                        onDelete={() => deleteEntry(e.id)}
+                      />
                     ))}
                   </div>
                 </section>
