@@ -89,11 +89,16 @@ What is different inside the app (the website is unchanged):
 1. In Terminal, inside the project folder, run `npm install` then `npm run ios:sync`
    (this copies the app settings and plugins into the Xcode project).
 2. Run `npm run ios:open` — Xcode opens the project.
-3. In Xcode, at the top, choose **Any iOS Device (arm64)** as the destination.
-4. Menu **Product → Archive**. Wait for the "Archives" window to appear.
-5. Click **Distribute App → App Store Connect → Upload**, keep every default,
+3. **First time only:** plug your iPhone into the Mac with a cable, unlock it,
+   and pick it as the destination at the top of Xcode (Xcode registers the phone
+   with your developer account and creates the signing certificate; say yes to
+   any "Trust"/keychain prompts). Without a registered phone Xcode says
+   "Your team has no devices" and refuses to archive.
+4. Then choose **Any iOS Device (arm64)** as the destination.
+5. Menu **Product → Archive**. Wait for the "Archives" window to appear.
+6. Click **Distribute App → App Store Connect → Upload**, keep every default,
    and click **Upload**. Xcode signs it with the MYJAMS LLC team automatically.
-6. After 5–15 minutes the build shows up in App Store Connect → TestFlight.
+7. After 5–15 minutes the build shows up in App Store Connect → TestFlight.
    Add yourself as an internal tester and install from the TestFlight app.
 
 To bump the version for a new upload: in Xcode select the **App** target →
