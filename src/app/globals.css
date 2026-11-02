@@ -361,3 +361,22 @@ main { padding-top: 5.5rem; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(31, 200, 150, 0.5); }
 
 ::selection { background: rgba(31, 200, 150, 0.30); color: #f4f1ea; }
+
+/* ---- Native app shell (iOS via Capacitor) ---------------------------------
+   <html class="native-app"> is added by NativeBoot. The fixed header grows to
+   cover the status bar, and the page shifts down by the same amount. */
+html.native-app {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+html.native-app body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+html.native-app header.fixed {
+  padding-top: env(safe-area-inset-top);
+}
+html.native-app .app-sidebar {
+  padding-top: calc(1.25rem + env(safe-area-inset-top));
+}

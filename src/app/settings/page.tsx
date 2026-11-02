@@ -8,6 +8,9 @@ import { useAuth } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Sidebar } from "@/components/Sidebar";
+import { isNativeApp, openExternal, openPaywall, tapHaptic } from "@/lib/native";
+import { getCustomerInfo } from "@/lib/purchases";
+import { DEFAULT_REMINDER, disableDailyReminder, enableDailyReminder, loadReminderPrefs, type ReminderPrefs } from "@/lib/reminders";
 
 interface Profile {
   id: string;
@@ -31,6 +34,45 @@ export default function SettingsPage() {
   const [portalError, setPortalError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // Native app only: Apple subscription management + daily reminder.
+  const [native] = useState(() => typeof window !== "undefined" && isNativeApp());
+  const [appleManageUrl, setAppleManageUrl] = useState<string | null>(null);
+  const [reminder, setReminder] = useState<ReminderPrefs>(() => (typeof window !== "undefined" && isNativeApp() ? loadReminderPrefs() : DEFAULT_REMINDER));
+  const [reminderMsg, setReminderMsg] = useState("");
+  const [reminderBusy, setReminderBusy] = useState(false);
+
+  useEffect(() => {
+    if (!native) return;
+    getCustomerInfo().then((info) => {
+      if (info?.entitlements.active["member"]) setAppleManageUrl(info.managementURL || "https://apps.apple.com/account/subscriptions");
+    });
+  }, [native]);
+
+  async function toggleReminder(enabled: boolean) {
+    tapHaptic();
+    setReminderBusy(true);
+    setReminderMsg("");
+    try {
+      if (enabled) {
+        const ok = await enableDailyReminder(reminder.hour, reminder.minute);
+        setReminder((r) => ({ ...r, enabled: ok }));
+        if (!ok) setReminderMsg("Notifications are off for Scorpio Rising. Turn them on in iPhone Settings › Notifications.");
+      } else {
+        await disableDailyReminder();
+        setReminder((r) => ({ ...r, enabled: false }));
+      }
+    } finally {
+      setReminderBusy(false);
+    }
+  }
+
+  async function changeReminderTime(value: string) {
+    const [h, m] = value.split(":").map((x) => parseInt(x, 10));
+    if (Number.isNaN(h) || Number.isNaN(m)) return;
+    setReminder((r) => ({ ...r, hour: h, minute: m }));
+    if (reminder.enabled) await enableDailyReminder(h, m);
+  }
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login?redir=/settings");
@@ -62,6 +104,13 @@ export default function SettingsPage() {
   }
 
   async function openPortal() {
+    tapHaptic();
+    if (native) {
+      // Apple subscriptions are managed in iOS; web (Stripe) members manage theirs on the website.
+      if (appleManageUrl) openExternal(appleManageUrl);
+      else setPortalError("Your membership is billed through our website. To manage it, sign in at scorpiorising.ai in a browser.");
+      return;
+    }
     setPortalLoading(true);
     setPortalError("");
     try {
@@ -143,6 +192,10 @@ export default function SettingsPage() {
                 <button onClick={openPortal} disabled={portalLoading} className="btn-phosphor disabled:opacity-60">
                   {portalLoading ? "Opening…" : "Manage billing"}
                 </button>
+              ) : native ? (
+                <button onClick={() => { tapHaptic(); openPaywall(); }} className="btn-phosphor inline-block">
+                  Upgrade to Member
+                </button>
               ) : (
                 <Link href="/pricing" className="btn-phosphor inline-block">
                   Upgrade to Member
@@ -151,6 +204,45 @@ export default function SettingsPage() {
               {portalError && <p className="mt-3 text-sm" style={{ color: "#b23a3a" }}>{portalError}</p>}
             </div>
           </section>
+
+          {/* Daily reminder — native app only (local notification on this phone) */}
+          {native && (
+            <section className="card-cream mb-6 p-6">
+              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Daily reminder</h2>
+              <p className="mt-1 text-sm" style={{ color: "#7a756e" }}>
+                A gentle nudge to write, once a day. Stays on this phone only.
+              </p>
+              <div className="mt-4 flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "rgba(31,200,150,0.08)" }}>
+                <label htmlFor="reminder-toggle" style={{ color: "#17251f" }}>Remind me to journal</label>
+                <button
+                  id="reminder-toggle"
+                  role="switch"
+                  aria-checked={reminder.enabled}
+                  disabled={reminderBusy}
+                  onClick={() => toggleReminder(!reminder.enabled)}
+                  className="relative h-7 w-12 rounded-full transition disabled:opacity-60"
+                  style={{ background: reminder.enabled ? "#1fc896" : "rgba(23,37,31,0.2)" }}
+                >
+                  <span
+                    className="absolute top-1 h-5 w-5 rounded-full bg-white transition-all"
+                    style={{ left: reminder.enabled ? "1.6rem" : "0.25rem" }}
+                  />
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "rgba(31,200,150,0.08)" }}>
+                <label htmlFor="reminder-time" style={{ color: "#17251f" }}>Time</label>
+                <input
+                  id="reminder-time"
+                  type="time"
+                  value={`${String(reminder.hour).padStart(2, "0")}:${String(reminder.minute).padStart(2, "0")}`}
+                  onChange={(e) => changeReminderTime(e.target.value)}
+                  className="rounded-lg border px-3 py-1.5 text-sm"
+                  style={{ borderColor: "rgba(23,37,31,0.15)", color: "#17251f", background: "#fffdf8" }}
+                />
+              </div>
+              {reminderMsg && <p className="mt-3 text-sm" style={{ color: "#b23a3a" }}>{reminderMsg}</p>}
+            </section>
+          )}
 
           {/* Account details */}
           <section className="card-cream mb-6 p-6">

@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["4H2ZPTBGHX.ai.scorpiorising.app"],
+        "components": [
+          { "/": "/journal*", "comment": "Journal and post-checkout landing" },
+          { "/": "/reset*", "comment": "Password reset emails" },
+          { "/": "/start-trial*", "comment": "Account confirmation emails" },
+          { "/": "/login*", "comment": "Sign-in links" },
+          { "/": "/profile*" },
+          { "/": "/patterns*" },
+          { "/": "/story*" },
+          { "/": "/settings*" },
+          { "/": "/ask*" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["4H2ZPTBGHX.ai.scorpiorising.app"]
+  }
+}

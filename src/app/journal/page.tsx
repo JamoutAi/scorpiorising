@@ -10,6 +10,7 @@ import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/Logo";
 import { Sidebar } from "@/components/Sidebar";
 import { EntryCard } from "@/components/EntryCard";
+import { isNativeApp, openPaywall, successHaptic, tapHaptic } from "@/lib/native";
 
 interface Profile {
   id: string;
@@ -102,8 +103,8 @@ export default function JournalPage() {
     })();
   }, [loading, user]);
 
-  // After Stripe checkout (?paid=...), membership is unlocked by a webhook that
-  // can land seconds after the redirect — poll until it does so the paywall lifts.
+  // After checkout (?paid=... from Stripe, or ?paid=apple from the app), membership is
+  // unlocked by a webhook that can land seconds after the redirect — poll until it does.
   useEffect(() => {
     if (loading || !user) return;
     const params = new URLSearchParams(window.location.search);
@@ -135,6 +136,7 @@ export default function JournalPage() {
   async function saveProfile(ev: React.FormEvent) {
     ev.preventDefault();
     if (!user) return;
+    tapHaptic();
     setBusy(true);
     setFormMsg("");
     try {
@@ -151,6 +153,7 @@ export default function JournalPage() {
         .eq("id", user.id)
         .maybeSingle();
       setProfile(p);
+      successHaptic();
       setFormMsg("Your chart is set. Start writing below.");
     } catch (err: any) {
       setFormMsg(err.message || "Something went wrong.");
@@ -162,6 +165,7 @@ export default function JournalPage() {
   async function submitEntry(ev: React.FormEvent) {
     ev.preventDefault();
     if (!user || !entry.trim() || freeLimit) return;
+    tapHaptic("medium");
     setBusy(true);
     setReflection(null);
     setEntryMsg("");
@@ -354,7 +358,11 @@ export default function JournalPage() {
                 <div className="card-cream mt-6 border border-[#1fc896]/40 p-8 text-center">
                   <p style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Your free reflection is complete.</p>
                   <p className="mx-auto mt-3 max-w-md text-sm" style={{ color: "#7a756e" }}>{freeLimitMsg}</p>
-                  <Link href="/pricing" className="btn-phosphor mt-6 inline-block">See plans &amp; upgrade</Link>
+                  {isNativeApp() ? (
+                    <button onClick={() => { tapHaptic(); openPaywall(); }} className="btn-phosphor mt-6 inline-block">See plans &amp; upgrade</button>
+                  ) : (
+                    <Link href="/pricing" className="btn-phosphor mt-6 inline-block">See plans &amp; upgrade</Link>
+                  )}
                 </div>
               )}
 

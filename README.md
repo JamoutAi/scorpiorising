@@ -60,3 +60,51 @@ Supabase if configured), and readings use a built-in local fallback.
 Phase 1 (website + free reading) is complete and tested. Next phases (per the
 plan): product MVP (onboarding + core journal loop), memory across entries,
 transit-timed check-ins, freemium payments, native app.
+
+## iOS app (App Store)
+
+The iPhone app is a native shell (Capacitor) around the live site: it opens
+`https://www.scorpiorising.ai` inside the app, so every web deploy updates the
+app too. Native extras live in `ios/` (Xcode project), `capacitor.config.ts`,
+and `src/lib/native.ts` / `src/lib/purchases.ts` / `src/lib/reminders.ts`.
+
+What is different inside the app (the website is unchanged):
+- **Subscriptions go through Apple**, not Stripe. The paywall
+  (`src/components/NativePaywall.tsx`) shows the Monthly and Annual plans from
+  RevenueCat's `default` offering; a purchase unlocks the journal via
+  `/api/revenuecat/sync` immediately and `/api/revenuecat/webhook` keeps it
+  current (renewals, expiry). Existing web members just sign in — nothing to buy.
+- The app opens on the journal (or sign-up), not the marketing page.
+- Daily journaling reminder (Settings → Daily reminder), haptic taps, and
+  `scorpiorising.ai` links open inside the app (`public/.well-known/apple-app-site-association`).
+
+### Vercel environment variables for the app
+| Var | Where | Purpose |
+|-----|-------|---------|
+| `NEXT_PUBLIC_REVENUECAT_APPLE_KEY` | Production (already set) | RevenueCat public Apple key; the app and `/api/revenuecat/sync` use it. |
+| `REVENUECAT_WEBHOOK_SECRET` | Production — **add this** | Any long random string. Paste the same value in RevenueCat → Integrations → Webhooks → Authorization header, with URL `https://www.scorpiorising.ai/api/revenuecat/webhook`. |
+| `REVENUECAT_SECRET_KEY` | optional | A RevenueCat secret API key; if set, `/api/revenuecat/sync` uses it instead of the public key. |
+
+### Build and upload to TestFlight (plain English)
+1. In Terminal, inside the project folder, run `npm install` then `npm run ios:sync`
+   (this copies the app settings and plugins into the Xcode project).
+2. Run `npm run ios:open` — Xcode opens the project.
+3. In Xcode, at the top, choose **Any iOS Device (arm64)** as the destination.
+4. Menu **Product → Archive**. Wait for the "Archives" window to appear.
+5. Click **Distribute App → App Store Connect → Upload**, keep every default,
+   and click **Upload**. Xcode signs it with the MYJAMS LLC team automatically.
+6. After 5–15 minutes the build shows up in App Store Connect → TestFlight.
+   Add yourself as an internal tester and install from the TestFlight app.
+
+To bump the version for a new upload: in Xcode select the **App** target →
+**General** → change **Version** (e.g. 1.0.1) and **Build** (any higher number).
+
+To test on the iOS Simulator against a local server instead of production:
+```bash
+CAP_SERVER_URL=http://localhost:3000 npm run ios:sync
+```
+then run `npm run dev` and press Run in Xcode. Run `npm run ios:sync` again
+(without the variable) before archiving so the app points at production.
+
+If the app icon or splash screen changes: replace `assets/icon-only.png`,
+`assets/splash.png`, `assets/splash-dark.png` and run `npm run ios:assets`.
