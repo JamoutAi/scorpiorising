@@ -43,7 +43,11 @@ export function NativePaywall({
         return;
       }
       try {
-        const p = await getMemberPackages();
+        // StoreKit can sit silently (seen in the Simulator); don't leave the sheet on "Loading" forever.
+        const p = await Promise.race([
+          getMemberPackages(),
+          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 20000)),
+        ]);
         if (!alive) return;
         if (!p.monthly && !p.annual) setLoadError("Plans aren't available right now. Please try again in a moment.");
         setPackages(p);
