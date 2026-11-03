@@ -7,7 +7,7 @@ export default function PrivacyPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main className="min-w-0 flex-1">
         <article className="mx-auto max-w-3xl px-5 py-20">
           <h1 className="font-serif text-4xl font-bold text-paper">Privacy</h1>
           <p className="mt-3 text-sm text-paper/50">Last updated: August 2026</p>

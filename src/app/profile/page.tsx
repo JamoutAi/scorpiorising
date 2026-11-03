@@ -91,7 +91,7 @@ export default function ProfilePage() {
         active="My Chart"
       />
 
-      <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
+      <main className="min-w-0 flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto max-w-6xl px-5 py-10">
           {/* Header */}
           <div className="mb-8">

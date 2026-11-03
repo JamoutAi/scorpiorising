@@ -159,7 +159,7 @@ export default function SettingsPage() {
         active="Settings"
       />
 
-      <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
+      <main className="min-w-0 flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto max-w-3xl px-5 py-12">
           <div className="mb-8">
             <p className="text-xs uppercase tracking-[0.22em]" style={{ color: "#1aa37c" }}>Settings</p>
