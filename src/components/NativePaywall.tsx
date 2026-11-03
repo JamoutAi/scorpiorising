@@ -45,7 +45,7 @@ export function NativePaywall({
         return;
       }
       // Health check runs alongside the real fetch and reports as it goes (v3).
-      purchasesDiagnostics((t) => alive && setDiag(`v4 · ${t}`)).catch(() => {});
+      purchasesDiagnostics((t) => alive && setDiag(`v5 · ${t}`)).catch(() => {});
       try {
         // StoreKit can sit silently (seen in the Simulator); don't leave the sheet on "Loading" forever.
         const p = await Promise.race([
