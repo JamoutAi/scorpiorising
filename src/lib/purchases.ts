@@ -176,7 +176,15 @@ export async function purchasesDiagnostics(onUpdate?: (text: string) => void): P
     return [err?.readableErrorCode, err?.code, err?.message, err?.underlyingErrorMessage].filter(Boolean).join(" ").slice(0, 160);
   };
   try {
-    const Purchases = await sdk();
+    push("start");
+    try {
+      await withTimeout(import("@capacitor/status-bar"), 5000);
+      push("control import ok");
+    } catch (e) {
+      push(`control import: ${errText(e)}`);
+    }
+    const Purchases = await withTimeout(sdk(), 10000);
+    push("sdk loaded");
     try {
       const c = await withTimeout(Purchases.isConfigured(), 3000);
       push(`sdk ${c.isConfigured ? "configured" : "NOT configured"}`);
