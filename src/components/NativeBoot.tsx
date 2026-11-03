@@ -92,14 +92,24 @@ export function NativeBoot() {
   }, [native, loading, user?.id, user?.email]);
 
   if (!native || !paywall) return null;
+  // The sheet scrolls when the card is taller than the screen. `mt-auto` pins
+  // the card to the bottom on tall screens but, unlike `items-end`, never
+  // pushes its top above the scrollable area on short ones.
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto p-4 sm:items-center"
-      style={{ background: "rgba(8, 32, 26, 0.92)", paddingTop: "calc(env(safe-area-inset-top) + 1rem)", paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)" }}
+      className="fixed inset-0 z-[100] overflow-y-auto"
+      style={{ background: "rgba(8, 32, 26, 0.92)", WebkitOverflowScrolling: "touch" }}
       role="dialog"
       aria-modal="true"
     >
-      <NativePaywall billing={paywall.billing} onClose={() => setPaywall(null)} compact />
+      <div
+        className="flex min-h-full flex-col items-center p-4"
+        style={{ paddingTop: "calc(env(safe-area-inset-top) + 1rem)", paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)" }}
+      >
+        <div className="mt-auto flex w-full justify-center sm:my-auto">
+          <NativePaywall billing={paywall.billing} onClose={() => setPaywall(null)} compact />
+        </div>
+      </div>
     </div>
   );
 }
