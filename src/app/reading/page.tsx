@@ -51,7 +51,7 @@ export default function ReadingPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>
+        <main className="min-w-0 flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>
           Opening the sky…
         </main>
       </>
@@ -69,7 +69,7 @@ export default function ReadingPage() {
       <Nav />
       <Sidebar email={user.email ?? undefined} onSignOut={signOut} />
 
-      <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
+      <main className="min-w-0 flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto max-w-3xl px-5 py-12">
           <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#1aa37c" }}>{today}</p>
           <h1 className="mt-1" style={{ fontFamily: "var(--font-display), serif", fontSize: "2rem", fontWeight: 300, color: "#17251f" }}>

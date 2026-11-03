@@ -142,7 +142,7 @@ export default function AskPage() {
       <Nav />
       <Sidebar email={user.email ?? undefined} onSignOut={() => { supabase!.auth.signOut().then(() => router.replace("/")); }} active="Ask" />
 
-      <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
+      <main className="min-w-0 flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-5xl flex-col px-5 py-12 lg:flex-row lg:gap-6">
           {/* Conversation list */}
           <div className="mb-4 flex gap-2 overflow-x-auto lg:mb-0 lg:w-64 lg:flex-col lg:overflow-y-auto">

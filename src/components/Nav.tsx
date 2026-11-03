@@ -88,7 +88,8 @@ export function Nav() {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        {/* Marketing links need ~1100px next to the signed-in buttons; below xl they live in the menu. */}
+        <nav className="hidden items-center gap-8 xl:flex">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -138,7 +139,7 @@ export function Nav() {
         </div>
 
         <button
-          className="flex flex-col gap-1.5 p-2 md:hidden"
+          className="flex flex-col gap-1.5 p-2 xl:hidden"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
@@ -150,7 +151,7 @@ export function Nav() {
 
       {menuOpen && (
         <div
-          className="flex flex-col gap-5 px-6 py-6 md:hidden"
+          className="flex flex-col gap-5 px-6 py-6 xl:hidden"
           style={{
             background: "rgba(8, 32, 26, 0.97)",
             borderTop: "1px solid rgba(244, 241, 234, 0.080)",
@@ -172,31 +173,34 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
-          {signedIn ? (
-            <>
-              <Link href="/journal" onClick={() => setMenuOpen(false)} className="btn-phosphor mt-2 text-center">
-                Open Your Journal
-              </Link>
-              <Link href="/profile" onClick={() => setMenuOpen(false)} className="btn-ghost text-center">
-                Profile
-              </Link>
-              <button
-                onClick={signOut}
-                className="py-2 text-center text-xs font-semibold uppercase tracking-[0.15em] text-paper/60 transition hover:text-paper"
-              >
-                Sign out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/start-trial" onClick={() => setMenuOpen(false)} className="btn-ghost mt-2 text-center">
-                Sign In
-              </Link>
-              <Link href="/start-trial" onClick={() => setMenuOpen(false)} className="btn-phosphor text-center">
-                Open Your Journal
-              </Link>
-            </>
-          )}
+          {/* Account actions: in the menu on phones, in the header bar from md up. */}
+          <div className="flex flex-col gap-5 md:hidden">
+            {signedIn ? (
+              <>
+                <Link href="/journal" onClick={() => setMenuOpen(false)} className="btn-phosphor mt-2 text-center">
+                  Open Your Journal
+                </Link>
+                <Link href="/profile" onClick={() => setMenuOpen(false)} className="btn-ghost text-center">
+                  Profile
+                </Link>
+                <button
+                  onClick={signOut}
+                  className="py-2 text-center text-xs font-semibold uppercase tracking-[0.15em] text-paper/60 transition hover:text-paper"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/start-trial" onClick={() => setMenuOpen(false)} className="btn-ghost mt-2 text-center">
+                  Sign In
+                </Link>
+                <Link href="/start-trial" onClick={() => setMenuOpen(false)} className="btn-phosphor text-center">
+                  Open Your Journal
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </header>

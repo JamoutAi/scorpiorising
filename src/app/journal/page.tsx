@@ -215,7 +215,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>
+        <main className="min-w-0 flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>
           Sign-in isn’t configured yet. Add the Supabase keys in Vercel and run the schema SQL.
         </main>
         <Footer />
@@ -227,7 +227,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>
+        <main className="min-w-0 flex-1 px-5 py-24 text-center" style={{ background: "#0c2a23", color: "#9bb3aa" }}>
           Opening your journal…
         </main>
       </>
@@ -238,7 +238,7 @@ export default function JournalPage() {
     return (
       <>
         <Nav />
-        <main className="flex-1 flex items-center justify-center px-5 py-32" style={{ background: "#0c2a23" }}>
+        <main className="min-w-0 flex-1 flex items-center justify-center px-5 py-32" style={{ background: "#0c2a23" }}>
           <div className="card-cream max-w-md p-10 text-center">
             <div className="mx-auto mb-6 w-40 opacity-30">
               <Logo />
@@ -256,7 +256,7 @@ export default function JournalPage() {
       <Nav />
       <Sidebar email={user.email ?? undefined} name={profile?.name ?? undefined} onSignOut={signOut} active="Journal" />
 
-      <main className="flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
+      <main className="min-w-0 flex-1 lg:ml-60" style={{ background: "#f7f3ea" }}>
         <div className="mx-auto max-w-3xl px-5 py-12">
           {/* Mobile header */}
           <div className="mb-6 flex items-center justify-between lg:hidden">
