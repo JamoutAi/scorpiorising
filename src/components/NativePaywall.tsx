@@ -9,7 +9,6 @@ import {
   getMemberPackages,
   purchaseMemberPackage,
   purchasesAvailable,
-  purchasesDiagnostics,
   restoreMemberPurchases,
   syncPlanWithServer,
   type MemberPackages,
@@ -35,7 +34,6 @@ export function NativePaywall({
   const [selected, setSelected] = useState<"monthly" | "annual">(billing);
   const [busy, setBusy] = useState<"" | "buy" | "restore">("");
   const [msg, setMsg] = useState("");
-  const [diag, setDiag] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -44,8 +42,6 @@ export function NativePaywall({
         setLoadError("Plans aren't available right now. Please try again in a moment.");
         return;
       }
-      // Health check runs alongside the real fetch and reports as it goes (v3).
-      purchasesDiagnostics((t) => alive && setDiag(`v6 · ${t}`)).catch(() => {});
       try {
         // StoreKit can sit silently (seen in the Simulator); don't leave the sheet on "Loading" forever.
         const p = await Promise.race([
@@ -135,7 +131,6 @@ export function NativePaywall({
         {busy === "buy" ? "Opening App Store…" : "Start 7-Day Free Trial"}
       </button>
       {msg && <p className="mt-3 text-sm" style={{ color: "#b23a3a" }}>{msg}</p>}
-      {diag && <p className="mt-3 text-[10px] leading-snug break-words text-left" style={{ color: "#9a948b" }}>{diag}</p>}
 
       <button onClick={restore} disabled={!!busy} className="mt-4 text-sm underline disabled:opacity-60" style={{ color: "#1aa37c" }}>
         {busy === "restore" ? "Restoring…" : "Restore purchases"}
