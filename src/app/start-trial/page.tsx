@@ -6,10 +6,12 @@ import { supabase } from "@/lib/supabaseClient";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/Logo";
+import { NativePaywall } from "@/components/NativePaywall";
+import { isNativeApp, tapHaptic } from "@/lib/native";
 
 export default function StartTrial() {
   const router = useRouter();
-  const [mode, setMode] = useState<"loading" | "form">("loading");
+  const [mode, setMode] = useState<"loading" | "form" | "paywall">("loading");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -26,6 +28,21 @@ export default function StartTrial() {
   }, []);
 
   async function startCheckout() {
+    if (isNativeApp()) {
+      // Apple rule 3.1.1: inside the app, subscriptions go through the App Store.
+      const { data } = await supabase!.auth.getSession();
+      const uid = data.session?.user.id;
+      if (uid) {
+        const { data: p } = await supabase!.from("profiles").select("plan_status").eq("id", uid).maybeSingle();
+        if (p?.plan_status === "active" || p?.plan_status === "trialing") {
+          router.replace("/journal"); // already a member (web or Apple) — nothing to buy
+          return;
+        }
+      }
+      setBusy(false);
+      setMode("paywall");
+      return;
+    }
     setBusy(true);
     setMsg("Taking you to checkout…");
     try {
@@ -59,6 +76,7 @@ export default function StartTrial() {
   async function handleSubmit(ev: React.FormEvent) {
     ev.preventDefault();
     if (!email || !password) return;
+    tapHaptic();
     setBusy(true);
     setMsg("");
     const { data, error } = await supabase!.auth.signUp({
@@ -85,6 +103,19 @@ export default function StartTrial() {
     }
   }
 
+  if (mode === "paywall") {
+    const billing =
+      new URLSearchParams(window.location.search).get("billing") === "monthly" ? "monthly" : "annual";
+    return (
+      <>
+        <Nav />
+        <main className="flex min-h-screen items-center justify-center px-5 py-24" style={{ background: "#0c2a23" }}>
+          <NativePaywall billing={billing} />
+        </main>
+      </>
+    );
+  }
+
   if (mode === "loading") {
     return (
       <>
@@ -108,7 +139,9 @@ export default function StartTrial() {
             Your 7-day free trial
           </h1>
           <p className="mt-2 text-sm" style={{ color: "#7a756e" }}>
-            Create your account, then add your payment details in Stripe. You won&rsquo;t be charged for 7 days.
+            {isNativeApp()
+              ? "Create your account, then start your free trial through the App Store. You won\u2019t be charged for 7 days."
+              : "Create your account, then add your payment details in Stripe. You won\u2019t be charged for 7 days."}
           </p>
           <form onSubmit={handleSubmit} className="mt-6 space-y-4 text-left">
             <input

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Reveal, StarField, ConstellationThread } from "./Design";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+import { isNativeApp, openPaywall, tapHaptic } from "@/lib/native";
 
 function PlanButton({ billing, label, className }: { billing: "monthly" | "annual"; label: string; className: string }) {
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ function PlanButton({ billing, label, className }: { billing: "monthly" | "annua
     });
   }, []);
   const onClick = async () => {
+    tapHaptic();
     setLoading(true);
     try {
       let userId: string | null = null;
@@ -25,6 +27,12 @@ function PlanButton({ billing, label, className }: { billing: "monthly" | "annua
       }
       if (!userId) {
         window.location.href = `/start-trial?billing=${billing}`;
+        return;
+      }
+      if (isNativeApp()) {
+        // Inside the iOS app subscriptions go through Apple (RevenueCat), never Stripe.
+        openPaywall({ billing });
+        setLoading(false);
         return;
       }
       const res = await fetch("/api/checkout", {
