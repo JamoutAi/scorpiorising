@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+import { tapHaptic } from "@/lib/native";
 
 const links = [
   { href: "/#how-it-works", label: "How It Works" },
@@ -12,9 +14,18 @@ const links = [
 ];
 
 export function Nav() {
+  const router = useRouter();
   const [signedIn, setSignedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  async function signOut() {
+    tapHaptic();
+    setMenuOpen(false);
+    await supabase!.auth.signOut();
+    // Home sends the iOS app on to the sign-up screen; on the web it is the landing page.
+    router.replace("/");
+  }
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
@@ -108,7 +119,7 @@ export function Nav() {
                 Profile
               </Link>
               <button
-                onClick={() => supabase!.auth.signOut()}
+                onClick={signOut}
                 className="text-xs font-semibold uppercase tracking-[0.15em] text-paper/60 transition hover:text-paper"
               >
                 Sign out
@@ -161,14 +172,31 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
-          {signedIn && (
-            <Link href="/profile" onClick={() => setMenuOpen(false)} className="btn-ghost mt-2 text-center">
-              Profile
-            </Link>
+          {signedIn ? (
+            <>
+              <Link href="/journal" onClick={() => setMenuOpen(false)} className="btn-phosphor mt-2 text-center">
+                Open Your Journal
+              </Link>
+              <Link href="/profile" onClick={() => setMenuOpen(false)} className="btn-ghost text-center">
+                Profile
+              </Link>
+              <button
+                onClick={signOut}
+                className="py-2 text-center text-xs font-semibold uppercase tracking-[0.15em] text-paper/60 transition hover:text-paper"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/start-trial" onClick={() => setMenuOpen(false)} className="btn-ghost mt-2 text-center">
+                Sign In
+              </Link>
+              <Link href="/start-trial" onClick={() => setMenuOpen(false)} className="btn-phosphor text-center">
+                Open Your Journal
+              </Link>
+            </>
           )}
-          <Link href="/start-trial" className="btn-phosphor mt-2 text-center">
-            Open Your Journal
-          </Link>
         </div>
       )}
     </header>

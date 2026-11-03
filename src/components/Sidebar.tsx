@@ -24,11 +24,10 @@ export function Sidebar({
   const initials = (name || email || "S").charAt(0).toUpperCase();
   return (
     <aside className="app-sidebar fixed left-0 top-0 z-30 hidden h-screen w-60 flex-col p-5 lg:flex">
-      <Link href="/" className="mb-8 flex items-center gap-3" aria-label="Scorpio Rising home">
-        <span className="h-9 w-9">
-          <Logo />
-        </span>
-      </Link>
+      {/* Logo is already a link home; wrapping it in another one nested two <a> tags. */}
+      <div className="mb-8 flex items-center gap-3">
+        <Logo />
+      </div>
       <nav className="flex flex-col gap-1">
         {NAV.map((n) => (
           <Link
