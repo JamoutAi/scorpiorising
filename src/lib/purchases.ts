@@ -17,12 +17,13 @@ let configured = false;
 let configuredFor: string | null = null;
 
 /**
- * The plugin is imported statically on purpose. Loading it on demand with a
- * dynamic import never completed inside the iOS web view (the page's chunk
- * loader waited forever), which left the SDK unconfigured and every purchase
- * call hanging. On the website the import only registers an inert proxy.
+ * Never `await` the plugin object or return it from an async function. It is
+ * a Capacitor proxy that turns ANY property into a native method call, so a
+ * promise resolving to it calls `Purchases.then(...)` on the native side,
+ * which never answers. That single mistake kept the SDK unconfigured and left
+ * every purchase call on "Loading plans…" forever.
  */
-async function sdk(): Promise<Purchases> {
+function sdk(): Purchases {
   return PurchasesPlugin;
 }
 
@@ -37,7 +38,7 @@ export function purchasesAvailable(): boolean {
 export async function syncPurchasesIdentity(userId: string | null, email?: string | null): Promise<boolean> {
   if (!purchasesAvailable()) return false;
   const apiKey = process.env.NEXT_PUBLIC_REVENUECAT_APPLE_KEY as string;
-  const Purchases = await sdk();
+  const Purchases = sdk();
   try {
     if (!configured) {
       if (process.env.NODE_ENV !== "production") {
@@ -78,7 +79,7 @@ export interface MemberPackages {
 
 /** The Monthly + Annual packages from the `default` offering. */
 export async function getMemberPackages(): Promise<MemberPackages> {
-  const Purchases = await sdk();
+  const Purchases = sdk();
   const { current, all } = await Purchases.getOfferings();
   const offering = current ?? all["default"] ?? null;
   if (!offering) return { monthly: null, annual: null };
@@ -112,7 +113,7 @@ function isCancelledError(e: unknown): boolean {
 }
 
 export async function purchaseMemberPackage(pkg: PurchasesPackage): Promise<PurchaseOutcome> {
-  const Purchases = await sdk();
+  const Purchases = sdk();
   try {
     const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
     return { ok: hasMemberEntitlement(customerInfo), cancelled: false, customerInfo };
@@ -124,7 +125,7 @@ export async function purchaseMemberPackage(pkg: PurchasesPackage): Promise<Purc
 }
 
 export async function restoreMemberPurchases(): Promise<PurchaseOutcome> {
-  const Purchases = await sdk();
+  const Purchases = sdk();
   try {
     const { customerInfo } = await Purchases.restorePurchases();
     return { ok: hasMemberEntitlement(customerInfo), cancelled: false, customerInfo };
@@ -137,7 +138,7 @@ export async function restoreMemberPurchases(): Promise<PurchaseOutcome> {
 export async function getCustomerInfo(): Promise<CustomerInfo | null> {
   if (!configured) return null;
   try {
-    const Purchases = await sdk();
+    const Purchases = sdk();
     const { customerInfo } = await Purchases.getCustomerInfo();
     return customerInfo;
   } catch {
@@ -188,7 +189,7 @@ export async function purchasesDiagnostics(onUpdate?: (text: string) => void): P
     } catch (e) {
       push(`control import: ${errText(e)}`);
     }
-    const Purchases = await withTimeout(sdk(), 10000);
+    const Purchases = sdk();
     push("sdk loaded");
     try {
       const c = await withTimeout(Purchases.isConfigured(), 3000);
