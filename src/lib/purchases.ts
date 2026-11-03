@@ -8,6 +8,7 @@ import { isNativeApp } from "@/lib/native";
  */
 
 export const MEMBER_ENTITLEMENT = "member";
+export const MEMBER_PRODUCT_IDS = ["ai.scorpiorising.app.member.annual", "ai.scorpiorising.app.member.monthly"];
 
 type Purchases = typeof import("@revenuecat/purchases-capacitor").Purchases;
 
@@ -156,4 +157,50 @@ export async function syncPlanWithServer(accessToken: string | undefined): Promi
   } catch {
     return false;
   }
+}
+
+/**
+ * One-line health check shown under the paywall when plans fail to load, so a
+ * screenshot from a tester tells us where it stopped (SDK, App Store, or products).
+ */
+export async function purchasesDiagnostics(): Promise<string> {
+  const parts: string[] = [];
+  const withTimeout = <T,>(p: Promise<T>, ms: number) =>
+    Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error(`timeout ${ms / 1000}s`)), ms))]);
+  const errText = (e: unknown) => {
+    const err = e as { code?: unknown; message?: unknown; readableErrorCode?: unknown; underlyingErrorMessage?: unknown } | null;
+    return [err?.readableErrorCode, err?.code, err?.message, err?.underlyingErrorMessage].filter(Boolean).join(" ").slice(0, 160);
+  };
+  try {
+    const Purchases = await sdk();
+    try {
+      const c = await withTimeout(Purchases.isConfigured(), 3000);
+      parts.push(`sdk ${c.isConfigured ? "configured" : "NOT configured"}`);
+    } catch (e) {
+      parts.push(`isConfigured: ${errText(e)}`);
+    }
+    try {
+      const u = await withTimeout(Purchases.getAppUserID(), 3000);
+      parts.push(`user ${u.appUserID.slice(0, 8)}…`);
+    } catch (e) {
+      parts.push(`appUserID: ${errText(e)}`);
+    }
+    try {
+      const c = await withTimeout(Purchases.canMakePayments(), 3000);
+      parts.push(`payments ${c.canMakePayments ? "allowed" : "BLOCKED"}`);
+    } catch (e) {
+      parts.push(`canMakePayments: ${errText(e)}`);
+    }
+    const t0 = Date.now();
+    try {
+      const r = await withTimeout(Purchases.getProducts({ productIdentifiers: MEMBER_PRODUCT_IDS }), 15000);
+      const ids = r.products.map((x) => x.identifier.split(".").pop()).join(",");
+      parts.push(`products ${r.products.length} [${ids}] in ${Math.round((Date.now() - t0) / 1000)}s`);
+    } catch (e) {
+      parts.push(`products: ${errText(e)} after ${Math.round((Date.now() - t0) / 1000)}s`);
+    }
+  } catch (e) {
+    parts.push(`sdk load: ${errText(e)}`);
+  }
+  return parts.join(" · ");
 }

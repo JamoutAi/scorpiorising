@@ -9,6 +9,7 @@ import {
   getMemberPackages,
   purchaseMemberPackage,
   purchasesAvailable,
+  purchasesDiagnostics,
   restoreMemberPurchases,
   syncPlanWithServer,
   type MemberPackages,
@@ -34,6 +35,7 @@ export function NativePaywall({
   const [selected, setSelected] = useState<"monthly" | "annual">(billing);
   const [busy, setBusy] = useState<"" | "buy" | "restore">("");
   const [msg, setMsg] = useState("");
+  const [diag, setDiag] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -51,8 +53,11 @@ export function NativePaywall({
         if (!alive) return;
         if (!p.monthly && !p.annual) setLoadError("Plans aren't available right now. Please try again in a moment.");
         setPackages(p);
-      } catch {
-        if (alive) setLoadError("Couldn't reach the App Store. Check your connection and try again.");
+      } catch (e) {
+        if (!alive) return;
+        setLoadError("Couldn't reach the App Store. Check your connection and try again.");
+        const why = (e as { message?: string })?.message || "";
+        purchasesDiagnostics().then((d) => alive && setDiag(`${why ? why + " · " : ""}${d}`)).catch(() => {});
       }
     })();
     return () => {
@@ -110,7 +115,10 @@ export function NativePaywall({
       </p>
 
       {loadError ? (
-        <p className="mt-6 text-sm" style={{ color: "#b23a3a" }}>{loadError}</p>
+        <div className="mt-6">
+          <p className="text-sm" style={{ color: "#b23a3a" }}>{loadError}</p>
+          {diag && <p className="mt-2 text-[10px] leading-snug break-words" style={{ color: "#9a948b" }}>{diag}</p>}
+        </div>
       ) : !packages ? (
         <p className="mt-6 text-sm" style={{ color: "#7a756e" }}>Loading plans…</p>
       ) : (
