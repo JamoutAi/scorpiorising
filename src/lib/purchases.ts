@@ -1,3 +1,4 @@
+import { LOG_LEVEL, Purchases as PurchasesPlugin } from "@revenuecat/purchases-capacitor";
 import type { CustomerInfo, PurchasesPackage } from "@revenuecat/purchases-capacitor";
 import { isNativeApp } from "@/lib/native";
 
@@ -10,14 +11,19 @@ import { isNativeApp } from "@/lib/native";
 export const MEMBER_ENTITLEMENT = "member";
 export const MEMBER_PRODUCT_IDS = ["ai.scorpiorising.app.member.annual", "ai.scorpiorising.app.member.monthly"];
 
-type Purchases = typeof import("@revenuecat/purchases-capacitor").Purchases;
+type Purchases = typeof PurchasesPlugin;
 
 let configured = false;
 let configuredFor: string | null = null;
 
+/**
+ * The plugin is imported statically on purpose. Loading it on demand with a
+ * dynamic import never completed inside the iOS web view (the page's chunk
+ * loader waited forever), which left the SDK unconfigured and every purchase
+ * call hanging. On the website the import only registers an inert proxy.
+ */
 async function sdk(): Promise<Purchases> {
-  const mod = await import("@revenuecat/purchases-capacitor");
-  return mod.Purchases;
+  return PurchasesPlugin;
 }
 
 export function purchasesAvailable(): boolean {
@@ -35,7 +41,6 @@ export async function syncPurchasesIdentity(userId: string | null, email?: strin
   try {
     if (!configured) {
       if (process.env.NODE_ENV !== "production") {
-        const { LOG_LEVEL } = await import("@revenuecat/purchases-capacitor");
         await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
       }
       await Purchases.configure({ apiKey, appUserID: userId ?? undefined });
