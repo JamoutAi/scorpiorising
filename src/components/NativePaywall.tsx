@@ -44,6 +44,8 @@ export function NativePaywall({
         setLoadError("Plans aren't available right now. Please try again in a moment.");
         return;
       }
+      // Health check runs alongside the real fetch and reports as it goes (v3).
+      purchasesDiagnostics((t) => alive && setDiag(`v3 · ${t}`)).catch(() => {});
       try {
         // StoreKit can sit silently (seen in the Simulator); don't leave the sheet on "Loading" forever.
         const p = await Promise.race([
@@ -55,9 +57,8 @@ export function NativePaywall({
         setPackages(p);
       } catch (e) {
         if (!alive) return;
-        setLoadError("Couldn't reach the App Store. Check your connection and try again.");
         const why = (e as { message?: string })?.message || "";
-        purchasesDiagnostics().then((d) => alive && setDiag(`${why ? why + " · " : ""}${d}`)).catch(() => {});
+        setLoadError(`Couldn't reach the App Store. Check your connection and try again.${why ? ` (${why.slice(0, 80)})` : ""}`);
       }
     })();
     return () => {
@@ -115,10 +116,7 @@ export function NativePaywall({
       </p>
 
       {loadError ? (
-        <div className="mt-6">
-          <p className="text-sm" style={{ color: "#b23a3a" }}>{loadError}</p>
-          {diag && <p className="mt-2 text-[10px] leading-snug break-words" style={{ color: "#9a948b" }}>{diag}</p>}
-        </div>
+        <p className="mt-6 text-sm" style={{ color: "#b23a3a" }}>{loadError}</p>
       ) : !packages ? (
         <p className="mt-6 text-sm" style={{ color: "#7a756e" }}>Loading plans…</p>
       ) : (
@@ -137,6 +135,7 @@ export function NativePaywall({
         {busy === "buy" ? "Opening App Store…" : "Start 7-Day Free Trial"}
       </button>
       {msg && <p className="mt-3 text-sm" style={{ color: "#b23a3a" }}>{msg}</p>}
+      {diag && <p className="mt-3 text-[10px] leading-snug break-words text-left" style={{ color: "#9a948b" }}>{diag}</p>}
 
       <button onClick={restore} disabled={!!busy} className="mt-4 text-sm underline disabled:opacity-60" style={{ color: "#1aa37c" }}>
         {busy === "restore" ? "Restoring…" : "Restore purchases"}
