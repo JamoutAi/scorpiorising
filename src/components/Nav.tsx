@@ -21,6 +21,7 @@ export function Nav() {
 
   async function signOut() {
     tapHaptic();
+    if (!window.confirm("Sign out of Scorpio Rising?")) return;
     setMenuOpen(false);
     await supabase!.auth.signOut();
     // Home sends the iOS app on to the sign-up screen; on the web it is the landing page.

@@ -99,6 +99,18 @@ export interface PurchaseOutcome {
   cancelled: boolean;
   customerInfo: CustomerInfo | null;
   error?: string;
+  /** The Apple ID already has this subscription (bought under another account, or re-tapped). */
+  alreadyOwned?: boolean;
+}
+
+function isAlreadyOwnedError(e: unknown): boolean {
+  const err = e as { code?: unknown; readableErrorCode?: unknown; message?: unknown } | null;
+  if (!err) return false;
+  // 6 == PRODUCT_ALREADY_PURCHASED_ERROR
+  if (String(err.code) === "6") return true;
+  if (typeof err.readableErrorCode === "string" && err.readableErrorCode.includes("ALREADY_PURCHASED")) return true;
+  if (typeof err.message === "string" && /already (purchased|subscribed|owned)/i.test(err.message)) return true;
+  return false;
 }
 
 function isCancelledError(e: unknown): boolean {
@@ -118,6 +130,7 @@ export async function purchaseMemberPackage(pkg: PurchasesPackage): Promise<Purc
     const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
     return { ok: hasMemberEntitlement(customerInfo), cancelled: false, customerInfo };
   } catch (e) {
+    if (isAlreadyOwnedError(e)) return { ok: false, cancelled: false, customerInfo: null, alreadyOwned: true };
     if (isCancelledError(e)) return { ok: false, cancelled: true, customerInfo: null };
     const msg = (e as { message?: string })?.message || "The purchase could not be completed.";
     return { ok: false, cancelled: false, customerInfo: null, error: msg };

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { NativeBoot } from "@/components/NativeBoot";
+import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.scorpiorising.ai";
 
@@ -61,6 +62,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <AuthProvider>
+          <RecoveryRedirect />
           {children}
           <NativeBoot />
         </AuthProvider>

@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/Logo";
 import { NativePaywall } from "@/components/NativePaywall";
 import { isNativeApp, tapHaptic } from "@/lib/native";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export default function StartTrial() {
   const router = useRouter();
@@ -152,13 +153,14 @@ export default function StartTrial() {
               onChange={(e) => setEmail(e.target.value)}
               className="paper-input w-full px-4 py-3"
             />
-            <input
-              type="password"
-              required
-              placeholder="Password"
+            <PasswordInput
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setPassword}
+              minLength={6}
+              autoComplete="new-password"
+              placeholder="Password (min 6 characters)"
               className="paper-input w-full px-4 py-3"
+              tone="light"
             />
             <button type="submit" disabled={busy} className="btn-phosphor w-full">
               {busy ? "One moment…" : "Continue to checkout"}
