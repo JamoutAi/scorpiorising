@@ -146,7 +146,13 @@ export default function JournalPage() {
         body: JSON.stringify({ action: "saveProfile", birthDate, birthTime, birthPlace, name }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Could not read chart");
+      if (!res.ok) {
+        const friendly: Record<string, string> = {
+          place_not_found: "We couldn\u2019t find that place. Try just the city, like \u201cDenver\u201d or \u201cAustin, Texas\u201d.",
+          missing_fields: "Please add your birth date and the city where you were born.",
+        };
+        throw new Error(friendly[json.error] || json.error || "Could not read chart");
+      }
       const { data: p } = await supabase!
         .from("profiles")
         .select("*")

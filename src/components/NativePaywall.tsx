@@ -6,7 +6,9 @@ import type { PurchasesPackage } from "@revenuecat/purchases-capacitor";
 import { supabase } from "@/lib/supabaseClient";
 import { openExternal, successHaptic, tapHaptic } from "@/lib/native";
 import {
+  getCustomerInfo,
   getMemberPackages,
+  hasMemberEntitlement,
   purchaseMemberPackage,
   purchasesAvailable,
   restoreMemberPurchases,
@@ -77,13 +79,38 @@ export function NativePaywall({
     setBusy("buy");
     setMsg("");
     const out = await purchaseMemberPackage(pkg);
-    setBusy("");
-    if (out.cancelled) return;
-    if (!out.ok) {
-      setMsg(out.error || "The purchase could not be completed.");
+    if (out.ok) {
+      setBusy("");
+      await finish(true);
       return;
     }
-    await finish(true);
+    // Apple's "You're currently subscribed to this" sheet ends up here (as a cancel or an
+    // already-purchased error). The subscription belongs to this Apple ID, so a restore
+    // moves it onto this account instead of leaving the paywall on screen doing nothing.
+    const info = await getCustomerInfo();
+    if (hasMemberEntitlement(info)) {
+      setBusy("");
+      await finish(true);
+      return;
+    }
+    if (out.alreadyOwned) {
+      setBusy("restore");
+      const restored = await restoreMemberPurchases();
+      setBusy("");
+      if (restored.ok) {
+        await finish(true);
+        return;
+      }
+      setMsg("This Apple ID already has a membership. Tap Restore purchases to use it on this account.");
+      return;
+    }
+    if (out.cancelled) {
+      setBusy("");
+      setMsg("Already a member with this Apple ID? Tap Restore purchases below.");
+      return;
+    }
+    setBusy("");
+    setMsg(out.error || "The purchase could not be completed.");
   }
 
   async function restore() {

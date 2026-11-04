@@ -10,6 +10,7 @@ import { Footer } from "@/components/Footer";
 import { Sidebar } from "@/components/Sidebar";
 import { isNativeApp, openExternal, openPaywall, tapHaptic } from "@/lib/native";
 import { getCustomerInfo } from "@/lib/purchases";
+import { PasswordInput } from "@/components/PasswordInput";
 import { DEFAULT_REMINDER, disableDailyReminder, enableDailyReminder, loadReminderPrefs, type ReminderPrefs } from "@/lib/reminders";
 
 interface Profile {
@@ -34,6 +35,10 @@ export default function SettingsPage() {
   const [portalError, setPortalError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [newPassword2, setNewPassword2] = useState("");
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwMsg, setPwMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   // Native app only: Apple subscription management + daily reminder.
   const [native] = useState(() => typeof window !== "undefined" && isNativeApp());
@@ -103,6 +108,30 @@ export default function SettingsPage() {
     setSavingName(false);
   }
 
+  async function changePassword(ev: React.FormEvent) {
+    ev.preventDefault();
+    tapHaptic();
+    setPwMsg(null);
+    if (newPassword.length < 6) {
+      setPwMsg({ ok: false, text: "Password must be at least 6 characters." });
+      return;
+    }
+    if (newPassword !== newPassword2) {
+      setPwMsg({ ok: false, text: "Those two passwords don\u2019t match." });
+      return;
+    }
+    setPwBusy(true);
+    const { error } = await supabase!.auth.updateUser({ password: newPassword });
+    setPwBusy(false);
+    if (error) {
+      setPwMsg({ ok: false, text: error.message });
+      return;
+    }
+    setNewPassword("");
+    setNewPassword2("");
+    setPwMsg({ ok: true, text: "Password updated." });
+  }
+
   async function openPortal() {
     tapHaptic();
     if (native) {
@@ -122,6 +151,9 @@ export default function SettingsPage() {
       });
       const json = await res.json();
       if (json.url) window.location.href = json.url;
+      else if (res.status === 404)
+        // Member, but no Stripe customer: the subscription was bought in the iPhone app.
+        setPortalError("Your membership is billed through Apple. Manage or cancel it on your iPhone under Settings › Apple Account › Subscriptions.");
       else setPortalError("Billing management is unavailable right now — email support@scorpiorising.ai.");
     } catch {
       setPortalError("Something went wrong. Please try again or contact support.");
@@ -278,6 +310,40 @@ export default function SettingsPage() {
                 )}
               </div>
             </div>
+          </section>
+
+          {/* Password */}
+          <section className="card-cream mb-6 p-6">
+            <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "1.6rem", fontWeight: 300, color: "#17251f" }}>Password</h2>
+            <p className="mt-1 text-sm" style={{ color: "#7a756e" }}>Choose a new password for signing in.</p>
+            <form onSubmit={changePassword} className="mt-4 space-y-3">
+              <PasswordInput
+                value={newPassword}
+                onChange={setNewPassword}
+                minLength={6}
+                autoComplete="new-password"
+                placeholder="New password (min 6 characters)"
+                className="w-full rounded-xl border px-4 py-2.5 text-sm"
+                style={{ borderColor: "rgba(23,37,31,0.15)", color: "#17251f", background: "#fffdf8" }}
+                tone="light"
+              />
+              <PasswordInput
+                value={newPassword2}
+                onChange={setNewPassword2}
+                minLength={6}
+                autoComplete="new-password"
+                placeholder="Type it again"
+                className="w-full rounded-xl border px-4 py-2.5 text-sm"
+                style={{ borderColor: "rgba(23,37,31,0.15)", color: "#17251f", background: "#fffdf8" }}
+                tone="light"
+              />
+              <div className="flex items-center gap-3">
+                <button type="submit" disabled={pwBusy} className="rounded-full border px-4 py-2.5 text-sm font-medium transition hover:bg-black/5 disabled:opacity-60" style={{ borderColor: "rgba(23,37,31,0.15)", color: "#1aa37c" }}>
+                  {pwBusy ? "Saving\u2026" : "Update password"}
+                </button>
+                {pwMsg && <span className="text-sm" style={{ color: pwMsg.ok ? "#1aa37c" : "#b23a3a" }}>{pwMsg.text}</span>}
+              </div>
+            </form>
           </section>
 
           {/* Danger zone — tucked at the bottom, muted */}

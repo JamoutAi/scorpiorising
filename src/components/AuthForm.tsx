@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { tapHaptic } from "@/lib/native";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
@@ -121,12 +122,11 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         placeholder="you@stars.com"
         className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
       />
-      <input
-        type="password"
-        required
-        minLength={6}
+      <PasswordInput
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={setPassword}
+        minLength={6}
+        autoComplete={mode === "signup" ? "new-password" : "current-password"}
         placeholder="Password (min 6 characters)"
         className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-paper outline-none placeholder:text-paper/40 focus:border-mint/50"
       />
