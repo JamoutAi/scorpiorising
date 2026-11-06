@@ -73,6 +73,26 @@ drop policy if exists "chats own" on public.chats;
 create policy "chats own" on public.chats
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+-- 7) Daily star readings — one cached reading per user per local day.
+--    Generated once, then served instantly until the user's local date changes
+--    (or their chart changes, tracked by chart_key).
+create table if not exists public.daily_readings (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  reading_date date not null,
+  chart_key text,
+  content text not null,
+  model text,
+  created_at timestamptz default now(),
+  unique (user_id, reading_date)
+);
+
+alter table public.daily_readings enable row level security;
+
+drop policy if exists "daily_readings own" on public.daily_readings;
+create policy "daily_readings own" on public.daily_readings
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
