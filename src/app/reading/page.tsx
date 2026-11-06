@@ -26,9 +26,11 @@ export default function ReadingPage() {
       try {
         const { data } = await supabase!.auth.getSession();
         const token = data.session?.access_token;
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const res = await fetch("/api/daily-reading", {
           method: "POST",
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          body: JSON.stringify({ timeZone }),
         });
         const json = await res.json();
         if (res.status === 402) return setState("upgrade");

@@ -149,12 +149,56 @@ export function fallbackReading(
   ].join("\n");
 }
 
+/** Where the client is right now, so the reading opens with the right greeting and the right date. */
+export type LocalTime = {
+  timeZone: string;       // IANA zone, e.g. "America/Denver"
+  dateISO: string;        // YYYY-MM-DD in that zone
+  dateLabel: string;      // "Thursday, November 6, 2026"
+  timeLabel: string;      // "2:00 PM"
+  dayPart: "morning" | "afternoon" | "evening";
+};
+
+/** Resolve the client's local date and time from an IANA time zone (falls back to UTC). */
+export function resolveLocalTime(timeZone?: string, now: Date = new Date()): LocalTime {
+  let tz = "UTC";
+  try {
+    if (timeZone) {
+      new Intl.DateTimeFormat("en-US", { timeZone });
+      tz = timeZone;
+    }
+  } catch {
+    tz = "UTC";
+  }
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    hour12: false,
+  }).formatToParts(now);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  const hour = Number(get("hour")) % 24;
+  const dateISO = `${get("year")}-${get("month")}-${get("day")}`;
+  const dateLabel = now.toLocaleDateString("en-US", {
+    timeZone: tz,
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const timeLabel = now.toLocaleTimeString("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" });
+  const dayPart = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
+  return { timeZone: tz, dateISO, dateLabel, timeLabel, dayPart };
+}
+
 export async function generateDailyReading(args: {
   chart: ChartSummary;
   name?: string;
-}): Promise<string> {
+  local?: LocalTime;
+}): Promise<{ text: string; generated: boolean; model?: string }> {
   const apiKey = process.env.ANTHROPIC_API_KEY || process.env.anthropic;
-  if (!apiKey) return fallbackDaily(args.chart, args.name);
+  if (!apiKey) return { text: fallbackDaily(args.chart, args.name), generated: false };
 
   const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T> =>
     new Promise<T>((resolve, reject) => {
@@ -171,11 +215,12 @@ export async function generateDailyReading(args: {
       );
     });
 
+  const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5";
   try {
     const client = new Anthropic({ apiKey, timeout: 90000 });
     const msg = await withTimeout(
       client.messages.create({
-        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
+        model,
         max_tokens: 5000,
         system: DAILY_SYSTEM_PROMPT,
         tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 4 }],
@@ -190,9 +235,10 @@ export async function generateDailyReading(args: {
       .join("")
       .trim()
       .replace(/^[\s,;:\-—]+/, "");
-    return text && text.length > 40 ? text : fallbackDaily(args.chart, args.name);
+    if (text && text.length > 40) return { text, generated: true, model };
+    return { text: fallbackDaily(args.chart, args.name), generated: false };
   } catch {
-    return fallbackDaily(args.chart, args.name);
+    return { text: fallbackDaily(args.chart, args.name), generated: false };
   }
 }
 
@@ -218,12 +264,14 @@ SAFETY: reflection and support, never clinical. Do NOT use "therapy," "treatment
 Never invent details. Build from their chart + the real sky you searched.
 LENGTH: 700-1000 words. Plain prose, no markdown.`;
 
-function buildDailyPrompt(args: { chart: ChartSummary; name?: string }): string {
+function buildDailyPrompt(args: { chart: ChartSummary; name?: string; local?: LocalTime }): string {
   const { chart, name } = args;
+  const local = args.local ?? resolveLocalTime();
   const placements = chart.placements
     .map((p) => `${p.label} in ${p.sign}${p.retrograde ? " (retrograde)" : ""}`)
     .join(", ");
-  return `Today is ${transitSummary()}.
+  const greeting = `Good ${local.dayPart}`;
+  return `Today is ${local.dateLabel}. For the client it is currently ${local.timeLabel} (${local.timeZone}) — the ${local.dayPart}. Open with "${greeting}, ${name ? name : "friend"}." and do not use any other time-of-day greeting.
 
 Give ${name ? name : "this client"} their daily energy briefing (no journal entry today — general briefing from their chart + the sky).
 
